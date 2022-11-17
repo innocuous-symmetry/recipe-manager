@@ -1,0 +1,492 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/innocuous-symmetry/recipin-api/1.0.0
+  - description: No server
+    url: https://doesnotexistyet.com
+info:
+  description: REST API for Recipin home recipe manager
+  version: "1.0.0"
+  title: Recipin REST API
+  contact:
+    email: mikaylaherself@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to developers
+  - name: users
+    description: Operations available to users without special access
+paths:
+  /users:
+    get:
+      tags:
+        - admins
+      summary: gets all users
+      operationId: getAllUsers
+      description: |
+        If this route is called without parameters and proper permissions exist,
+        a list of all registered users will be returned.
+      responses:
+        '200':
+          description: results received
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden. Proper clearance required for this request.
+        '404':
+          description: "no results found"
+          
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: get one user by ID
+      operationId: getUserByID
+      description: |
+        Supplying a user ID as parameter will return the information
+        corresponding to the user whose ID matches the provided value.
+      parameters:
+        - in: path
+          name: id
+          description: an argument for querying data about a specific user
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: results received
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: "no results found"
+        '500':
+          description: 'internal server error'
+    put:
+      tags:
+        - users
+        - developers
+        - admins
+      summary: update a user by their ID
+      operationId: updateUserByID
+      description: |
+        Update a single user profile, other than one's own, by a specified
+        user ID. New information specified in request body.
+      parameters:
+        - in: path
+          name: id
+          description: an argument for querying data about a specific user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: new profile information to be received
+      responses:
+        '200':
+          description: Update successful.
+        '400':
+          description: Bad request. Likely a problem with the request body.
+        '403':
+          description: Request forbidden. Proper authorization needed
+    delete:
+      tags:
+        - admins
+      summary: delete a user by their ID
+      operationId: deleteUserByID
+      description: delete a user by their ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: the ID of the user to delete
+      responses:
+        '204':
+          description: "Deletion successful, no content found."
+        '403':
+          description: Not authorized for this action.
+        '404':
+          description: No user found with this ID.
+
+  /recipes:
+    get:
+      tags:
+        - admins
+      summary: get all recipes
+      operationId: getAllRecipes
+      description: |
+        Returns a list of all recipe entries in the database, regardless of
+        auth status.
+      responses:
+        '200':
+          description: results received
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '403':
+          description: Forbidden. Proper clearance required for this request.
+        '404':
+          description: "no results found"
+  
+  /recipes/{id}:
+    get:
+      tags:
+        - users
+      summary: view one recipe by its ID
+      operationId: getRecipeByID
+      description: |
+        Access a single recipe by its recipe ID, if authorized. Will return
+        all data about this recipe and populate it in a full recipe view.
+      parameters:
+        - in: path
+          name: id
+          description: the ID of the queried recipe
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Content found
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '403':
+          description: Access forbidden
+        '404':
+          description: No recipe found with this ID
+    put:
+      tags:
+        - users
+        - developers
+        - admins
+      summary: update one recipe by its ID
+      operationId: updateRecipeByID
+      description: |
+        When authorized to do so, update a recipe's data by its recipe ID. Admins and
+        developers may override this auth requirement.
+      parameters:
+        - in: path
+          name: id
+          description: the ID of the queried recipe
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        description: New recipe details received from request body, parsed from HTML input form.
+      responses:
+        '200':
+          description: Content updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '400':
+          description: Bad request. Likely a malformed request body.
+        '403':
+          description: Access forbidden
+    delete:
+      tags:
+        - admins
+      summary: delete a recipe by its ID
+      operationId: deleteRecipeByID
+      description: delete a recipe by its ID
+      parameters:
+        - in: path
+          name: id
+          description: recipe ID to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "Deletion successful, no content found."
+        '403':
+          description: Not authorized for this action.
+        '404':
+          description: No recipe found with this ID.
+      
+  
+  /collection/{id}:
+    get:
+      tags:
+        - users
+      summary: get a collection of recipes by its ID
+      operationId: getCollectionByID
+      description: |
+        Access a unique collection by its collection ID. Within this route,
+        one may also query a specific recipe by its recipe ID
+        in the query params.
+      parameters:
+        - in: path
+          name: id
+          description: ID of the collection to request
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: recipeID
+          description: the ID of a recipe to search for within the collection
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: ingredient
+          description: an ingredient to search for within the results
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: cuisine
+          description: a type of cuisine to search for in the results
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: course
+          description: a specific course to search for in the results
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search successful, found results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '403':
+          description: Access forbidden. Likely attempting to access an unauthorized resource.
+        '404':
+          description: No matching content found.
+    post:
+      tags:
+        - users
+      summary: post a new recipe to a collection with ID {id}
+      operationId: postRecipeToCollection
+      description: |
+        Allows a user to post a new recipe to a collection they manage
+        (eventual support may exist for collaborative collections)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Recipe"
+      parameters:
+        - in: path
+          name: id
+          description: the ID of the collection to receive the new recipe
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: New content created
+        '400':
+          description: Bad request. Request body likely malformed.
+    delete:
+      tags:
+        - admins
+      summary: delete a collection by its ID
+      operationId: deleteCollectionByID
+      description: delete a collection by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the collection to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "Deletion successful, no content found."
+        '403':
+          description: Not authorized for this action.
+        '404':
+          description: No collection found with this ID.
+          
+  /grocerylist:
+    post:
+      tags:
+        - users
+      summary: create a new grocery list instance
+      operationId: createGroceryList
+      description: Creates a new grocery list instance associated with the currently logged-in user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroceryList"
+      responses:
+        '201':
+          description: New content created
+        '400':
+          description: Bad request. Request body likely malformed.
+          
+  /grocerylist/{id}:
+    get:
+      tags:
+        - users
+      summary: method for a user to get the data for their grocery list
+      operationId: getGroceryListByID
+      description: method for a user to get the data for their grocery list
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: the ID which corresponds to a user's grocery list instance
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/GroceryList"
+        '403':
+          description: Access forbidden.
+        '404':
+          description: No cart found with this ID.
+    put:
+      tags:
+        - users
+      summary: update details of a specific grocery list instance
+      operationId: updateGroceryListByID
+      description: modify a grocery list instance, update its details with the request body
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: the ID which corresponds to a user's grocery list instance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroceryList"
+      responses:
+        '200':
+          description: Updated successfully
+        '400':
+          description: Bad request
+        '403':
+          description: Access forbidden. Likely not authorized to view or modify this content.
+        '404':
+          description: No grocery list instance found with this ID.
+              
+components:
+  schemas:
+    User:
+      required:
+        - firstname
+        - lastname
+        - handle
+        - email
+        - password
+      properties:
+        firstname:
+          type: string
+          example: Mikayla
+        lastname:
+          type: string
+          example: Dobson
+        handle:
+          type: string
+          example: innocuoussymmetry
+        email:
+          type: string
+          example: mikaylaherself@gmail.com
+        password:
+          type: string
+          example: supercoolpassword
+      type: object
+    Recipe:
+      required:
+        - name
+        - preptime
+        - ingredients
+        - removed
+      properties:
+        name:
+          type: string
+          example: Pad Thai
+        description:
+          type: string
+          example: noodle dish
+        preptime:
+          type: string
+          example: '1 hour'
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ingredient"
+        removed:
+          type: boolean
+      type: object
+    Ingredient:
+      required:
+        - name
+        - removed
+      properties:
+        name:
+          type: string
+          example: Cilantro
+        description:
+          type: string
+          example: 'A common herb'
+        removed:
+          type: boolean
+          example: false
+      type: object
+    GroceryList:
+      required:
+        - user
+        - name
+        - removed
+      properties:
+        user:
+          type: object
+          items:
+            $ref: "#/components/schemas/User"
+        name:
+          type: string
+        recipes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Recipe"
+        removed:
+          type: boolean
