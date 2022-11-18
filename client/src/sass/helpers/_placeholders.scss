@@ -1,0 +1,15 @@
+@import "./variables";
+
+%variations {
+    &.inherit-background {
+        background-color: inherit;
+    }
+
+    &.c-papyrus {
+        color: $papyrus;
+    }
+
+    &.uppercase {
+        text-transform: uppercase;
+    }
+}

@@ -1,6 +1,9 @@
+@import "./helpers/variables"; 
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
   text-align: center;
+  background-color: $richblack;
 }

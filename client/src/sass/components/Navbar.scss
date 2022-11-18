@@ -1,0 +1,25 @@
+@import "../helpers/variables";
+
+#navbar {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    height: 4rem;
+
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: $richblack;
+    color: $papyrus;
+
+    .navbar-block {
+        display: inline-flex;
+        flex-direction: row nowrap;
+        align-items: center;
+        margin: 0 1rem;
+
+        > * {
+            margin: 0 12px;
+        }
+    }
+}

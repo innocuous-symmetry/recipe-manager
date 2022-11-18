@@ -1,0 +1,20 @@
+@import "../helpers/variables";
+@import "../helpers/placeholders";
+
+.ui-button {
+    background-color: $desertrose;
+    height: 1.75rem;
+    padding: 0 1rem;
+
+    border: transparent;
+    border-radius: 6px;
+
+    text-transform: uppercase;
+
+    &:hover {
+        background-color: $richblack;
+        transition: background-color 75ms ease;
+    }
+
+    @extend %variations;
+}
