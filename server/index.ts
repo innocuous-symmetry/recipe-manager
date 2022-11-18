@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config({ path: './.env' });
+
 import { loaders } from './loaders';
 
 const port = 8080;
@@ -10,6 +13,6 @@ app.use(cors());
     const app = express();
     await loaders(app);
     app.listen(port, () => {
-        console.log('listening on ' + port);
+        console.log('listening on port ' + port);
     })
 })();
