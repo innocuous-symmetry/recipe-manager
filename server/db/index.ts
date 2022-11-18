@@ -1,8 +1,6 @@
-import createConnectionPool, { sql } from "@databases/pg";
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
-const db = createConnectionPool(process.env.CONSTRING);
-
-export { sql };
-export default db;
+const pool = new Pool({ connectionString: process.env.CONSTRING });
+export default pool;

@@ -1,19 +1,28 @@
 import { IUser } from "../schemas";
-import { sql } from "@databases/pg";
 import pgPromise from "pg-promise";
-import db from "../db";
+import pool from '../db';
 
 const pgp = pgPromise({ capSQL: true });
 export class User {
     async getAllUsers() {
         // behind auth
         try {
-            const statement = sql`SELECT * FROM recipe`
-            const result = await db.query(statement);
-
-            console.log(result);
-            await db.dispose();
+            const statement = `SELECT * FROM recipin.appusers`;
+            const result = await pool.query(statement);
             return result;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    async post(data: IUser) {
+        const { firstname, lastname, handle, email, password } = data;
+        try {
+            const statement = `INSERT INTO recipin.appusers (firstname, lastname, handle, email, password) VALUES ($1, $2, $3, $4, $5)`;
+            const params = [firstname, lastname, handle, email, password];
+            const result = await pool.query(statement, params);
+            if (result.rows.length) return result.rows;
+            return null;
         } catch (error: any) {
             throw new Error(error);
         }

@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import { IUser } from '../schemas';
 import { User } from "../models/user";
 const UserInstance = new User();
 
@@ -8,6 +9,16 @@ export default class UserCtl {
             const users = await UserInstance.getAllUsers();
             if (!users) throw createError(404, "No users found");
             return users;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    async post(data: IUser) {
+        try {
+            const response = await UserInstance.post(data);
+            // if (!response) throw createError(400, "Bad request");
+            return response;
         } catch (error: any) {
             throw new Error(error);
         }
