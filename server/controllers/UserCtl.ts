@@ -8,7 +8,7 @@ export default class UserCtl {
             const users = await UserInstance.getAllUsers();
             if (!users) throw createError(404, "No users found");
             return users;
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(error);
         }
     }

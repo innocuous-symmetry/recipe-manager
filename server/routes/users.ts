@@ -8,10 +8,9 @@ export const userRoute = (app: Express) => {
     app.use('/users', router);
 
     // get all users
-    router.get('/', async (req, res, next) => {
-        await db.query(sql`SELECT * FROM users`).then(response => console.log(response));
-        // const data = userCtl.getAll();
-        // res.status(200).send(data);
+    router.get('/', async (req, res) => {
+        const data = userCtl.getAll();
+        res.status(200).send(data);
     })
 
     router.get('/hidden-thing', (req, res) => {

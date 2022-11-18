@@ -14,7 +14,7 @@ export class User {
             console.log(result);
             await db.dispose();
             return result;
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(error);
         }
     }

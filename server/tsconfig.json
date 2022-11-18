@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "es6",
-        "noImplicitAny": true,
+        "target": "es2017",
+        "module": "CommonJS",
         "moduleResolution": "node",
+        "esModuleInterop": true,
+        "noImplicitAny": true,
         "sourceMap": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
@@ -15,6 +17,10 @@
         }
     },
     "include": [
-        "./**/*"
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist/"
     ]
 }
