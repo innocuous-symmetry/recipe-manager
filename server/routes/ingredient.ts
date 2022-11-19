@@ -1,9 +1,8 @@
 import { Express, Router } from "express";
-
 const router = Router();
 
-export const groceryListRoute = (app: Express) => {
-    app.use('/grocery-list', router);
+export const ingredientRoute = (app: Express) => {
+    app.use('/ingredient', router);
 
     router.get('/', async (req, res, next) => {
 
@@ -13,11 +12,11 @@ export const groceryListRoute = (app: Express) => {
 
     })
 
-    router.post('/', async (req, res, next) => {
+    router.put('/:id', async (req, res, next) => {
 
     })
 
-    router.put('/:id', async (req, res, next) => {
+    router.post('/', async (req, res, next) => {
         
     })
 }
