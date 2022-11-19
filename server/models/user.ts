@@ -9,18 +9,6 @@ export class User {
         try {
             const statement = `SELECT * FROM recipin.appusers`;
             const result = await pool.query(statement);
-            return result;
-        } catch (error: any) {
-            throw new Error(error);
-        }
-    }
-
-    async post(data: IUser) {
-        const { firstname, lastname, handle, email, password } = data;
-        try {
-            const statement = `INSERT INTO recipin.appusers (firstname, lastname, handle, email, password) VALUES ($1, $2, $3, $4, $5)`;
-            const params = [firstname, lastname, handle, email, password];
-            const result = await pool.query(statement, params);
             if (result.rows.length) return result.rows;
             return null;
         } catch (error: any) {
@@ -28,28 +16,55 @@ export class User {
         }
     }
 
-    // async getOneByID(id: string): Promise<Array<IUser | null>> {
-    //     try {
-    //         const statement = `SELECT * FROM users WHERE id = $1;`;
-    //         const values = [id];
-    //         const result = await db.query(statement, values);
-    //         if (result.rows.length) return result.rows[0];
-    //         return [];
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
+    async getOneByID(id: string) {
+        try {
+            const statement = `SELECT * FROM recipin.appusers WHERE id = $1`;
+            const values = [id];
+            const result = await pool.query(statement, values);
+            if (result.rows.length) return result.rows[0];
+            return null;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
 
-    // async updateOneByID(id: string, data: IUser): Promise<IUser | null> {
-    //     try {
-    //         // does this formatting work?
-    //         const condition = pgp.as.format('WHERE id = $1 RETURNING *', id);
-    //         const statement = pgp.helpers.update(data, null, 'users') + condition;
-    //         const result = await db.query(statement);
-    //         if (result.rows.length) return result.rows[0];
-    //         return null;
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
+    async updateOneByID(id: string, data: IUser) {
+        try {
+            const statement = `
+                UPDATE recipin.appusers
+                SET firstname = $1,
+                    lastname = $2,
+                    handle = $3,
+                    email = $4,
+                    password = $5,
+                    active = $6
+                WHERE id = $7
+                RETURNING *;
+            `
+            const values = [
+                data.firstname, data.lastname, data.handle,
+                data.email, data.password, data.active, id
+            ]
+
+            const result = await pool.query(statement, values);
+            if (result.rows.length) return result.rows[0];
+            return null;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+
+    async post(data: IUser) {
+        const { firstname, lastname, handle, email, password, active } = data;
+        try {
+            const statement = `INSERT INTO recipin.appusers (firstname, lastname, handle, email, password, active) VALUES ($1, $2, $3, $4, $5, $6)`;
+            const params = [firstname, lastname, handle, email, password, active];
+            const result = await pool.query(statement, params);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
 }

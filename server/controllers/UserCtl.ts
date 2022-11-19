@@ -24,23 +24,23 @@ export default class UserCtl {
         }
     }
 
-    // async getOne(id: string) {
-    //     try {
-    //         const user = await UserInstance.getOneByID(id);
-    //         if (!user) throw createError(404, "User not found");
-    //         return user;
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
+    async getOne(id: string) {
+        try {
+            const user = await UserInstance.getOneByID(id);
+            if (!user) throw createError(404, "User not found");
+            return user;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
 
-    // async updateOne(id: string, data: IUser) {
-    //     try {
-    //         const result = await UserInstance.updateOneByID(id, data);
-    //         if (!result) throw createError(400, "Bad request");
-    //         return result;
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
+    async updateOne(id: string, data: IUser) {
+        try {
+            const result = await UserInstance.updateOneByID(id, data);
+            if (!result) throw createError(400, "Bad request");
+            return result;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
 }

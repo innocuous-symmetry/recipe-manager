@@ -8,8 +8,29 @@ export const userRoute = (app: Express) => {
 
     // get all users
     router.get('/', async (req, res) => {
-        const data = userCtl.getAll();
+        const data = await userCtl.getAll();
         res.status(200).send(data);
+    })
+
+    router.get('/:id', async (req, res, next) => {
+        const { id } = req.params;
+        try {
+            const result = await userCtl.getOne(id);
+            res.status(200).send(result);
+        } catch(e) {
+            next(e);
+        }
+    })
+
+    router.put('/:id', async (req, res, next) => {
+        const { id } = req.params;
+        const data = req.body;
+        try {
+            const result = await userCtl.updateOne(id, data);
+            res.status(200).send(result);
+        } catch(e) {
+            next(e);
+        }
     })
 
     router.post('/', async (req, res) => {
