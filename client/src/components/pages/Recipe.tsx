@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Page, Panel } from "../ui";
-
-interface IRecipe {
-    id: number
-    name: string
-    description: string
-    preptime: string
-    datecreated?: string
-    dateupdated?: string
-}
+import { IRecipe } from "../../util/types";
+import { getRecipeByID } from "../../util/apiUtils";
 
 export default function Recipe() {
-    const { id } = useParams();
     const [recipe, setRecipe] = useState<IRecipe>();
+    const { id } = useParams();
 
-    const getRecipeByID = async () => {
-        const result = await fetch('http://localhost:8080/recipe/' + id)
-        .then(response => response.json())
-        .then(data => setRecipe(data));
+    if (!id) {
+        return (
+            <Page>
+                <h1>404 | Not Found</h1>
+                <p>There's no content here! Technically, you shouldn't have even been able to get here.</p>
+                <p>So, kudos, I guess!</p>
+            </Page>
+        )
     }
 
     useEffect(() => {
-        getRecipeByID();
+        getRecipeByID(id);
     }, [])
 
     return (
