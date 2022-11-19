@@ -33,7 +33,7 @@ export interface ICollection {
 
 export interface IGroceryList {
     id: number
-    listname: string
+    name: string
     recipes?: IRecipe["id"][]
     active: boolean
     ownerid: IUser["id"]
