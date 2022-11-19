@@ -1,0 +1,12 @@
+@import "../helpers/variables";
+@import "../helpers/placeholders";
+
+.divider {
+    display: block;
+    height: 4px;
+    width: 75%;
+    border-radius: 35%;
+    background-color: $papyrus;
+
+    @extend %variations;
+}

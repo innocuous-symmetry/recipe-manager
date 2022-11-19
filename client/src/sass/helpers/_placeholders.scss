@@ -12,4 +12,10 @@
     &.uppercase {
         text-transform: uppercase;
     }
+
+    &.narrow-dividers {
+        .divider {
+            width: 45vw;
+        }
+    }
 }
