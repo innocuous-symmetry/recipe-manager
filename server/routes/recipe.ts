@@ -9,7 +9,6 @@ export const recipeRoute = (app: Express) => {
 
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
-        console.log('/recipe/' + id + ' called');
 
         try {
             const result = await recipectl.getOne(id);
