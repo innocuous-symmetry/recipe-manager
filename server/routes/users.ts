@@ -1,4 +1,3 @@
-import pool from '../db';
 import { Express, Router } from 'express';
 import UserCtl from '../controllers/UserCtl';
 const router = Router();
