@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IUserAuth } from "../../schemas";
+import { attemptLogin } from "../../util/apiUtils";
 import { Button, Page, Panel } from "../ui";
+import Form, { FormConfig } from "../ui/Form";
 
 export default function Login() {
+    const [form, setForm] = useState<JSX.Element[]>();
     const [input, setInput] = useState<IUserAuth>({
         email: '',
         password: ''
@@ -10,18 +13,31 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!input.email || !input.password) return;
+        const result = await attemptLogin(input);
+        console.log(result);
     }
+
+    const formConfig: FormConfig<IUserAuth> = {
+        parent: 'login',
+        keys: Object.keys(input),
+        labels: ["Email", "Password"],
+        dataTypes: Object.keys(input),
+        initialState: input,
+        setState: setInput,
+        submitButtonText: "Log In",
+        submitFunction: handleLogin
+    }
+
+    useEffect(() => {
+        setForm(new Form<IUserAuth>(formConfig).mount())
+    }, [])
 
     return (
         <Page>
             <h1>Hello! Nice to see you again.</h1>
 
             <Panel extraStyles="form-panel">
-                <label htmlFor="login-email">Email</label>
-                <input type="text" id="login-email" onChange={(e) => setInput({...input, email: e.target.value})}></input>
-                <label htmlFor="login-password">Password</label>
-                <input type="text" id="login-password" onChange={(e) => setInput({...input, password: e.target.value})}></input>
-                <Button onClick={() => {}}>Log In</Button>
+                { form }
             </Panel>
 
             <aside>Not registered yet? You can do that <a href="/register">here.</a></aside>

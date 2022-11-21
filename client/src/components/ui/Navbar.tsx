@@ -11,7 +11,7 @@ const Navbar = () => {
     const navbarLoggedIn = (
         <div id="navbar">
             <div className="navbar-block">
-                <h1>RECIPIN</h1>
+                <a href="/">RECIPIN</a>
             </div>
             <div className="navbar-block">
                 <p>Hi, {user}</p>
@@ -24,7 +24,7 @@ const Navbar = () => {
     const navbarNotLoggedIn = (
         <div id="navbar">
             <div className="navbar-block">
-                <h1>RECIPIN</h1>
+                <a href="/">RECIPIN</a>
             </div>
             <div className='navbar-block'>
                 <button>LOG IN</button>
@@ -35,7 +35,7 @@ const Navbar = () => {
     const navbarRegistering = (
         <div id="navbar">
             <div className="navbar-block">
-                <h1>RECIPIN</h1>
+                <a href="/">RECIPIN</a>
             </div>
             <div className="navbar-block">
                 <p>Hi, {user}</p>

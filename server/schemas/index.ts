@@ -1,5 +1,5 @@
 export interface IUser {
-    id: number
+    id?: number
     firstname: string
     lastname: string
     handle: string
@@ -9,34 +9,34 @@ export interface IUser {
 }
 
 export interface IRecipe {
-    id: number
+    id?: number
     name: string
     description?: string
     preptime: string
     removed: boolean
-    authoruserid: IUser["id"]
+    authoruserid?: IUser["id"]
 }
 
 export interface IIngredient {
-    id: number
+    id?: number
     name: string
     description?: string
 }
 
 export interface ICollection {
-    id: number
+    id?: number
     name: string
     active: string
     ismaincollection: boolean
-    ownerid: IUser["id"]
+    ownerid?: IUser["id"]
 }
 
 export interface IGroceryList {
-    id: number
+    id?: number
     name: string
     recipes?: IRecipe["id"][]
     active: boolean
-    ownerid: IUser["id"]
+    ownerid?: IUser["id"]
 }
 
 export interface IUserAuth {

@@ -12,6 +12,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     router.post('/login', passport.authenticate('local'), async (req, res, next) => {
         try {
             const data: IUserAuth = req.body;
+            console.log(data);
             const response = await AuthInstance.login(data);
             res.status(200).send(response);
         } catch(e) {

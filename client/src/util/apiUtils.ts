@@ -1,10 +1,15 @@
-import { IUser } from "../schemas";
+import { IUser, IUserAuth } from "../schemas";
 const API = import.meta.env.APISTRING || "http://localhost:8080/";
 
 // auth handlers
-export const attemptLogin = async (email: string, password: string) => {
-    const result = await fetch(API + 'auth/login/', { method: "POST" })
-        .then(response => response.json());
+export const attemptLogin = async (data: IUserAuth) => {
+    const result: Array<keyof IUser> | null = await fetch(API + 'auth/login/', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json());
     
     return result;
 }

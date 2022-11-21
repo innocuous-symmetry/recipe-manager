@@ -2,6 +2,8 @@
 @import "../helpers/placeholders";
 
 .Panel {
+    display: flex;
+    flex-direction: column;
     background-color: $papyrus;
     color: black;
     margin: 1rem 0;
