@@ -6,6 +6,6 @@ import path from 'path';
 
 const swaggerDocument = yaml.load(fs.readFileSync(path.resolve(__dirname, '../swagger.yaml'), 'utf-8'));
 
-export const swaggerLoader = (app: Express) => {
+export const swaggerLoader = async (app: Express) => {
     app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument!));
 }

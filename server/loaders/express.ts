@@ -5,7 +5,7 @@ import cors from 'cors';
 import session from 'express-session';
 import pgSessionStore from '../db/sessionStore';
 
-export const expressLoader = (app: Express) => {
+export const expressLoader = async (app: Express) => {
     app.use(cors());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));

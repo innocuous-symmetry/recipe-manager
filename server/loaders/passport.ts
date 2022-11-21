@@ -5,7 +5,7 @@ import AuthService from "../auth";
 import { IUserAuth } from "../schemas";
 const AuthInstance = new AuthService();
 
-export const passportApp = (app: Express) => {
+export const passportLoader = async (app: Express) => {
     app.use(passport.initialize());
     app.use(passport.session());
 
