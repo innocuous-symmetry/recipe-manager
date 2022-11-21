@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 import { IUserAuth } from "../../schemas";
 import { attemptLogin } from "../../util/apiUtils";
 import { Button, Page, Panel } from "../ui";
 import Form, { FormConfig } from "../ui/Form";
 
 export default function Login() {
+    const authContext = useAuthContext();
+    const navigate = useNavigate();
+
     const [form, setForm] = useState<JSX.Element[]>();
     const [input, setInput] = useState<IUserAuth>({
         email: '',
@@ -18,7 +23,8 @@ export default function Login() {
     const handleLogin = async () => {
         if (!input.email || !input.password) return;
         const result = await attemptLogin(input);
-        console.log(result);
+        authContext.user = result;
+        navigate('/');
     }
 
     const formConfig: FormConfig<IUserAuth> = {

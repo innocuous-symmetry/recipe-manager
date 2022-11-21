@@ -50,13 +50,15 @@ export class User {
                     handle = $3,
                     email = $4,
                     password = $5,
-                    active = $6
-                WHERE id = $7
+                    active = $6,
+                    datemodified = $7
+                WHERE id = $8
                 RETURNING *;
             `
             const values = [
                 data.firstname, data.lastname, data.handle,
-                data.email, data.password, data.active, id
+                data.email, data.password, data.active,
+                data.datemodified, id
             ]
 
             const result = await pool.query(statement, values);

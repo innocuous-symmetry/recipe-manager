@@ -1,22 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
+import { attemptLogout } from "../../util/apiUtils";
+import Button from "./Button";
 import "/src/sass/components/Navbar.scss";
 
 const Navbar = () => {
-    // state will be evaluated here to determine which navbar
-    // variant will be displayed
-
-    // this will come from state (session?)
+    const authContext = useAuthContext();
+    const navigate = useNavigate();
     const [user, setUser] = useState('Mikayla');
 
     const navbarLoggedIn = (
         <div id="navbar">
             <div className="navbar-block">
-                <a href="/">RECIPIN</a>
+                <a onClick={() => navigate('/')}>RECIPIN</a>
             </div>
             <div className="navbar-block">
-                <p>Hi, {user}</p>
+                <p>Hi, {authContext.user?.firstname}</p>
                 <span id="search-icon"></span>
-                <button onClick={() => console.log('menu button')}>...</button>
+                <Button onClick={attemptLogout}>Log Out</Button>
             </div>
         </div>
     )
@@ -24,10 +26,10 @@ const Navbar = () => {
     const navbarNotLoggedIn = (
         <div id="navbar">
             <div className="navbar-block">
-                <a href="/">RECIPIN</a>
+                <a onClick={() => navigate('/')}>RECIPIN</a>
             </div>
             <div className='navbar-block'>
-                <button>LOG IN</button>
+                <button onClick={() => navigate('/login')}>LOG IN</button>
             </div>
         </div>
     )
@@ -35,15 +37,19 @@ const Navbar = () => {
     const navbarRegistering = (
         <div id="navbar">
             <div className="navbar-block">
-                <a href="/">RECIPIN</a>
+                <a onClick={() => navigate('/')}>RECIPIN</a>
             </div>
             <div className="navbar-block">
-                <p>Hi, {user}</p>
+                <p>Hi, {authContext.user?.firstname}</p>
             </div>
         </div>
     )
 
-    return navbarLoggedIn;
+    if (authContext.user) {
+        return navbarLoggedIn;
+    } else {
+        return navbarNotLoggedIn;
+    }
 }
 
 export default Navbar;

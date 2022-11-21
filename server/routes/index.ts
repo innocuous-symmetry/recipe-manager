@@ -16,8 +16,4 @@ export const routes = async (app: Express, passport: PassportStatic) => {
     collectionRoute(app);
     ingredientRoute(app);
     groceryListRoute(app);
-
-    app.get('/hello', (req, res) => {
-        res.send({ message: "hello from the server!!" });
-    })
 }

@@ -39,8 +39,25 @@ export default class AuthService {
 
     }
 
-    async login(data: IUserAuth): Promise<Array<keyof IUser>> {
-        return [];
+    async login(data: IUserAuth) {
+        const { email, password } = data;
+
+        try {
+            const user = await UserInstance.getOneByEmail(email);
+            if (!user) return { ok: false, user: null }
+            const match = await bcrypt.compare(password, user.password);
+            console.log(match);
+            return {
+                ok: match,
+                user: match ? user : null
+            }
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async logout() {
+
     }
 
     // methods for Google OAuth

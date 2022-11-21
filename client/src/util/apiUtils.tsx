@@ -1,9 +1,17 @@
 import { IUser, IUserAuth } from "../schemas";
 const API = import.meta.env.APISTRING || "http://localhost:8080/";
 
+export const getBaseAPI = async () => {
+    return fetch(API);
+}
+
+export const getCookies = async () => {
+    return fetch(API + 'auth');
+}
+
 // auth handlers
 export const attemptLogin = async (data: IUserAuth) => {
-    const result: Array<keyof IUser> | null = await fetch(API + 'auth/login/', {
+    const success = await fetch(API + 'auth/login/', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -11,7 +19,13 @@ export const attemptLogin = async (data: IUserAuth) => {
             body: JSON.stringify(data)
         }).then(response => response.json());
     
-    return result;
+    if (success) return success;
+    return null;
+}
+
+export const attemptLogout = async () => {
+    const response = await fetch(API + 'auth').then(response => response.json());
+    return response;
 }
 
 export const attemptRegister = async (data: IUser) => {

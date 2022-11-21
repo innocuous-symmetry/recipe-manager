@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Browser from './components/pages/Browser';
 import Collection from './components/pages/Collection';
@@ -6,9 +7,15 @@ import Profile from './components/pages/Profile';
 import Recipe from './components/pages/Recipe';
 import Register from './components/pages/Register';
 import Welcome from './components/pages/Welcome';
+import { useAuthContext } from './context/AuthContext';
 import './sass/App.scss'
 
 function App() {
+  const authContext = useAuthContext();
+
+  useEffect(() => {
+    console.log(fetch("http://localhost:8080/auth").then(res => res.json()).then(x => console.log(x)));
+  })
 
   return (
     <BrowserRouter>

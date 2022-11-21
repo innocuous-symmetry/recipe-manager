@@ -18,4 +18,10 @@
             width: 45vw;
         }
     }
+
+    &.flexrow {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+    }
 }

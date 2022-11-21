@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 import { Button, Page, Panel } from "../ui"
 import Divider from "../ui/Divider";
 
 const Welcome = () => {
-    const [authorized, setAuthorized] = useState(false);
+    const authContext = useAuthContext();
     const navigate = useNavigate();
 
     const authUserActions = (
-        <Panel extraStyles="inherit-background c-papyrus uppercase">
-            <Button>Browse Recipes</Button>
-            <Button>Collections</Button>
-            <Button>Grocery List</Button>
+        <Panel extraStyles="inherit-background c-papyrus uppercase flexrow">
+            <Button onClick={() => navigate('/explore')}>Browse Recipes</Button>
+            <Button onClick={() => navigate('/subscriptions')}>Subscriptions</Button>
+            <Button onClick={() => navigate('/grocery-lists')}>Grocery Lists</Button>
         </Panel>
     )
 
@@ -42,7 +43,7 @@ const Welcome = () => {
 
             <Divider />
 
-            { authorized ? authUserActions : callToRegister }
+            { authContext.user ? authUserActions : callToRegister }
         </Page>
     )
 }
