@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 } from "uuid";
 import { IUser } from "../../../schemas";
 import { attemptRegister } from "../../../util/apiUtils";
-import { Page, Panel } from "../../ui";
+import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";
 import Form, { FormConfig } from "../../ui/Form";
 
@@ -17,20 +17,33 @@ export default function AboutYou() {
         active: true
     });
 
+    const getFormState = useCallback((received: IUser) => {
+        setInput(received);
+    }, []);
+
     const formConfig: FormConfig<IUser> = {
         parent: "register",
-        keys: Object.keys(input),
+        keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
         initialState: input,
-        labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password", "Active?"],
-        dataTypes: ['text', 'text', 'text', 'email', 'password', 'text'],
-        setState: setInput,
-        submitButtonText: 'Register',
-        submitFunction: () => console.log(input)
+        labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password"],
+        dataTypes: ['text', 'text', 'text', 'email', 'password'],
+        getState: getFormState
     }
 
     useEffect(() => {
         setForm(new Form<IUser>(formConfig).mount());
     }, [])
+
+    const handleRegister = async () => {
+        for (let key of Object.keys(input)) {
+            if (!input[key as keyof IUser]) return;
+        }
+
+        console.log(input);
+
+        const result = await attemptRegister(input);
+        console.log(result);
+    }
 
     return (
         <Page>
@@ -42,6 +55,7 @@ export default function AboutYou() {
 
             <Panel extraStyles="form-panel two-columns">
                 { form }
+                <Button onClick={handleRegister}>Register</Button>
             </Panel>
         </Page>
     )

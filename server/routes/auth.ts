@@ -23,6 +23,8 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     router.post('/register', async (req, res, next) => {
         try {
             const data: IUser = req.body;
+            const now = new Intl.DateTimeFormat('en-US', {})
+
             const response = await AuthInstance.register(data);
             res.status(200).send(response);
         } catch(e) {

@@ -15,8 +15,13 @@ export const attemptLogin = async (data: IUserAuth) => {
 }
 
 export const attemptRegister = async (data: IUser) => {
-    const result = await fetch(API + 'auth/register/', { method: "POST" })
-        .then(response => response.json());
+    const result = await fetch(API + 'auth/register/', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json());
     
     return result;
 }

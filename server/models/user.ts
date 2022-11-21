@@ -1,6 +1,7 @@
 import { IUser } from "../schemas";
 import pgPromise from "pg-promise";
 import pool from '../db';
+import now from "../util/now";
 
 const pgp = pgPromise({ capSQL: true });
 export class User {
@@ -67,13 +68,22 @@ export class User {
     }
 
 
-    async post(data: IUser): Promise<Array<any> | null> {
+    async post(data: IUser) {
         const { firstname, lastname, handle, email, password, active } = data;
+        const datecreated = now;
+        const datemodified = now;
+
         try {
-            const statement = `INSERT INTO recipin.appusers (firstname, lastname, handle, email, password, active) VALUES ($1, $2, $3, $4, $5, $6)`;
-            const params = [firstname, lastname, handle, email, password, active];
+            const statement = `
+                INSERT INTO recipin.appusers (
+                    firstname, lastname, handle, email, password, 
+                    active, datecreated, datemodified) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING *;
+            `;
+            const params = [firstname, lastname, handle, email, password, active, datecreated, datemodified];
             const result = await pool.query(statement, params);
-            if (result.rows.length) return result.rows as Array<keyof IUser>;
+            if (result.rows.length) return result.rows;
             return null;
         } catch (error: any) {
             throw new Error(error);

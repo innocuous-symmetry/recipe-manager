@@ -2,36 +2,37 @@ import { IUser, IUserAuth } from "../schemas";
 import { User } from "../models/user";
 import createError from "http-errors";
 import bcrypt from "bcrypt";
-import { QueryResult } from "pg";
+import now from "../util/now";
 
 const UserInstance = new User();
 
 export default class AuthService {
     // methods for local strategies
-    async register(data: IUser): Promise<Array<keyof IUser>> {
+    async register(data: IUser) {
         const { email, password } = data;
+
+        data.datecreated = now;
+        data.datemodified = now;
+        data.active = true;
+
         try {
             const user = await UserInstance.getOneByEmail(email);
             if (user) throw createError('409', 'Email already in use');
-
-            let createdUser: IUser | null = null;
             
-            bcrypt.genSalt((err, salt) => {
+            bcrypt.genSalt(10, (err, salt) => {
                 if (err) throw err;
-                bcrypt.hash(password, salt, (err, hash) => {
+                bcrypt.hash(password, salt, async (err, hash) => {
                     if (err) throw err;
-
-                    createdUser = {
+                    const newData = {
                         ...data,
                         password: hash
                     }
+                    
+                    const result = await UserInstance.post(newData);
+                    if (result) console.log(result);
+                    return result;
                 })
             })
-
-            if (!createdUser) throw createError('400', 'Error creating user');
-            const result = await UserInstance.post(createdUser);
-            if (!result) throw createError('400', 'Error creating user');
-            return result;
         } catch (e: any) {
             throw new Error(e);
         }

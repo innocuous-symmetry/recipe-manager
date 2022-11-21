@@ -6,7 +6,7 @@ export default async function populate() {
 
     const populateUsers = `
         INSERT INTO recipin.appusers
-            (firstname, lastname, handle, email, password, active, dateregistered, datelastactive)
+            (firstname, lastname, handle, email, password, active, datecreated, datemodified)
         VALUES
             ('Mikayla', 'Dobson', 'innocuoussymmetry', 'mikaylaherself@gmail.com', 'password1', true, $1, $1),
             ('Emily', 'Dobson', 'emjdobson', 'emily@email.com', 'password2', true, $1, $1),
@@ -68,9 +68,20 @@ export default async function populate() {
         ;
     `
 
+    const populateComments = `
+        INSERT INTO recipin.cmp_recipecomments
+            (commentbody, datecreated, recipeid, authorid)
+        VALUES
+            ('Very cool recipe!', $1, 2, 2),
+            ('I love making this one', $1, 1, 2),
+            ('Thanks for sharing this', $1, 1, 4)
+        ;
+    `
+
     const allStatements: Array<string> = [
         populateUsers, populateRecipes, populateCollection,
-        populateIngredients, populateGroceryList, populateFriendships
+        populateIngredients, populateGroceryList, populateFriendships,
+        populateComments
     ];
 
     await pool.query(setup);
