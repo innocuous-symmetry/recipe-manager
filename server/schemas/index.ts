@@ -38,3 +38,8 @@ export interface IGroceryList {
     active: boolean
     ownerid: IUser["id"]
 }
+
+export interface IUserAuth {
+    email: string
+    password: string
+}

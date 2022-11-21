@@ -28,6 +28,18 @@ export class User {
         }
     }
 
+    async getOneByEmail(email: string) {
+        try {
+            const statement = `SELECT * FROM recipin.appusers WHERE email = $1`;
+            const result = await pool.query(statement, [email]);
+            if (result.rows.length) return result.rows[0];
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+            
+        }
+    }
+
     async updateOneByID(id: string, data: IUser) {
         try {
             const statement = `
@@ -55,13 +67,13 @@ export class User {
     }
 
 
-    async post(data: IUser) {
+    async post(data: IUser): Promise<Array<any> | null> {
         const { firstname, lastname, handle, email, password, active } = data;
         try {
             const statement = `INSERT INTO recipin.appusers (firstname, lastname, handle, email, password, active) VALUES ($1, $2, $3, $4, $5, $6)`;
             const params = [firstname, lastname, handle, email, password, active];
             const result = await pool.query(statement, params);
-            if (result.rows.length) return result.rows;
+            if (result.rows.length) return result.rows as Array<keyof IUser>;
             return null;
         } catch (error: any) {
             throw new Error(error);
