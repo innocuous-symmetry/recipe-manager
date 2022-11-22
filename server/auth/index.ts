@@ -56,10 +56,6 @@ export default class AuthService {
         }
     }
 
-    async logout() {
-
-    }
-
     // methods for Google OAuth
     async googleRegister() {
 

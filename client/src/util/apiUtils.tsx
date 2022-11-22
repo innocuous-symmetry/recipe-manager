@@ -24,8 +24,8 @@ export const attemptLogin = async (data: IUserAuth) => {
 }
 
 export const attemptLogout = async () => {
-    const response = await fetch(API + 'auth').then(response => response.json());
-    return response;
+    const result = await fetch(API + 'auth/logout', { method: "DELETE" }).then(response => response.json());
+    return result;
 }
 
 export const attemptRegister = async (data: IUser) => {

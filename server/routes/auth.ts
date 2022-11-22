@@ -39,14 +39,17 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
         }
     })
 
-    router.post('/logout', passport.authenticate('local', async (req, res, next) => {
+    router.delete('/logout', async (req, res, next) => {
         try {
-            if (req.session) req.session.destroy();
-            res.sendStatus(200);
+            req.session.destroy((err) => {
+                if (err) throw err;
+            })
+            res.clearCookie('userid');
+            res.status(204).send({ success: true });
         } catch(e) {
             next(e);
         }
-    }));
+    });
 
     router.post('/register', async (req, res, next) => {
         try {
