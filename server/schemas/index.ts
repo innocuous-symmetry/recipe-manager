@@ -16,7 +16,7 @@ export interface IUser extends DBEntity, HasHistory, CanDeactivate {
     lastname: string
     handle: string
     email: string
-    password: string
+    password?: string
 }
 
 export interface IUserAuth {

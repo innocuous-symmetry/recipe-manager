@@ -10,16 +10,11 @@ export const passportLoader = async (app: Express) => {
     app.use(passport.session());
 
     passport.serializeUser((user, done) => {
-        process.nextTick(() => {
-            done(null, user);
-        })
+        done(null, user);
     })
 
     passport.deserializeUser((user: IUserAuth, done) => {
-        process.nextTick(async () => {
-            const userData = await AuthInstance.login(user);
-            return userData ? done(null, userData) : done(null, false);
-        })
+        done(null, user);
     })
 
     // sign in method with passport local strategy

@@ -21,7 +21,7 @@ export default class AuthService {
             
             bcrypt.genSalt(10, (err, salt) => {
                 if (err) throw err;
-                bcrypt.hash(password, salt, async (err, hash) => {
+                bcrypt.hash(password!, salt, async (err, hash) => {
                     if (err) throw err;
                     const newData = {
                         ...data,

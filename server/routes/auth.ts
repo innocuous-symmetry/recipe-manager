@@ -1,9 +1,11 @@
-import { Express, Router } from "express"
+import { Express, Request, Router } from "express"
 import { PassportStatic } from "passport";
 import { IUser, IUserAuth } from "../schemas";
 import AuthService from "../auth";
 import { UserCtl } from "../controllers";
 import now from "../util/now";
+import { checkAccess, restrictAccess } from "../auth/middlewares";
+import { Session } from "express-session";
 const AuthInstance = new AuthService();
 const UserControl = new UserCtl();
 
@@ -12,25 +14,37 @@ const router = Router();
 export const authRoute = (app: Express, passport: PassportStatic) => {
     app.use('/auth', router);
 
-    router.get('/', (req, res) => {
-        const data = {
-            session: req.session,
-            user: req.user
+    router.get('/', checkAccess, (req, res, next) => {
+        // @ts-ignore: does not recognize structure of req.user
+        const user = req.user?.user;
+        const userData: IUser = {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            handle: user.handle,
+            email: user.email
         }
-        res.send(JSON.stringify(data));
+        res.send({ user: userData });
+    })
+
+    router.get('/protected', restrictAccess, (req, res, next) => {
+        res.status(200).send({ message: "Cool restricted content!" });
     })
 
     router.post('/login', passport.authenticate('local'), async (req, res, next) => {
         try {
             const data: IUserAuth = req.body;
             const response = await AuthInstance.login(data);
-            console.log(response);
 
             if (response.ok) {
-                req.user = response.user;
-                await UserControl.updateOne(response.user.id, { ...response.user, datemodified: now })
+                req.logIn(response.user, (error: any) => {
+                    if (error) throw error;
+                    console.log('login successful');
+                })
+                // const { id, email, handle, firstname, lastname } = response.user;
+                // await UserControl.updateOne(response.user.id, { ...response.user, datemodified: now })
+                // res.status(200).send({ id: id, handle: handle, firstname: firstname, lastname: lastname });
                 res.cookie('userid', response.user.id, { maxAge: 1000 * 60 * 60 * 24 * 7 });
-                res.status(200).send(response.user);
+                res.end();
             } else {
                 res.status(401).send({ message: "Login unsuccessful" });
             }
@@ -45,7 +59,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
                 if (err) throw err;
             })
             res.clearCookie('userid');
-            res.status(204).send({ success: true });
+            res.status(204).send({ message: "Logout successful", success: true });
         } catch(e) {
             next(e);
         }
