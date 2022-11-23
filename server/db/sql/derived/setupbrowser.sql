@@ -1,0 +1,5 @@
+-- TO DO
+-- run a query that selects:
+-- 1) all recipes from a user's own collection
+-- 2) all recipes from user's subscribed collections
+-- 3) all matching a given user id

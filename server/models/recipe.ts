@@ -17,6 +17,14 @@ export class Recipe {
         }
     }
 
+    async getAllByUserID(id: string) {
+        try {
+            // to do: use setupbrowser.sql to setup the recipe browser
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async updateOneByID(id: string, data: IRecipe) {
         const { name, description, preptime } = data;
         try {
