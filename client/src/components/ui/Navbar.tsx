@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
+import { IUser } from "../../schemas";
 import { attemptLogout } from "../../util/apiUtils";
 import Button from "./Button";
 import "/src/sass/components/Navbar.scss";
 
 const Navbar = () => {
-    const authContext = useAuthContext();
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [user, setUser] = useState('Mikayla');
 
     const navbarLoggedIn = (
         <div id="navbar">
@@ -16,8 +16,10 @@ const Navbar = () => {
                 <a onClick={() => navigate('/')}>RECIPIN</a>
             </div>
             <div className="navbar-block">
-                <p>Hi, {authContext.user?.firstname}</p>
+                <p>Hi, {user?.firstname}</p>
                 <span id="search-icon"></span>
+                <Button onClick={() => console.log(user)}>Auth Context?</Button>
+                <Button onClick={() => navigate('/profile')}>Profile</Button>
                 <Button onClick={attemptLogout}>Log Out</Button>
             </div>
         </div>
@@ -40,16 +42,12 @@ const Navbar = () => {
                 <a onClick={() => navigate('/')}>RECIPIN</a>
             </div>
             <div className="navbar-block">
-                <p>Hi, {authContext.user?.firstname}</p>
+                <p>Hi, {user?.firstname}</p>
             </div>
         </div>
     )
 
-    if (authContext.user) {
-        return navbarLoggedIn;
-    } else {
-        return navbarNotLoggedIn;
-    }
+    return user ? navbarLoggedIn : navbarNotLoggedIn;
 }
 
 export default Navbar;

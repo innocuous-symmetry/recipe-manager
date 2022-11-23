@@ -1,9 +1,9 @@
-interface HasHistory {
+interface HasHistory extends DBEntity {
     datecreated?: string
     datemodified?: string
 }
 
-interface CanDeactivate {
+interface CanDeactivate extends DBEntity {
     active?: boolean
 }
 
@@ -11,7 +11,7 @@ interface DBEntity {
     id?: number
 }
 
-export interface IUser extends DBEntity, HasHistory, CanDeactivate {
+export interface IUser extends HasHistory, CanDeactivate {
     firstname: string
     lastname: string
     handle: string
@@ -24,25 +24,25 @@ export interface IUserAuth {
     password: string
 }
 
-export interface IRecipe extends DBEntity, HasHistory, CanDeactivate {
+export interface IRecipe extends HasHistory, CanDeactivate {
     name: string
     description?: string
     preptime: string
     authoruserid?: IUser["id"]
 }
 
-export interface IIngredient extends DBEntity, HasHistory {
+export interface IIngredient extends HasHistory {
     name: string
     description?: string
 }
 
-export interface ICollection extends DBEntity, HasHistory, CanDeactivate {
+export interface ICollection extends HasHistory, CanDeactivate {
     name: string
     ismaincollection: boolean
     ownerid?: IUser["id"]
 }
 
-export interface IGroceryList extends DBEntity, HasHistory, CanDeactivate {
+export interface IGroceryList extends HasHistory, CanDeactivate {
     name: string
     ownerid?: IUser["id"]
 }

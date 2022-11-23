@@ -2,11 +2,11 @@ import { createContext, useContext } from "react";
 import { IUser } from "../schemas";
 
 
-interface IAuthContext {
+export interface IAuthContext {
     user?: IUser
 }
 
-const defaultValue: IAuthContext = {
+export const defaultValue: IAuthContext = {
     user: undefined,
 }
 

@@ -4,7 +4,7 @@ import { IUser, IUserAuth } from "../schemas";
 import AuthService from "../auth";
 import { UserCtl } from "../controllers";
 import now from "../util/now";
-import { checkAccess, restrictAccess } from "../auth/middlewares";
+import { restrictAccess } from "../auth/middlewares";
 import { Session } from "express-session";
 const AuthInstance = new AuthService();
 const UserControl = new UserCtl();
@@ -14,20 +14,17 @@ const router = Router();
 export const authRoute = (app: Express, passport: PassportStatic) => {
     app.use('/auth', router);
 
-    router.get('/', checkAccess, (req, res, next) => {
-        if (req.isAuthenticated()) {
-            // @ts-ignore: does not recognize structure of req.user
-            const user = req.user?.user;
-            const userData: IUser = {
-                firstname: user.firstname,
-                lastname: user.lastname,
-                handle: user.handle,
-                email: user.email
-            }
-            res.send({ user: userData });
-        } else {
-            res.status(403).send({ message: "Access forbidden" });
+    router.get('/', restrictAccess, (req, res, next) => {
+        // @ts-ignore: does not recognize structure of req.user
+        const user = req.user?.user;
+        const userData: IUser = {
+            id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            handle: user.handle,
+            email: user.email
         }
+        res.send({ user: userData });
     })
 
     router.get('/protected', restrictAccess, (req, res, next) => {
