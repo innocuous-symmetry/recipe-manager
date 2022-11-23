@@ -69,7 +69,7 @@ export default async function populate() {
     `
 
     const populateComments = `
-        INSERT INTO recipin.cmp_recipecomments
+        INSERT INTO recipin.recipecomments
             (commentbody, datecreated, recipeid, authorid)
         VALUES
             ('Very cool recipe!', $1, 2, 2),
@@ -90,8 +90,9 @@ export default async function populate() {
         try {
             await pool.query(s, [now]);
         } catch(e: any) {
+            console.error(e);
             console.log('Last executed: ' + s);
-            throw new Error(e);
+            process.exit(0);
         }
     }
 
