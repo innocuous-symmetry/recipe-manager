@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { IUser } from './schemas';
+import { useEffect, useState } from 'react';
+import { AuthContext, IAuthContext } from './context/AuthContext';
 import { checkCredientials } from './util/apiUtils';
-import { AuthContext, defaultValue, IAuthContext } from './context/AuthContext';
+import Subscriptions from './components/pages/Subscriptions/Subscriptions';
 import Browser from './components/pages/Browser';
 import Collection from './components/pages/Collection';
 import Login from './components/pages/Login';
@@ -30,13 +30,15 @@ function App() {
       <AuthContext.Provider value={ user }>
         <div className="App">
           <Routes>
-            <Route path="/"               element={<Welcome />} />
-            <Route path="/register"       element={<Register />} />
-            <Route path="/login"          element={<Login />} />
-            <Route path="/profile"        element={<Profile />} />
-            <Route path="/collection"     element={<Collection />} />
-            <Route path="/explore"        element={<Browser />} />
-            <Route path="/recipe/:id"     element={<Recipe />} />
+            <Route path="/"                       element={<Welcome />} />
+            <Route path="/register"               element={<Register />} />
+            <Route path="/login"                  element={<Login />} />
+            <Route path="/profile"                element={<Profile />} />
+            <Route path="/collection"             element={<Collection />} />
+            <Route path="/explore"                element={<Browser />} />
+            <Route path="/recipe/:id"             element={<Recipe />} />
+            <Route path="/subscriptions"          element={<Subscriptions />} />
+            <Route path="/subscriptions/:id"      element={<Collection />} />
           </Routes>
         </div>
       </AuthContext.Provider>

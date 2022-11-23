@@ -1,14 +1,40 @@
-import { Page } from "../ui";
+import { useAuthContext } from "../../context/AuthContext";
+import Protect from "../../util/Protect";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
 
-export default function Collection() {
+const Collection = () => {
+    const [isDefault, setIsDefault] = useState(true);
+    const { user } = useAuthContext();
+    const { id } = useParams();
+
+    if (id) {
+        setIsDefault(false);
+    }
+
     return (
-        <Page>
+        <Protect>
+            { isDefault ?
+
+            <>
             <h1>Mikayla's collection</h1>
             <p>37 recipes</p>
             <p>71 ingredients</p>
             <p>11 types of cuisine</p>
+            </>
+
+            :
+
+            <>
+
+            </>
+
+            }
+            
 
             {/* recipes */}
-        </Page>
+        </Protect>
     )
 }
+
+export default Collection;

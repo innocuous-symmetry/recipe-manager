@@ -37,6 +37,7 @@ export default function Login() {
     }
 
     useEffect(() => {
+        if (authContext) navigate('/');
         setForm(new Form<IUserAuth>(formConfig).mount())
     }, [])
 

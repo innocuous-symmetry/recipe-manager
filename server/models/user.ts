@@ -96,7 +96,7 @@ export class User {
 
     async getFriends(id: string) {
         try {
-            const sql = fs.readFileSync(appRoot + '/db/sql/friendships.sql').toString();
+            const sql = fs.readFileSync(appRoot + '/db/sql/derived/friendships.sql').toString();
             const result = await pool.query(sql, [id]);
             if (result.rows.length) return result.rows;
             return null;
