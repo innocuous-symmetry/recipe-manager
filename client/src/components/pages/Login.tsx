@@ -7,23 +7,25 @@ import { Button, Page, Panel } from "../ui";
 import Form, { FormConfig } from "../ui/Form";
 
 export default function Login() {
+    // setup and local state
     const authContext = useAuthContext();
     const navigate = useNavigate();
-
     const [form, setForm] = useState<JSX.Element[]>();
     const [input, setInput] = useState<IUserAuth>({
         email: '',
         password: ''
     })
 
+    // retrieve and store state from form
     const getFormState = useCallback((received: IUserAuth) => {
         setInput(received);
     }, [])
 
+
     const handleLogin = async () => {
         if (!input.email || !input.password) return;
         const result = await attemptLogin(input);
-        authContext.user = result;
+        authContext.user = result.user;
         navigate('/');
     }
 
@@ -37,7 +39,7 @@ export default function Login() {
     }
 
     useEffect(() => {
-        if (authContext) navigate('/');
+        if (authContext.user) navigate('/');
         setForm(new Form<IUserAuth>(formConfig).mount())
     }, [])
 

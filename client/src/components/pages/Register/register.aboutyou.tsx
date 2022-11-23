@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 import { IUser } from "../../../schemas";
-import { attemptRegister } from "../../../util/apiUtils";
+import { attemptLogin, attemptRegister } from "../../../util/apiUtils";
 import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";
 import Form, { FormConfig } from "../../ui/Form";
 
 export default function AboutYou() {
+    const navigate = useNavigate();
     const [form, setForm] = useState<JSX.Element[]>([<p key={v4()}>Loading content...</p>]);
     const [input, setInput] = useState<IUser>({
         firstname: '',
@@ -35,14 +37,8 @@ export default function AboutYou() {
     }, [])
 
     const handleRegister = async () => {
-        for (let key of Object.keys(input)) {
-            if (!input[key as keyof IUser]) return;
-        }
-
-        console.log(input);
-
         const result = await attemptRegister(input);
-        console.log(result);
+        await attemptLogin({ email: result.email, password: result.password }).then(() => navigate('/'));
     }
 
     return (

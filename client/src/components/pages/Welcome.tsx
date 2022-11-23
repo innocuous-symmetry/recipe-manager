@@ -51,7 +51,7 @@ const Welcome = () => {
 
             <Divider />
 
-            { authContext.user ? authUserActions : callToRegister }
+            { authContext && authContext.user ? authUserActions : callToRegister }
         </Page>
     )
 }

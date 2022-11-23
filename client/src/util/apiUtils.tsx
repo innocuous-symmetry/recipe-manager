@@ -1,4 +1,5 @@
 import { IUser, IUserAuth } from "../schemas";
+import { IAuthContext } from "../context/AuthContext";
 import axios from "axios";
 const API = import.meta.env.APISTRING || "http://localhost:8080";
 
@@ -10,7 +11,7 @@ export const getBaseAPI = async () => {
 }
 
 // auth handlers
-export const attemptLogin = async (data: IUserAuth) => {
+export const attemptLogin = async (data: IUserAuth): Promise<IAuthContext> => {
     try {
         const response = await axios({
             method: "POST",
@@ -18,7 +19,8 @@ export const attemptLogin = async (data: IUserAuth) => {
             data: data
         });
 
-        return Promise.resolve(response.data);
+        const result: Promise<IAuthContext> = Promise.resolve(response.data);
+        return result;
     } catch (e: any) {
         throw e;
     }
@@ -43,6 +45,8 @@ export const attemptLogout = async () => {
             method: "DELETE",
             url: API + '/auth/logout',
         })
+
+        return true;
     } catch (e: any) {
         throw e;
     }

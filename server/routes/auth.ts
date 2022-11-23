@@ -44,7 +44,8 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
                 // const { id, email, handle, firstname, lastname } = response.user;
                 // await UserControl.updateOne(response.user.id, { ...response.user, datemodified: now })
                 // res.status(200).send({ id: id, handle: handle, firstname: firstname, lastname: lastname });
-                res.cookie('userid', response.user.id, { maxAge: 1000 * 60 * 60 * 24 * 7 });
+                res.cookie('userid', response.user.id, { maxAge: 1000 * 60 * 60 * 24 });
+                res.send(response);
                 res.end();
             } else {
                 res.status(401).send({ message: "Login unsuccessful" });
