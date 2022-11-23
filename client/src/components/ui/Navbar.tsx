@@ -7,7 +7,7 @@ import Button from "./Button";
 import "/src/sass/components/Navbar.scss";
 
 const Navbar = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuthContext();
     const navigate = useNavigate();
 
     const navbarLoggedIn = (

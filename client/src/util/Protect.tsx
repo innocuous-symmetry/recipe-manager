@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button, Page } from "../components/ui";
 import Divider from "../components/ui/Divider";
 import { AuthContext } from "../context/AuthContext";
+import { ProtectPortal } from "./types";
 
-export default function Protect({ children = <></> }) {
-    const { user } = useContext(AuthContext);
+const Protect: ProtectPortal = ({ children = <></> }) => {
+    const { user } = useAuthContext();
     const navigate = useNavigate();
 
     if (!user) {
@@ -27,3 +28,5 @@ export default function Protect({ children = <></> }) {
         )
     }
 }
+
+export default Protect;

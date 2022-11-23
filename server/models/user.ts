@@ -1,7 +1,9 @@
 import { IUser } from "../schemas";
+import fs from "fs";
 import pgPromise from "pg-promise";
 import pool from '../db';
 import now from "../util/now";
+import { appRoot } from "..";
 
 const pgp = pgPromise({ capSQL: true });
 export class User {
@@ -89,6 +91,17 @@ export class User {
             return null;
         } catch (error: any) {
             throw new Error(error);
+        }
+    }
+
+    async getFriends(id: string) {
+        try {
+            const sql = fs.readFileSync(appRoot + '/db/sql/friendships.sql').toString();
+            const result = await pool.query(sql, [id]);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
         }
     }
 }

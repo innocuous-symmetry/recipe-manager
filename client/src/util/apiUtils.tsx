@@ -87,6 +87,13 @@ export const getAllRecipes = async () => {
     } catch (e: any) {
         throw e;
     }
-    // const result = await fetch(API + 'recipe').then(response => response.json());
-    // return result;
+}
+
+// for user friendships
+export const getFriendships = async () => {
+    try {
+        
+    } catch (e: any) {
+        throw e;
+    }
 }

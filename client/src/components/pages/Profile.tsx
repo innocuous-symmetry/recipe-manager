@@ -7,13 +7,14 @@ import Protect from "../../util/Protect";
 
 export default function Profile() {
     const [message, setMessage] = useState<JSX.Element>();
-    const { user } = useContext(AuthContext);
+    // const { user } = useAuthContext();
+    const { user } = useAuthContext();
     const navigate = useNavigate();
 
     return (
         <Protect>
             <div className="profile-authenticated">
-                <h1>{user!.firstname}'s Profile</h1>
+                <h1>{user?.firstname}'s Profile</h1>
                 <p>Things and stuff!</p>
             </div>
         </Protect>

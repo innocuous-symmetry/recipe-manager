@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,7 +10,10 @@ const port = 8080;
 const app = express();
 app.use(cors());
 
+export const appRoot = path.resolve(__dirname);
+
 (async function() {
+
     const app = express();
     await loaders(app);
     app.listen(port, () => {

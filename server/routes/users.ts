@@ -12,6 +12,7 @@ export const userRoute = (app: Express) => {
         res.status(200).send(data);
     })
 
+    // get, put by id
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
         try {
@@ -33,13 +34,21 @@ export const userRoute = (app: Express) => {
         }
     })
 
+    // create user
     router.post('/', async (req, res) => {
         const data = req.body;
         const response = userCtl.post(data);
         res.status(200).send(response);
     })
 
-    router.get('/hidden-thing', (req, res) => {
-        res.send('does this route actually work?');
+    // get friendships by requester ID
+    router.get('/friends/:id', async (req, res, next) => {
+        const { id } = req.params;
+        try {
+            const result = await userCtl.getFriends(id);
+            res.status(200).send(result);
+        } catch(e) {
+            next(e);
+        }
     })
 }

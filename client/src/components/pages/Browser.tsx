@@ -1,8 +1,9 @@
+import Protect from "../../util/Protect";
 import { Button, Page } from "../ui";
 
 export default function Browser() {
     return (
-        <Page>
+        <Protect>
             <h1>Search recipes</h1>
             <div>
                 <input type="text"></input>
@@ -12,6 +13,6 @@ export default function Browser() {
             {/* divider */}
 
             {/* recipe cards, or "no recipes matching your search" */}
-        </Page>
+        </Protect>
     )
 }
