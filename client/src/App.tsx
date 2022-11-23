@@ -9,9 +9,20 @@ import Register from './components/pages/Register';
 import Welcome from './components/pages/Welcome';
 import { useAuthContext } from './context/AuthContext';
 import './sass/App.scss'
+import { IUser } from './schemas';
+import { checkCredientials } from './util/apiUtils';
 
 function App() {
   const authContext = useAuthContext();
+
+  useEffect(() => {
+    const wrapper = async () => {
+      const result = await checkCredientials();
+      authContext.user = result;
+    }
+
+    wrapper();
+  }, [])
 
   return (
     <BrowserRouter>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
-import { checkCredientials } from "../../util/apiUtils";
+import { attemptLogout, checkCredientials } from "../../util/apiUtils";
 import { Button, Page, Panel } from "../ui"
 import Divider from "../ui/Divider";
 
@@ -34,6 +34,7 @@ const Welcome = () => {
             <Panel extraStyles='inherit-background c-papyrus uppercase'>
                 <h1>Welcome to Recipin</h1>
                 <Button onClick={unwrap}>Check Credentials</Button>
+                <Button onClick={attemptLogout}>Log Out</Button>
             </Panel>
 
             <Divider />
