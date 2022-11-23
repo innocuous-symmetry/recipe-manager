@@ -7,10 +7,17 @@ import session from 'express-session';
 import pgSessionStore from '../db/sessionStore';
 
 export const expressLoader = async (app: Express) => {
-    app.use(cors());
+    app.use(cors({
+        origin: process.env.ORIGIN || 'http://localhost:5173',
+        credentials: true
+      }));
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(cookieParser());
+
+    // app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
+    // app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
 
     app.use(morgan('tiny'));
 

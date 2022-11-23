@@ -1,31 +1,54 @@
 import { IUser, IUserAuth } from "../schemas";
-const API = import.meta.env.APISTRING || "http://localhost:8080/";
+import axios from "axios";
+const API = import.meta.env.APISTRING || "http://localhost:8080";
+
+axios.defaults.withCredentials = true;
 
 export const getBaseAPI = async () => {
     return fetch(API);
 }
 
-export const getCookies = async () => {
-    return fetch(API + 'auth');
-}
-
 // auth handlers
 export const attemptLogin = async (data: IUserAuth) => {
-    const success = await fetch(API + 'auth/login/', {
+    try {
+        const response = await axios({
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(response => response.json());
-    
-    if (success) return success;
-    return null;
+            url: API + '/auth/login',
+            data: data
+        });
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
+export const checkCredientials = async () => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: API + '/auth',
+        });
+
+        const data = Promise.resolve(response.data);
+        return data;
+    } catch (e: any) {
+        throw e;
+        
+    }
 }
 
 export const attemptLogout = async () => {
-    const result = await fetch(API + 'auth/logout', { method: "DELETE" }).then(response => response.json());
-    return result;
+    try {
+        await axios({
+            method: "DELETE",
+            url: API + '/auth/logout',
+        })
+    } catch (e: any) {
+        throw e;
+    }
+    // const result = await fetch(API + 'auth/logout', { method: "DELETE" }).then(response => response.json());
+    // return result;
 }
 
 export const attemptRegister = async (data: IUser) => {

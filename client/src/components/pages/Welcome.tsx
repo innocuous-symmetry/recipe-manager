@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
+import { checkCredientials } from "../../util/apiUtils";
 import { Button, Page, Panel } from "../ui"
 import Divider from "../ui/Divider";
 
@@ -23,10 +24,16 @@ const Welcome = () => {
         </Panel>
     )
 
+    const unwrap = async () => {
+        const result = await checkCredientials();
+        console.log(result);
+    }
+
     return (
         <Page extraStyles="narrow-dividers">
             <Panel extraStyles='inherit-background c-papyrus uppercase'>
                 <h1>Welcome to Recipin</h1>
+                <Button onClick={unwrap}>Check Credentials</Button>
             </Panel>
 
             <Divider />

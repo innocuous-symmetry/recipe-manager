@@ -9,6 +9,9 @@ export function restrictAccess(req: Request, res: Response, next: NextFunction) 
 }
 
 export function checkAccess(req: Request, res: Response, next: NextFunction) {
-    console.log(req.isAuthenticated());
-    next();
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(403).send({ message: "Access forbidden" });
+    }
 }

@@ -13,10 +13,6 @@ import './sass/App.scss'
 function App() {
   const authContext = useAuthContext();
 
-  useEffect(() => {
-    console.log(fetch("http://localhost:8080/auth").then(res => res.json()).then(x => console.log(x)));
-  })
-
   return (
     <BrowserRouter>
       <div className="App">
