@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import * as schemas from "../schemas";
+import { IUser } from "../schemas";
 
 interface PortalBase {
     children?: ReactNode
@@ -10,11 +10,16 @@ interface ButtonParams extends PortalBase {
     onClick?: (params?: any) => any
 }
 
-interface ModifiedPortal extends PortalBase {
+export interface MultiChildPortal extends PortalBase {
     children?: ReactNode | ReactNode[]
+}
+
+interface UserCardProps extends PortalBase {
+    user: IUser
 }
 
 export type PageComponent = FC<PortalBase>
 export type PanelComponent = FC<PortalBase>
 export type ButtonComponent = FC<ButtonParams>
-export type ProtectPortal = FC<ModifiedPortal>
+export type ProtectPortal = FC<MultiChildPortal>
+export type UserCardType = FC<UserCardProps>

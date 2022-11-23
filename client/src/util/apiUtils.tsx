@@ -62,6 +62,20 @@ export const attemptRegister = async (body: IUser) => {
     }
 }
 
+// for user friendships
+export const getFriendships = async (id: string | number) => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: API + '/users/friends/' + id
+        })
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
 // on recipe route
 export const getRecipeByID = async (id: string | number) => {
     try {
@@ -84,15 +98,6 @@ export const getAllRecipes = async () => {
         })
 
         return Promise.resolve(response.data);
-    } catch (e: any) {
-        throw e;
-    }
-}
-
-// for user friendships
-export const getFriendships = async () => {
-    try {
-        
     } catch (e: any) {
         throw e;
     }

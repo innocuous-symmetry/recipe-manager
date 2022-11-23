@@ -1,8 +1,7 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Page } from "../components/ui";
 import Divider from "../components/ui/Divider";
-import { AuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 import { ProtectPortal } from "./types";
 
 const Protect: ProtectPortal = ({ children = <></> }) => {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext, useAuthContext } from "../../context/AuthContext";
 import { IUser } from "../../schemas";
 import { attemptLogout } from "../../util/apiUtils";
 import Button from "./Button";
