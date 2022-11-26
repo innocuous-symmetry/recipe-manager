@@ -14,6 +14,7 @@ export default class AuthService {
         data.datecreated = now;
         data.datemodified = now;
         data.active = true;
+        data.isadmin = false;
 
         try {
             const user = await UserInstance.getOneByEmail(email);
@@ -29,7 +30,6 @@ export default class AuthService {
                     }
                     
                     const result = await UserInstance.post(newData);
-                    if (result) console.log(result);
                     return result;
                 })
             })
@@ -46,7 +46,6 @@ export default class AuthService {
             const user = await UserInstance.getOneByEmail(email);
             if (!user) return { ok: false, user: null }
             const match = await bcrypt.compare(password, user.password);
-            console.log(match);
             return {
                 ok: match,
                 user: match ? user : null

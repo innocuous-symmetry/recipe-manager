@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ChangeEventHandler } from "react";
 import { v4 } from 'uuid';
 
 /**
@@ -35,9 +35,15 @@ export default class Form<T>{
     }
 
     update(e: ChangeEvent<HTMLElement>, idx: number) {
-        let newState = {
-            ...this.state,
-            [this.keys[idx]]: e.target['value' as keyof EventTarget]
+        let newState;
+
+        if (this.dataTypes[idx] == 'checkbox') {
+            newState = { ...this.state }
+        } else {
+            newState = {
+                ...this.state,
+                [this.keys[idx]]: e.target['value' as keyof EventTarget]
+            }
         }
 
         this.state = newState;

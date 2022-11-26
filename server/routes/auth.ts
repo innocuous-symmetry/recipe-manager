@@ -17,7 +17,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     router.get('/', restrictAccess, (req, res, next) => {
         // @ts-ignore: does not recognize structure of req.user
         const user = req.user?.user;
-        const userData: IUser = {
+        const userData = {
             id: user.id,
             firstname: user.firstname,
             lastname: user.lastname,
@@ -41,9 +41,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
                     if (error) throw error;
                     console.log('login successful');
                 })
-                // const { id, email, handle, firstname, lastname } = response.user;
-                // await UserControl.updateOne(response.user.id, { ...response.user, datemodified: now })
-                // res.status(200).send({ id: id, handle: handle, firstname: firstname, lastname: lastname });
+                
                 res.cookie('userid', response.user.id, { maxAge: 1000 * 60 * 60 * 24 });
                 res.send(response);
                 res.end();
@@ -70,8 +68,6 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     router.post('/register', async (req, res, next) => {
         try {
             const data: IUser = req.body;
-            const now = new Intl.DateTimeFormat('en-US', {})
-
             const response = await AuthInstance.register(data);
             res.status(200).send(response);
         } catch(e) {

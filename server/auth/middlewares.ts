@@ -7,3 +7,15 @@ export function restrictAccess(req: Request, res: Response, next: NextFunction) 
         res.send({ ok: false, user: undefined })
     }
 }
+
+export function checkSubscription(req: Request, res: Response, next: NextFunction) {
+
+}
+
+export function checkFriendStatus(req: Request, res: Response, next: NextFunction) {
+
+}
+
+export function checkIsAdmin(req: Request, res: Response, next: NextFunction) {
+    
+}

@@ -1,0 +1,3 @@
+-- SELECT * FROM cmp_usersubscriptions
+-- WHERE usermemberid = $1
+-- AND collectionid = $2;

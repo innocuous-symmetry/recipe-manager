@@ -6,13 +6,13 @@ export default async function populate() {
 
     const populateUsers = `
         INSERT INTO recipin.appusers
-            (firstname, lastname, handle, email, password, active, datecreated, datemodified)
+            (firstname, lastname, handle, email, password, active, isadmin, datecreated, datemodified)
         VALUES
-            ('Mikayla', 'Dobson', 'innocuoussymmetry', 'mikaylaherself@gmail.com', 'password1', true, $1, $1),
-            ('Emily', 'Dobson', 'emjdobson', 'emily@email.com', 'password2', true, $1, $1),
-            ('Montanna', 'Dobson', 'delayedlemon', 'montanna@email.com', 'password3', true, $1, $1),
-            ('Christine', 'Riley', 'christine', 'christine@email.com', 'password4', true, $1, $1),
-            ('Someone', 'Not active', 'someone', 'someone@email.com', 'notactive', false, $1, $1)
+            ('Mikayla', 'Dobson', 'innocuoussymmetry', 'mikaylaherself@gmail.com', 'password1', true, true, $1, $1),
+            ('Emily', 'Dobson', 'emjdobson', 'emily@email.com', 'password2', true, false, $1, $1),
+            ('Montanna', 'Dobson', 'delayedlemon', 'montanna@email.com', 'password3', true, false, $1, $1),
+            ('Christine', 'Riley', 'christine', 'christine@email.com', 'password4', true, false, $1, $1),
+            ('Someone', 'Not active', 'someone', 'someone@email.com', 'notactive', false, false, $1, $1)
         ;
     `
 

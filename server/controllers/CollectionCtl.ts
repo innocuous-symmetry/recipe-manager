@@ -21,4 +21,20 @@ export default class CollectionCtl {
         if (!result) throw createError('400', 'Bad request');
         return result;
     }
+
+    async getSubscriptions(userid: string) {
+        const result = await CollectionInstance.getSubscriptions(userid);
+        if (!result) throw createError('404', 'No subscriptions found');
+        return result;
+    }
+
+    async postSubscription(collectionid: string, userid: string) {
+        const { ok, code, data } = await CollectionInstance.postSubscription(collectionid, userid);
+        
+        if (ok) {
+            return data;
+        } else {
+            throw createError(code, data);
+        }
+    }
 }

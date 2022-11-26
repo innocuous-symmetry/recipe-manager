@@ -3,7 +3,7 @@ import fs from "fs";
 import pgPromise from "pg-promise";
 import pool from '../db';
 import now from "../util/now";
-import { appRoot } from "..";
+import { appRoot } from "../appRoot";
 
 const pgp = pgPromise({ capSQL: true });
 export class User {
@@ -73,7 +73,7 @@ export class User {
 
 
     async post(data: IUser) {
-        const { firstname, lastname, handle, email, password, active } = data;
+        const { firstname, lastname, handle, email, password, active, isadmin } = data;
         const datecreated = now;
         const datemodified = now;
 
@@ -81,11 +81,11 @@ export class User {
             const statement = `
                 INSERT INTO recipin.appusers (
                     firstname, lastname, handle, email, password, 
-                    active, datecreated, datemodified) 
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    active, isadmin, datecreated, datemodified) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING *;
             `;
-            const params = [firstname, lastname, handle, email, password, active, datecreated, datemodified];
+            const params = [firstname, lastname, handle, email, password, active, isadmin, datecreated, datemodified];
             const result = await pool.query(statement, params);
             if (result.rows.length) return result.rows;
             return null;

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS recipin.appusers (
     email varchar NOT NULL UNIQUE,
     password varchar NOT NULL,
     active boolean NOT NULL,
+    isadmin boolean NOT NULL,
     datecreated varchar NOT NULL,
     datemodified varchar NOT NULL
 );
