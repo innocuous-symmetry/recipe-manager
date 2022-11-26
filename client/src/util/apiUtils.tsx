@@ -67,11 +67,11 @@ export const attemptRegister = async (body: IUser) => {
 }
 
 // for user friendships
-export const getFriendships = async (id: string | number) => {
+export const getFriendships = async () => {
     try {
         const response = await axios({
             method: "GET",
-            url: API + '/users/friends/' + id
+            url: API + '/friend'
         })
 
         return Promise.resolve(response.data);

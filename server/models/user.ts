@@ -1,11 +1,9 @@
 import { IUser } from "../schemas";
 import fs from "fs";
-import pgPromise from "pg-promise";
 import pool from '../db';
 import now from "../util/now";
 import { appRoot } from "../appRoot";
 
-const pgp = pgPromise({ capSQL: true });
 export class User {
     async getAllUsers() {
         // behind auth
@@ -99,6 +97,66 @@ export class User {
             const sql = fs.readFileSync(appRoot + '/db/sql/derived/friendships.sql').toString();
             const result = await pool.query(sql, [id]);
             if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async getFriendshipByID(id: string, userid: string) {
+        try {
+            const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE id = $1`;
+            const result = await pool.query(statement, [id]);
+
+            if (result.rows.length) {
+                const row = result.rows[0];
+                if (row.firstuserid == userid || row.seconduserid == userid) {
+                    const sql = fs.readFileSync(appRoot + '/db/sql/get/friendshipbyid.sql').toString();
+                    const formattedResult = await pool.query(sql, [id]);
+                    if (formattedResult.rows.length) return { ok: true, code: 200, result: formattedResult.rows }
+                    return { ok: false, code: 400, result: "Something went wrong" }
+                }
+                return { ok: true, code: 403, result: "Not authorized to access this resource" }
+            }
+            
+            return { ok: false, code: 404, result: "No friendship found with that ID" }
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async addFriendship(userid: string, targetid: string) {
+        try {
+            const statement = `
+                INSERT INTO recipin.cmp_userfriendships
+                (datecreated, active, pending, firstuserid, seconduserid)
+                VALUES ($1, false, true, $2, $3)
+                RETURNING *;
+            `
+            const values = [now, userid, targetid];
+            const result = await pool.query(statement, values);
+            if (result.rows.length) {
+                return result.rows[0];
+            }
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async updateFriendship(id: string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
+        try {
+            const statement = `
+                UPDATE recipin.cmp_userfriendships
+                SET active = $1,
+                    pending = $2,
+                    dateterminated = $3
+                WHERE id = $4
+                RETURNING *;
+            `
+            const values = [data.active, data.pending, data.dateterminated || null, id];
+            const result = await pool.query(statement, values);
+            if (result.rows.length) return result.rows[0];
             return null;
         } catch (e: any) {
             throw new Error(e);

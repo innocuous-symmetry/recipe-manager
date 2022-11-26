@@ -53,4 +53,34 @@ export default class UserCtl {
             throw new Error(e);
         }
     }
+
+    async getFriendshipByID(id: string, userid: string) {
+        try {
+            const { ok, code, result } = await UserInstance.getFriendshipByID(id, userid);
+            if (ok) return result;
+            throw createError(code, result);
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async addFriendship(userid: string, targetid: string) {
+        try {
+            const result = await UserInstance.addFriendship(userid, targetid);
+            if (!result) throw createError(400, "something went wrong");
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async updateFriendship(id: string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
+        try {
+            const result = await UserInstance.updateFriendship(id, data);
+            if (!result) throw createError(400, "something went wrong");
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
 }

@@ -59,12 +59,12 @@ export default async function populate() {
 
     const populateFriendships = `
         INSERT INTO recipin.cmp_userfriendships
-            (datecreated, active, firstuserid, seconduserid)
+            (datecreated, active, pending, firstuserid, seconduserid)
         VALUES
-            ($1, true, 1, 2),
-            ($1, true, 1, 4),
-            ($1, true, 2, 3),
-            ($1, true, 1, 3)
+            ($1, true, false, 1, 2),
+            ($1, true, false, 1, 4),
+            ($1, true, false, 2, 3),
+            ($1, true, false, 1, 3)
         ;
     `
 
