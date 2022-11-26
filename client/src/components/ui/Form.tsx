@@ -22,7 +22,6 @@ export default class Form<T>{
     public labels: string[];
     public keys: string[];
     public dataTypes: any[]
-    public length: number;
     public state: T;
     public getState: (received: T) => void
 
@@ -30,7 +29,6 @@ export default class Form<T>{
         this.parent = config.parent;
         this.keys = config.keys;
         this.labels = config.labels || this.keys;
-        this.length = config.keys.length;
         this.dataTypes = config.dataTypes || new Array(this.keys.length).fill('text');
         this.state = config.initialState;
         this.getState = config.getState;
@@ -49,7 +47,7 @@ export default class Form<T>{
     mount() {
         let output = new Array<JSX.Element>();
 
-        for (let i = 0; i < this.length; i++) {
+        for (let i = 0; i < this.keys.length; i++) {
             output.push(
                 <div id={`${this.parent}-row-${i}`} key={v4()}>
                     <label htmlFor={`${this.parent}-${this.keys[i]}`}>{this.labels[i]}</label>

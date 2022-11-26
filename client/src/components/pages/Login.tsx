@@ -1,20 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
-import { IUserAuth } from "../../schemas";
 import { attemptLogin } from "../../util/apiUtils";
-import { Button, Page, Panel } from "../ui";
-import Form, { FormConfig } from "../ui/Form";
+import { IUserAuth } from "../../schemas";
+import { Button, Form, Page, Panel } from "../ui";
 
 export default function Login() {
     // setup and local state
     const authContext = useAuthContext();
     const navigate = useNavigate();
     const [form, setForm] = useState<JSX.Element[]>();
-    const [input, setInput] = useState<IUserAuth>({
-        email: '',
-        password: ''
-    })
+    const [input, setInput] = useState<IUserAuth>({ email: '', password: '' });
 
     // retrieve and store state from form
     const getFormState = useCallback((received: IUserAuth) => {
@@ -29,18 +25,19 @@ export default function Login() {
         navigate('/');
     }
 
-    const formConfig: FormConfig<IUserAuth> = {
-        parent: 'login',
-        keys: Object.keys(input),
-        labels: ["Email", "Password"],
-        dataTypes: Object.keys(input),
-        initialState: input,
-        getState: getFormState
-    }
-
+    // check for logged in user and mount form
     useEffect(() => {
         if (authContext.user) navigate('/');
-        setForm(new Form<IUserAuth>(formConfig).mount())
+        setForm(
+            new Form<IUserAuth>({
+                parent: 'login',
+                keys: Object.keys(input),
+                labels: ["Email", "Password"],
+                dataTypes: Object.keys(input),
+                initialState: input,
+                getState: getFormState
+            }).mount()
+        );
     }, [])
 
     return (
