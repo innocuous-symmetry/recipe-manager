@@ -24,7 +24,7 @@ export default class UserCtl {
         }
     }
 
-    async getOne(id: string) {
+    async getOne(id: number | string) {
         try {
             const user = await UserInstance.getOneByID(id);
             if (!user) throw createError(404, "User not found");
@@ -34,7 +34,7 @@ export default class UserCtl {
         }
     }
 
-    async updateOne(id: string, data: IUser) {
+    async updateOne(id: number | string, data: IUser) {
         try {
             const result = await UserInstance.updateOneByID(id, data);
             if (!result) throw createError(400, "Bad request");
@@ -44,7 +44,7 @@ export default class UserCtl {
         }
     }
 
-    async getFriends(id: string) {
+    async getFriends(id: number | string) {
         try {
             const result = await UserInstance.getFriends(id);
             if (!result) throw createError(404, "You have no friends");
@@ -54,7 +54,7 @@ export default class UserCtl {
         }
     }
 
-    async getFriendshipByID(id: string, userid: string) {
+    async getFriendshipByID(id: number | string, userid: number | string) {
         try {
             const { ok, code, result } = await UserInstance.getFriendshipByID(id, userid);
             if (ok) return result;
@@ -64,7 +64,7 @@ export default class UserCtl {
         }
     }
 
-    async addFriendship(userid: string, targetid: string) {
+    async addFriendship(userid: number | string, targetid: number | string) {
         try {
             const result = await UserInstance.addFriendship(userid, targetid);
             if (!result) throw createError(400, "something went wrong");
@@ -74,11 +74,11 @@ export default class UserCtl {
         }
     }
 
-    async updateFriendship(id: string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
+    async updateFriendship(id: number | string, userid: number | string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
         try {
-            const result = await UserInstance.updateFriendship(id, data);
-            if (!result) throw createError(400, "something went wrong");
-            return result;
+            const { ok, code, result } = await UserInstance.updateFriendship(id, userid, data);
+            if (ok) return result;
+            throw createError(code, result);
         } catch (e: any) {
             throw new Error(e);
         }

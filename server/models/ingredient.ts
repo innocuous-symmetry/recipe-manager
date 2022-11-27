@@ -1,5 +1,6 @@
 import { IIngredient } from "../schemas";
 import pool from "../db";
+import now from "../util/now";
 
 export class Ingredient {
     async getAll() {
@@ -28,9 +29,9 @@ export class Ingredient {
         try {
             const statement = `
             INSERT INTO recipin.ingredient
-                (name, description)
-            VALUES ($1, $2) RETURNING *`;
-            const values = [data.name, data.description];
+                (name, description, datecreated)
+            VALUES ($1, $2, $3) RETURNING *`;
+            const values = [data.name, data.description, data.datecreated || now];
             const result = await pool.query(statement, values);
             if (result.rows.length) return result.rows[0];
             return null;

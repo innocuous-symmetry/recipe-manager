@@ -8,7 +8,7 @@ SELECT
   recipin.appusers.email
 FROM recipin.cmp_userfriendships
 INNER JOIN recipin.appusers
-ON recipin.appusers.id = recipin.cmp_userfriendships.firstuserid
+ON recipin.appusers.id = recipin.cmp_userfriendships.senderid
 WHERE recipin.cmp_userfriendships.id = $1
 UNION
 SELECT
@@ -21,5 +21,5 @@ SELECT
   recipin.appusers.email
 FROM recipin.cmp_userfriendships
 INNER JOIN recipin.appusers
-ON recipin.appusers.id = recipin.cmp_userfriendships.seconduserid
+ON recipin.appusers.id = recipin.cmp_userfriendships.targetid
 WHERE recipin.cmp_userfriendships.id = $1;

@@ -6,11 +6,26 @@ import pool from "../db";
 import fs from 'fs';
 const UserInstance = new User();
 export class Collection {
-    async getOne(id: string) {
+    async getOne(id: number | string) {
         try {
             const statement = `SELECT * FROM recipin.collection WHERE id = $1`;
             const values = [id];
             const result = await pool.query(statement, values);
+            if (result.rows.length) return result.rows[0];
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async getUserDefault(id: number | string) {
+        try {
+            const statement = `
+                SELECT * FROM recipin.collection
+                WHERE ownerid = $1
+                AND ismaincollection = true;
+            `
+            const result = await pool.query(statement, [id]);
             if (result.rows.length) return result.rows[0];
             return null;
         } catch (e: any) {
@@ -31,6 +46,8 @@ export class Collection {
     }
 
     async post(data: ICollection) {
+        console.log('new default collection');
+        console.log(data);
         const { name, active, ismaincollection, ownerid } = data;
         try {
             const statement = `
@@ -48,7 +65,7 @@ export class Collection {
         }
     }
 
-    async getSubscriptions(userid: string) {
+    async getSubscriptions(userid: number | string) {
         try {
             const sql = fs.readFileSync(appRoot + '/db/sql/get/getsubscriptions.sql').toString();
             console.log(sql);
@@ -60,7 +77,7 @@ export class Collection {
         }
     }
 
-    async postSubscription(collectionid: string, userid: string): Promise<{ ok: boolean, code: number, data: string | any[] }> {
+    async postSubscription(collectionid: number | string, userid: number | string): Promise<{ ok: boolean, code: number, data: number | string | any[] }> {
         try {
             // ensure user exists
             const user: IUser | null = await UserInstance.getOneByID(userid);
@@ -83,7 +100,8 @@ export class Collection {
             }
 
             // ensure a user cannot subscribe to their own collection
-            if (target.ownerid == parseInt(userid)) {
+            let typedUserID: number = (userid == typeof 'string') ? parseInt(userid) : userid as number;
+            if (target.ownerid == typedUserID) {
                 return {
                     ok: false,
                     code: 403,
@@ -99,7 +117,7 @@ export class Collection {
             const subscriptionResult = await pool.query(allSubscriptions, [collectionid]);
             if (subscriptionResult.rows?.length) {
                 for (let row of subscriptionResult.rows) {
-                    if (row.usermemberid == parseInt(userid)) {
+                    if (row.usermemberid == typedUserID) {
                         return {
                             ok: false,
                             code: 403,
@@ -112,8 +130,8 @@ export class Collection {
             // finally, execute insertion
             const statement = `
                 INSERT INTO recipin.cmp_usersubscriptions
-                    (collectionid, usermemberid)
-                VALUES ($1, $2)
+                    (collectionid, usermemberid, active)
+                VALUES ($1, $2, true)
                 RETURNING *;
             `
 

@@ -1,11 +1,12 @@
 import { IUser, IUserAuth } from "../schemas";
 import { User } from "../models/user";
+import { Collection } from "../models/collection";
 import createError from "http-errors";
 import bcrypt from "bcrypt";
 import now from "../util/now";
 
 const UserInstance = new User();
-
+const CollectionInstance = new Collection();
 export default class AuthService {
     // methods for local strategies
     async register(data: IUser) {
@@ -19,8 +20,9 @@ export default class AuthService {
         try {
             const user = await UserInstance.getOneByEmail(email);
             if (user) throw createError('409', 'Email already in use');
-            
-            bcrypt.genSalt(10, (err, salt) => {
+
+            // hash password and create new user record
+            return bcrypt.genSalt(10, (err, salt) => {
                 if (err) throw err;
                 bcrypt.hash(password!, salt, async (err, hash) => {
                     if (err) throw err;
@@ -29,7 +31,18 @@ export default class AuthService {
                         password: hash
                     }
                     
-                    const result = await UserInstance.post(newData);
+                    const result: IUser = await UserInstance.post(newData);
+
+                    // basic profile setup
+                    await CollectionInstance.post({
+                        name: `${data.firstname}'s Collection`,
+                        active: true,
+                        ismaincollection: true,
+                        ownerid: result.id!.toString(),
+                        datecreated: now,
+                        datemodified: now
+                    });
+
                     return result;
                 })
             })

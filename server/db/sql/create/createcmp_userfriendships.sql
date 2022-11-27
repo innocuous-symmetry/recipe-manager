@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS recipin.cmp_userfriendships (
     active boolean NOT NULL,
     pending boolean NOT NULL,
     dateterminated varchar,
-    firstuserid int REFERENCES recipin.appusers (id),
-    seconduserid int REFERENCES recipin.appusers (id)
+    senderid int REFERENCES recipin.appusers (id),
+    targetid int REFERENCES recipin.appusers (id)
 );

@@ -14,6 +14,24 @@ export default class RecipeCtl {
         }
     }
 
+    async getAllAuthored(id: string) {
+        try {
+            const result = await RecipeInstance.getAllAuthored(id);
+            if (!result) throw createError('404', "No recipes found");
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async getAllAccessible(id: string) {
+        try {
+            
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async updateOne(id: string, data: IRecipe) {
         try {
             const result = await RecipeInstance.updateOneByID(id, data);
@@ -24,9 +42,9 @@ export default class RecipeCtl {
         }
     }
 
-    async post(data: IRecipe) {
+    async post(userid: string, data: IRecipe) {
         try {
-            const result = await RecipeInstance.post(data);
+            const result = await RecipeInstance.post(userid, data);
             if (!result) throw createError('400', "Bad request");
             return result;
         } catch (error: any) {

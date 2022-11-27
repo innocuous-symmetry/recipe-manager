@@ -49,9 +49,10 @@ export const friendRouter = (app: Express) => {
     router.put('/:id', async (req, res, next) => {
         const data = req.body;
         const { id } = req.params;
+        const { user }: any = req.user;
 
         try {
-            const result = await UserInstance.updateFriendship(id, data);
+            const result = await UserInstance.updateFriendship(id, user.id, data);
             res.status(200).send(result);
         } catch(e) {
             next(e);

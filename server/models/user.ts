@@ -17,7 +17,7 @@ export class User {
         }
     }
 
-    async getOneByID(id: string) {
+    async getOneByID(id: number | string) {
         try {
             const statement = `SELECT * FROM recipin.appusers WHERE id = $1`;
             const values = [id];
@@ -29,7 +29,7 @@ export class User {
         }
     }
 
-    async getOneByEmail(email: string) {
+    async getOneByEmail(email: number | string) {
         try {
             const statement = `SELECT * FROM recipin.appusers WHERE email = $1`;
             const result = await pool.query(statement, [email]);
@@ -41,7 +41,7 @@ export class User {
         }
     }
 
-    async updateOneByID(id: string, data: IUser) {
+    async updateOneByID(id: number | string, data: IUser) {
         try {
             const statement = `
                 UPDATE recipin.appusers
@@ -85,14 +85,14 @@ export class User {
             `;
             const params = [firstname, lastname, handle, email, password, active, isadmin, datecreated, datemodified];
             const result = await pool.query(statement, params);
-            if (result.rows.length) return result.rows;
+            if (result.rows.length) return result.rows[0];
             return null;
         } catch (error: any) {
             throw new Error(error);
         }
     }
 
-    async getFriends(id: string) {
+    async getFriends(id: number | string) {
         try {
             const sql = fs.readFileSync(appRoot + '/db/sql/derived/friendships.sql').toString();
             const result = await pool.query(sql, [id]);
@@ -103,14 +103,14 @@ export class User {
         }
     }
 
-    async getFriendshipByID(id: string, userid: string) {
+    async getFriendshipByID(id: number | string, userid: number | string) {
         try {
             const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE id = $1`;
             const result = await pool.query(statement, [id]);
 
             if (result.rows.length) {
                 const row = result.rows[0];
-                if (row.firstuserid == userid || row.seconduserid == userid) {
+                if (row.senderid == userid || row.targetid == userid) {
                     const sql = fs.readFileSync(appRoot + '/db/sql/get/friendshipbyid.sql').toString();
                     const formattedResult = await pool.query(sql, [id]);
                     if (formattedResult.rows.length) return { ok: true, code: 200, result: formattedResult.rows }
@@ -125,11 +125,11 @@ export class User {
         }
     }
 
-    async addFriendship(userid: string, targetid: string) {
+    async addFriendship(userid: number | string, targetid: number | string) {
         try {
             const statement = `
                 INSERT INTO recipin.cmp_userfriendships
-                (datecreated, active, pending, firstuserid, seconduserid)
+                (datecreated, active, pending, senderid, targetid)
                 VALUES ($1, false, true, $2, $3)
                 RETURNING *;
             `
@@ -144,8 +144,15 @@ export class User {
         }
     }
 
-    async updateFriendship(id: string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
+    async updateFriendship(id: number | string, userid: number | string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
         try {
+            const query = `SELECT * FROM recipin.cmp_userfriendships WHERE id = $1`;
+            const friendship = await pool.query(query, [id]);
+            if (!friendship.rows.length) return { ok: false, code: 404, result: "Friendship with this code not found" };
+            if (!(friendship.rows[0].active) && friendship.rows[0].senderid == userid) {
+                return { ok: false, code: 403, result: "Please wait for friend request to be accepted" }
+            }
+
             const statement = `
                 UPDATE recipin.cmp_userfriendships
                 SET active = $1,
@@ -154,10 +161,10 @@ export class User {
                 WHERE id = $4
                 RETURNING *;
             `
-            const values = [data.active, data.pending, data.dateterminated || null, id];
+            const values = [data.active, data.pending, (data.dateterminated || null), id];
             const result = await pool.query(statement, values);
-            if (result.rows.length) return result.rows[0];
-            return null;
+            if (result.rows.length) return { ok: true, code: 200, result: result.rows[0] }
+            return { ok: false, code: 400, result: "Bad request" }
         } catch (e: any) {
             throw new Error(e);
         }

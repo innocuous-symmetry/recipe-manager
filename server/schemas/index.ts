@@ -31,21 +31,22 @@ export interface IRecipe extends HasHistory, CanDeactivate {
     name: string
     description?: string
     preptime: string
-    authoruserid: IUser["id"]
+    authoruserid: string | number
 }
 
 export interface IIngredient extends HasHistory {
     name: string
     description?: string
+    createdbyid: string | number
 }
 
 export interface ICollection extends HasHistory, CanDeactivate {
     name: string
     ismaincollection: boolean
-    ownerid: IUser["id"]
+    ownerid: string | number
 }
 
 export interface IGroceryList extends HasHistory, CanDeactivate {
     name: string
-    ownerid: IUser["id"]
+    ownerid: string | number
 }

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import newPopulate from './newPopulate';
 import populate from "./populate";
 import pool from ".";
 import fs from "fs";
@@ -41,6 +42,7 @@ dotenv.config();
 
     console.log("Database seed successful. Attempting to populate...");
     await populate();
+    // await newPopulate();
 
     process.exit(1);
 })();

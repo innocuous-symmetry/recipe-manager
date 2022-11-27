@@ -1,8 +1,8 @@
 import { IRecipe } from "../schemas";
-import pgPromise from "pg-promise";
 import pool from "../db";
-
-const pgp = pgPromise({ capSQL: true });
+import { CollectionCtl } from "../controllers";
+import now from "../util/now";
+const CollectionInstance = new CollectionCtl();
 
 export class Recipe {
     async getOneByID(id: string) {
@@ -17,9 +17,24 @@ export class Recipe {
         }
     }
 
-    async getAllByUserID(id: string) {
+    async getAllAuthored(id: string) {
         try {
-            // to do: use setupbrowser.sql to setup the recipe browser
+            const statement = `SELECT * FROM recipin.recipe WHERE authoruserid = $1`;
+            const result = await pool.query(statement, [id]);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async getAllAccessible(id: string) {
+
+    }
+
+    async fetchRecipesByCollection(collectionid: string) {
+        try {
+            
         } catch (e: any) {
             throw new Error(e);
         }
@@ -45,15 +60,32 @@ export class Recipe {
         }
     }
 
-    async post(data: IRecipe) {
+    async post(userid: string, data: IRecipe) {
         const { name, description, preptime } = data;
 
         try {
-            const statement = `INSERT INTO recipin.recipe (name, description, preptime, authoruserid) VALUES ($1, $2, $3, (SELECT id FROM recipin.appusers WHERE id = 1)) RETURNING *;`
-            const values = [name, description, preptime];
+            // create recipe itself
+            const statement = `
+                INSERT INTO recipin.recipe
+                    (name, description, preptime, authoruserid, datecreated, datemodified)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING *;
+            `
+            const values = [name, description, preptime, userid, now, now];
             const result = await pool.query(statement, values);
-            if (result.rows) return result.rows[0];
-            return null;
+            if (!result.rows.length) return null;
+
+            // associate recipe with default collection once created
+            const collection = await CollectionInstance.getUserDefault(userid);
+            const associateToCollection = `
+                INSERT INTO recipin.cmp_recipecollection
+                (recipeid, collectionid)
+                VALUES ($1, $2) RETURNING *
+            `
+            const associateResult = await pool.query(associateToCollection, [result.rows[0].id, collection.id]);
+            if (!associateResult.rows.length) return null;
+            
+            return { recipe: result.rows[0], collection: associateResult.rows[0] }
         } catch (error: any) {
             throw new Error(error);
         }
