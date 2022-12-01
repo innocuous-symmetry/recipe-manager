@@ -19,7 +19,7 @@ export const attemptLogin = async (data: IUserAuth): Promise<IAuthContext> => {
             data: data
         });
 
-        const result: Promise<IAuthContext> = Promise.resolve(response.data);
+        const result = Promise.resolve(response.data);
         return result;
     } catch (e: any) {
         throw e;

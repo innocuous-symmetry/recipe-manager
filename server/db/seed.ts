@@ -8,6 +8,8 @@ import { appRoot } from "../appRoot";
 dotenv.config();
 
 (async function() {
+    console.clear();
+
     const setRole = `
         SET ROLE postgres;
         DROP SCHEMA IF EXISTS recipin CASCADE;

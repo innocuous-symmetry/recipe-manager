@@ -1,23 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
-import { IUser } from "../../../schemas";
+import { useAuthContext } from "../../../context/AuthContext";
+import { IUser, IUserAuth } from "../../../schemas";
 import { attemptLogin, attemptRegister } from "../../../util/apiUtils";
 import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";
 import Form, { FormConfig } from "../../ui/Form";
 
+const blankUser: IUser = {
+    firstname: '',
+    lastname: '',
+    handle: '',
+    email: '',
+    password: '',
+    active: true,
+    isadmin: false
+}
+
 export default function AboutYou() {
     const navigate = useNavigate();
+    const authContext = useAuthContext();
     const [form, setForm] = useState<JSX.Element[]>([<p key={v4()}>Loading content...</p>]);
-    const [input, setInput] = useState<IUser>({
-        firstname: '',
-        lastname: '',
-        handle: '',
-        email: '',
-        password: '',
-        active: true
-    });
+    const [input, setInput] = useState<IUser>(blankUser);
+    const [regSuccess, setRegSuccess] = useState<boolean>();
 
     const getFormState = useCallback((received: IUser) => {
         setInput(received);
@@ -32,14 +38,24 @@ export default function AboutYou() {
         getState: getFormState
     }
 
+    async function handleRegister() {
+        const res = await attemptRegister(input);
+        setRegSuccess(res);
+    }
+
+    async function unwrapLogin() {
+        const login = await attemptLogin({ email: input.email, password: input.password as string } as IUserAuth);
+        authContext.user = login.user;
+        navigate('/');
+    }
+
     useEffect(() => {
         setForm(new Form<IUser>(formConfig).mount());
     }, [])
 
-    const handleRegister = async () => {
-        const result = await attemptRegister(input);
-        await attemptLogin({ email: result.email, password: result.password }).then(() => navigate('/'));
-    }
+    useEffect(() => {
+        if (regSuccess) unwrapLogin();
+    }, [regSuccess, handleRegister])
 
     return (
         <Page>

@@ -22,7 +22,7 @@ export default class AuthService {
             if (user) throw createError('409', 'Email already in use');
 
             // hash password and create new user record
-            return bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.genSalt(10, (err, salt) => {
                 if (err) throw err;
                 bcrypt.hash(password!, salt, async (err, hash) => {
                     if (err) throw err;
@@ -46,6 +46,8 @@ export default class AuthService {
                     return result;
                 })
             })
+
+            return true;
         } catch (e: any) {
             throw new Error(e);
         }

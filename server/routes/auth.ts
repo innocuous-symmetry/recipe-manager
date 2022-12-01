@@ -15,8 +15,10 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     app.use('/auth', router);
 
     router.get('/', restrictAccess, (req, res, next) => {
+        if (!req.user) return;
+
         // @ts-ignore: does not recognize structure of req.user
-        const user = req.user?.user;
+        const { user } = req.user;
         const userData = {
             id: user.id,
             firstname: user.firstname,
