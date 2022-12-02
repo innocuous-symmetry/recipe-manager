@@ -30,6 +30,10 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
         setInput(received);
     }, []);
 
+    useEffect(() => {
+        if (authContext.user) navigate('/');
+    }, [authContext]);
+
     const formConfig: FormConfig<IUser> = {
         parent: "register",
         keys: ['firstname', 'lastname', 'handle', 'email', 'password'],

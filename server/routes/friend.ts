@@ -23,10 +23,16 @@ export const friendRouter = (app: Express) => {
     // get all friendships for a user
     router.get('/', async (req, res, next) => {
         const { user }: any = req.user;
+        const { pending } = req.query;
 
         try {
-            const result = await UserInstance.getFriends(user.id);
-            res.status(200).send(result);
+            if (pending) {
+                const result = await UserInstance.getPendingFriendRequests(user.id);
+                res.status(200).send(result);
+            } else {
+                const result = await UserInstance.getFriends(user.id);
+                res.status(200).send(result);
+            }
         } catch(e) {
             next(e);
         }

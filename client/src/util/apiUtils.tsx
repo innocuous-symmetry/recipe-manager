@@ -10,7 +10,7 @@ export const getBaseAPI = async () => {
     return fetch(API);
 }
 
-// auth and general user handlers
+// auth and general user management handlers
 export const checkCredientials = async () => {
     try {
         const response = await axios({
@@ -81,7 +81,46 @@ export const createNewCollection = async (body: ICollection) => {
     }
 }
 
-// for user friendships
+// for users and user friendships
+export const getAllUsers = async () => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: API + '/users'
+        })
+
+        return Promise.resolve(response.data);
+    } catch(e: any) {
+        throw e;
+    }
+}
+
+export const addFriend = async (id: string) => {
+    try {
+        const response = await axios({
+            method: "POST",
+            url: API + '/friend/' + id
+        })
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
+export const getPendingFriendRequests = async () => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: API + '/friend?pending=true'
+        })
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
 export const getFriendships = async () => {
     try {
         const response = await axios({

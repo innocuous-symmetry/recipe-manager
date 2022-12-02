@@ -123,6 +123,18 @@ export class User {
         }
     }
 
+    async getPendingFriendRequests(senderid: number | string) {
+        try {
+            const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE pending = true AND senderid = $1`
+            const result = await pool.query(statement, [senderid]);
+
+            if (result.rows.length) return { ok: true, code: 200, result: result.rows }
+            return { ok: true, code: 200, result: "No pending friend requests found" }
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async addFriendship(userid: number | string, targetid: number | string) {
         try {
             const statement = `

@@ -1,7 +1,6 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IUser } from "../../../schemas";
-import { Page } from "../../ui";
 import AboutYou from "./aboutyou";
 import AddFriends from "./addfriends";
 import InitialCollection from "./collection";

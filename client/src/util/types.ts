@@ -10,6 +10,8 @@ interface PortalBase {
 
 interface ButtonParams extends PortalBase {
     onClick?: (params?: any) => any
+    disabled?: boolean
+    disabledText?: string
 }
 
 export interface MultiChildPortal extends PortalBase {
@@ -18,6 +20,8 @@ export interface MultiChildPortal extends PortalBase {
 
 interface UserCardProps extends PortalBase {
     user: IUser
+    canAdd?: boolean
+    liftData?: (data: any) => void
 }
 
 interface NavbarProps {

@@ -64,6 +64,16 @@ export default class UserCtl {
         }
     }
 
+    async getPendingFriendRequests(senderid: string | number) {
+        try {
+            const { ok, code, result } = await UserInstance.getPendingFriendRequests(senderid);
+            if (ok) return result;
+            throw createError(code, result);
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async addFriendship(userid: number | string, targetid: number | string) {
         try {
             const result = await UserInstance.addFriendship(userid, targetid);
