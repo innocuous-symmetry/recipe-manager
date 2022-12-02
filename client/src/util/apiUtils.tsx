@@ -1,4 +1,4 @@
-import { IUser, IUserAuth } from "../schemas";
+import { ICollection, IUser, IUserAuth } from "../schemas";
 import { IAuthContext } from "../context/AuthContext";
 import axios from "axios";
 const API = import.meta.env.APISTRING || "http://localhost:8080";
@@ -10,24 +10,7 @@ export const getBaseAPI = async () => {
     return fetch(API);
 }
 
-// auth handlers
-export const attemptLogin = async (data: IUserAuth): Promise<IAuthContext> => {
-    try {
-        const response = await axios({
-            method: "POST",
-            url: API + '/auth/login',
-            data: data
-        });
-
-        console.log(response);
-
-        const result = Promise.resolve(response.data);
-        return result;
-    } catch (e: any) {
-        throw e;
-    }
-}
-
+// auth and general user handlers
 export const checkCredientials = async () => {
     try {
         const response = await axios({
@@ -38,6 +21,21 @@ export const checkCredientials = async () => {
         return Promise.resolve(response.data);
     } catch (e: any) {
         console.log(e);
+    }
+}
+
+export const attemptLogin = async (data: IUserAuth) => {
+    try {
+        const response = await axios({
+            method: "POST",
+            url: API + '/auth/login',
+            data: data
+        });
+
+        const result = Promise.resolve(response.data);
+        return result;
+    } catch (e: any) {
+        throw e;
     }
 }
 
@@ -61,6 +59,21 @@ export const attemptRegister = async (body: IUser) => {
             url: API + '/auth/register',
             data: JSON.stringify(body)
         })
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
+// methods for managing collections
+export const createNewCollection = async (body: ICollection) => {
+    try {
+        const response = await axios({
+            method: "POST",
+            url: API + '/collection',
+            data: JSON.stringify(body)
+        });
 
         return Promise.resolve(response.data);
     } catch (e: any) {

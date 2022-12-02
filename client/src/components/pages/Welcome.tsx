@@ -34,6 +34,7 @@ const Welcome = () => {
             <Panel extraStyles='inherit-background c-papyrus uppercase'>
                 <h1>Welcome to Recipin</h1>
                 <Button onClick={unwrap}>Check Credentials</Button>
+                <Button onClick={() => console.log(authContext)}>Auth Context</Button>
                 <Button onClick={attemptLogout}>Log Out</Button>
             </Panel>
 

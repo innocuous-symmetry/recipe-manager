@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+import { RegisterVariantType, VariantLabel } from ".";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IUser, IUserAuth } from "../../../schemas";
 import { attemptLogin, attemptRegister } from "../../../util/apiUtils";
@@ -18,7 +19,7 @@ const blankUser: IUser = {
     isadmin: false
 }
 
-export default function AboutYou() {
+const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
     const navigate = useNavigate();
     const authContext = useAuthContext();
     const [form, setForm] = useState<JSX.Element[]>([<p key={v4()}>Loading content...</p>]);
@@ -40,16 +41,17 @@ export default function AboutYou() {
 
     async function handleRegister() {
         const res = await attemptRegister(input);
-        console.log(res);
-        setRegSuccess(res);
+        if (res.ok) {
+            transitionDisplay(VariantLabel.InitialCollection, input);
+        }
     }
 
     async function unwrapLogin() {
         const data: IUserAuth = { email: input.email, password: input.password || "" }
-        console.log(data);
         const login = await attemptLogin(data);
-        console.log(login);
-        authContext.user = login.user;
+        if (login) {
+            authContext.user = login.user;
+        }
         navigate('/');
     }
 
@@ -76,3 +78,5 @@ export default function AboutYou() {
         </Page>
     )
 }
+
+export default AboutYou;

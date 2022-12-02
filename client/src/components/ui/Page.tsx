@@ -5,7 +5,6 @@ import "/src/sass/components/Page.scss";
 const Page: PageComponent = ({ extraStyles, children }) => {
     return (
         <main id="view">
-            <Navbar />
             <section className={`Page ${extraStyles || null}`}>
                 { children || null }
             </section>

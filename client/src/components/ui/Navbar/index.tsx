@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoggedIn, NotLoggedIn, Registering } from "./variants";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IUser } from "../../../schemas";
 import "/src/sass/components/Navbar.scss";
 
-const Navbar = () => {
+const Navbar: FC<{receiveChange: (change: IUser) => void}> = ({ receiveChange }) => {
     // setup and local state
     const navigate = useNavigate();
     const authContext = useAuthContext();
@@ -30,6 +30,7 @@ const Navbar = () => {
     }, [authContext])
 
     useEffect(() => {
+        if (received) receiveChange(received);
         setDisplayed(received ? variants.loggedin : variants.notloggedin);
     }, [received, setReceived]);
 

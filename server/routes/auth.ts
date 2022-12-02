@@ -59,10 +59,8 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
         try {
             const data: IUser = req.body;
             const response = await AuthInstance.register(data);
-            if (!response) res.sendStatus(400);
-            // const login = await AuthInstance.login({ email: data.email, password: data.password! });
-            // console.log(login);
-            res.status(200).redirect('/');
+            if (!response) res.status(400).send({ ok: false });
+            res.status(200).send({ ok: true });
         } catch(e) {
             next(e);
         }

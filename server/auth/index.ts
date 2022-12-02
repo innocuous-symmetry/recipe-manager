@@ -33,18 +33,7 @@ export default class AuthService {
                     password: hash
                 }
 
-                const res: IUser | null = await UserInstance.post(newData);
-                if (res) receivedUser = res;
-
-                // basic profile setup
-                res && await CollectionInstance.post({
-                    name: `${data.firstname}'s Collection`,
-                    active: true,
-                    ismaincollection: true,
-                    ownerid: res.id!.toString(),
-                    datecreated: now,
-                    datemodified: now
-                });
+                await UserInstance.post(newData);
             })
 
             return true;
