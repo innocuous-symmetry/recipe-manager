@@ -47,7 +47,6 @@ export class Collection {
 
     async post(data: ICollection) {
         console.log('new default collection');
-        console.log(data);
         const { name, active, ismaincollection, ownerid } = data;
         try {
             const statement = `

@@ -23,7 +23,7 @@ export default function AboutYou() {
     const authContext = useAuthContext();
     const [form, setForm] = useState<JSX.Element[]>([<p key={v4()}>Loading content...</p>]);
     const [input, setInput] = useState<IUser>(blankUser);
-    const [regSuccess, setRegSuccess] = useState<boolean>();
+    const [regSuccess, setRegSuccess] = useState<any>();
 
     const getFormState = useCallback((received: IUser) => {
         setInput(received);
@@ -40,11 +40,15 @@ export default function AboutYou() {
 
     async function handleRegister() {
         const res = await attemptRegister(input);
+        console.log(res);
         setRegSuccess(res);
     }
 
     async function unwrapLogin() {
-        const login = await attemptLogin({ email: input.email, password: input.password as string } as IUserAuth);
+        const data: IUserAuth = { email: input.email, password: input.password || "" }
+        console.log(data);
+        const login = await attemptLogin(data);
+        console.log(login);
         authContext.user = login.user;
         navigate('/');
     }
@@ -55,7 +59,7 @@ export default function AboutYou() {
 
     useEffect(() => {
         if (regSuccess) unwrapLogin();
-    }, [regSuccess, handleRegister])
+    }, [regSuccess])
 
     return (
         <Page>

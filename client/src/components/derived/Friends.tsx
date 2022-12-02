@@ -16,7 +16,7 @@ export default function Friends() {
 
         const wrapper = async () => {
             // HARD CODED
-            const result = await getFriendships(1);
+            const result = await getFriendships();
             setFriends(result);
         }
 

@@ -18,33 +18,33 @@ export default class AuthService {
         data.isadmin = false;
 
         try {
+            let receivedUser: IUser | undefined;
+
+            // not allowed to use email address that already exists
             const user = await UserInstance.getOneByEmail(email);
             if (user) throw createError('409', 'Email already in use');
 
             // hash password and create new user record
-            bcrypt.genSalt(10, (err, salt) => {
+            const salt = await bcrypt.genSalt();
+            bcrypt.hash(password!, salt, async (err, hash) => {
                 if (err) throw err;
-                bcrypt.hash(password!, salt, async (err, hash) => {
-                    if (err) throw err;
-                    const newData = {
-                        ...data,
-                        password: hash
-                    }
-                    
-                    const result: IUser = await UserInstance.post(newData);
+                const newData = {
+                    ...data,
+                    password: hash
+                }
 
-                    // basic profile setup
-                    await CollectionInstance.post({
-                        name: `${data.firstname}'s Collection`,
-                        active: true,
-                        ismaincollection: true,
-                        ownerid: result.id!.toString(),
-                        datecreated: now,
-                        datemodified: now
-                    });
+                const res: IUser | null = await UserInstance.post(newData);
+                if (res) receivedUser = res;
 
-                    return result;
-                })
+                // basic profile setup
+                res && await CollectionInstance.post({
+                    name: `${data.firstname}'s Collection`,
+                    active: true,
+                    ismaincollection: true,
+                    ownerid: res.id!.toString(),
+                    datecreated: now,
+                    datemodified: now
+                });
             })
 
             return true;

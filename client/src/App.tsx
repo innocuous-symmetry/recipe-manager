@@ -17,9 +17,13 @@ function App() {
 
   useEffect(() => {
     const wrapper = async () => {
-      const result: IAuthContext | undefined = await checkCredientials();
-      if (result == undefined) setUser({ user: undefined });
-      setUser(result!);
+      try {
+        const result: IAuthContext | undefined = await checkCredientials();
+        if (result == undefined) setUser({ user: undefined });
+        setUser(result!);
+      } catch(e) {
+        console.error(e);
+      }
     }
 
     wrapper();

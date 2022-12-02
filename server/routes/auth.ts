@@ -15,7 +15,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     app.use('/auth', router);
 
     router.get('/', restrictAccess, (req, res, next) => {
-        if (!req.user) return;
+        if (!req.user) res.send({ user: undefined });
 
         // @ts-ignore: does not recognize structure of req.user
         const { user } = req.user;
@@ -55,25 +55,28 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
         }
     })
 
+    router.post('/register', async (req, res, next) => {
+        try {
+            const data: IUser = req.body;
+            const response = await AuthInstance.register(data);
+            if (!response) res.sendStatus(400);
+            // const login = await AuthInstance.login({ email: data.email, password: data.password! });
+            // console.log(login);
+            res.status(200).redirect('/');
+        } catch(e) {
+            next(e);
+        }
+    })
+
     router.delete('/logout', async (req, res, next) => {
         try {
             req.session.destroy((err) => {
                 if (err) throw err;
             })
             res.clearCookie('userid');
-            res.status(204).send({ message: "Logout successful", success: true });
+            res.status(204).redirect('/');
         } catch(e) {
             next(e);
         }
     });
-
-    router.post('/register', async (req, res, next) => {
-        try {
-            const data: IUser = req.body;
-            const response = await AuthInstance.register(data);
-            res.status(200).send(response);
-        } catch(e) {
-            next(e);
-        }
-    })
 }

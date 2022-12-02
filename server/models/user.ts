@@ -72,8 +72,6 @@ export class User {
 
     async post(data: IUser) {
         const { firstname, lastname, handle, email, password, active, isadmin } = data;
-        const datecreated = now;
-        const datemodified = now;
 
         try {
             const statement = `
@@ -83,9 +81,9 @@ export class User {
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING *;
             `;
-            const params = [firstname, lastname, handle, email, password, active, isadmin, datecreated, datemodified];
+            const params = [firstname, lastname, handle, email, password, active, isadmin, now, now];
             const result = await pool.query(statement, params);
-            if (result.rows.length) return result.rows[0];
+            if (result.rows.length) return result.rows[0] as IUser;
             return null;
         } catch (error: any) {
             throw new Error(error);
