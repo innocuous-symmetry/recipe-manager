@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { IUser } from "../../schemas";
 import { addFriend, getPendingFriendRequests } from "../../util/apiUtils";
 import { UserCardType } from "../../util/types";
 import Button from "./Button";
 import Card from "./Card";
 
 const UserCard: UserCardType = ({ extraStyles, user, canAdd = false, liftData }) => {
-    const [shouldDisable, setShouldDisable] = useState<boolean>(false);
+    const [shouldDisable, setShouldDisable] = useState<boolean>(canAdd);
     
     useEffect(() => {
         (async function() {
@@ -16,7 +15,6 @@ const UserCard: UserCardType = ({ extraStyles, user, canAdd = false, liftData })
             for (let req of requestsOpen) {
                 if (req.targetid == user.id) {
                     setShouldDisable(true);
-                    console.log(req);
                     return;
                 }
             }

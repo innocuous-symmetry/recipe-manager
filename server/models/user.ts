@@ -92,7 +92,11 @@ export class User {
 
     async getFriends(id: number | string) {
         try {
-            const sql = fs.readFileSync(appRoot + '/db/sql/derived/friendships.sql').toString();
+            // const sql = fs.readFileSync(appRoot + '/db/sql/derived/friendships.sql').toString();
+            const sql = `
+                SELECT * FROM recipin.cmp_userfriendships
+                WHERE senderid = $1;
+            `
             const result = await pool.query(sql, [id]);
             if (result.rows.length) return result.rows;
             return null;

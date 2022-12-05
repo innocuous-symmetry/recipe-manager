@@ -1,5 +1,6 @@
 import { Express, Router } from 'express';
 import UserCtl from '../controllers/UserCtl';
+import { IUser } from '../schemas';
 const router = Router();
 const userCtl = new UserCtl();
 
@@ -13,11 +14,18 @@ export const userRoute = (app: Express) => {
     })
 
     // get, put by id
-    router.get('/:id', async (req, res, next) => {
-        const { id } = req.params;
+    router.get('/:userid', async (req, res, next) => {
+        const { userid } = req.params;
         try {
-            const result = await userCtl.getOne(id);
-            res.status(200).send(result);
+            const result: IUser = await userCtl.getOne(userid);
+            const { email, id, firstname, lastname, handle } = result;
+            res.status(200).send({
+                id: id,
+                email: email,
+                firstname: firstname,
+                lastname: lastname,
+                handle: handle
+            });
         } catch(e) {
             next(e);
         }

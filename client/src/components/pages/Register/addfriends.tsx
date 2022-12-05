@@ -10,7 +10,7 @@ const AddFriends: RegisterVariantType = ({ transitionDisplay }) => {
     const [userPool, setUserPool] = useState<IUser[]>([]);
     const [friendResults, setFriendResults] = useState<IUser[]>([]);
 
-    const handleClick = async () => {
+    const handleTransition = async () => {
         transitionDisplay(VariantLabel.FinishUp);
     }
 
@@ -70,7 +70,7 @@ const AddFriends: RegisterVariantType = ({ transitionDisplay }) => {
                 </div>
             </Panel>
 
-            <Button onClick={handleClick}>Finish</Button>
+            <Button onClick={handleTransition}>Finish</Button>
         </Page>
     )
 }

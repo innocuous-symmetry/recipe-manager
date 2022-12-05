@@ -50,3 +50,9 @@ export interface IGroceryList extends HasHistory, CanDeactivate {
     name: string
     ownerid: string | number
 }
+
+export interface IFriendship extends HasHistory, CanDeactivate {
+    senderid: string | number
+    targetid: string | number
+    pending: boolean
+}

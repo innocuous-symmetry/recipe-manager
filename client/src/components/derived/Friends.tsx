@@ -1,34 +1,50 @@
 import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { useAuthContext } from "../../context/AuthContext";
-import { getFriendships } from "../../util/apiUtils";
+import { getAllUsers, getFriendships, getPendingFriendRequests, getUserByID } from "../../util/apiUtils";
 import UserCard from "../ui/UserCard";
-import { IUser } from "../../schemas";
+import { IUser, IFriendship } from "../../schemas";
 import { Panel } from "../ui";
 
 export default function Friends() {
-    const [friends, setFriends] = useState<IUser[]>();
+    const [friends, setFriends] = useState<IFriendship[]>();
+    const [userList, setUserList] = useState(new Array<IUser>());
     const { user } = useAuthContext();
 
     useEffect(() => {
         if (!user) return;
-        const { id } = user;
+        (async function() {
+            const rawResult = await getFriendships();
+            console.log(rawResult);
 
-        const wrapper = async () => {
-            // HARD CODED
-            const result = await getFriendships();
+            const result = rawResult.filter((item: IFriendship) => (item.senderid == user.id) && !(item.pending));
+            console.log(result);
+
             setFriends(result);
-        }
-
-        wrapper();
+        })()
     }, [user])
+
+    useEffect(() => {
+        friends && friends.map(async (friend: IFriendship) => {
+            const userData = await getUserByID(friend.targetid);
+            if (userData) setUserList((prev: IUser[]) => {
+                return [...prev, userData]
+            })
+        })
+    }, [friends]);
+
+    useEffect(() => {
+        console.log(userList);
+    }, [setUserList])
 
     return (
         <Panel extraStyles="flex-row">
             <h2>Your friendships:</h2>
-            { friends && friends.map((user: IUser) => {
-                return <UserCard key={v4()} user={user} />
-            })}
+            {
+                userList.map((user: IUser) => {
+                    return <UserCard key={v4()} user={user} />
+                })
+            }
         </Panel>
     )
 }

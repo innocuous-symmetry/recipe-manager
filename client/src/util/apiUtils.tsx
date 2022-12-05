@@ -95,6 +95,19 @@ export const getAllUsers = async () => {
     }
 }
 
+export const getUserByID = async (id: string | number) => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: API + '/users/' + id as string
+        })
+
+        return Promise.resolve(response.data);
+    } catch (e: any) {
+        throw e;
+    }
+}
+
 export const addFriend = async (id: string) => {
     try {
         const response = await axios({
