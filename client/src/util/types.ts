@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Form } from "../components/ui";
 import { IUser } from "../schemas";
 
-interface PortalBase {
+export interface PortalBase {
     children?: ReactNode
     extraStyles?: string
 }

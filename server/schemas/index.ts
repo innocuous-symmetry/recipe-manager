@@ -29,9 +29,10 @@ export interface IUserAuth {
 
 export interface IRecipe extends HasHistory, CanDeactivate {
     name: string
-    description?: string
     preptime: string
     authoruserid: string | number
+    description?: string
+    ingredients?: string[]
 }
 
 export interface IIngredient extends HasHistory {

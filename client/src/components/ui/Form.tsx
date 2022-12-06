@@ -54,6 +54,11 @@ export default class Form<T>{
         let output = new Array<JSX.Element>();
 
         for (let i = 0; i < this.keys.length; i++) {
+            if (this.dataTypes[i] == 'custom picker') {
+                console.log('noted!');
+                this.dataTypes[i] = 'text';
+            }
+
             output.push(
                 <div id={`${this.parent}-row-${i}`} key={v4()}>
                     <label htmlFor={`${this.parent}-${this.keys[i]}`}>{this.labels[i]}</label>

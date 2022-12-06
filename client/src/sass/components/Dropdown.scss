@@ -1,0 +1,29 @@
+.ui-dropdown {
+    &.top-menu-bar {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+        top: 5rem;
+        background-color: rgb(52, 29, 29);
+        color: white;
+        border-radius: 0;
+        z-index: 3;
+        width: 100%;
+
+        .ui-button {
+            background-color: red;
+            margin: 0 1rem;
+            z-index: 7;
+
+            &:hover {
+                background-color: purple;
+            }
+            
+            &:last-child {
+                margin-right: 2rem;
+            }
+        }
+    }
+}

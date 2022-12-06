@@ -21,21 +21,14 @@ const Welcome = () => {
         <Panel extraStyles="inherit-background c-papyrus uppercase">
             <h2>Ready to get started?</h2>
             <Button onClick={() => navigate('/register')}>Register</Button>
+            <Button onClick={attemptLogout}>Log Out</Button>
         </Panel>
     )
-
-    const unwrap = async () => {
-        const result = await checkCredientials();
-        console.log(result);
-    }
 
     return (
         <Page extraStyles="narrow-dividers">
             <Panel extraStyles='inherit-background c-papyrus uppercase'>
                 <h1>Welcome to Recipin</h1>
-                <Button onClick={unwrap}>Check Credentials</Button>
-                <Button onClick={() => console.log(authContext)}>Auth Context</Button>
-                <Button onClick={attemptLogout}>Log Out</Button>
             </Panel>
 
             <Divider />
