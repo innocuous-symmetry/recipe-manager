@@ -1,49 +1,11 @@
-import { Button, Divider, Page, Panel, TextField, UserCard } from "../../ui";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { Button, Divider, Page, Panel } from "../../ui";
 import { RegisterVariantType, VariantLabel } from ".";
-import { IUser } from "../../../schemas";
-import { getAllUsers } from "../../../util/apiUtils";
-import { v4 } from 'uuid';
+import FriendSearchWidget from "../../ui/Widgets/FriendSearchWidget";
 
 const AddFriends: RegisterVariantType = ({ transitionDisplay }) => {
-    const [searchTerm, setSearchTerm] = useState<string>();
-    const [userPool, setUserPool] = useState<IUser[]>([]);
-    const [friendResults, setFriendResults] = useState<IUser[]>([]);
-
     const handleTransition = async () => {
         transitionDisplay(VariantLabel.FinishUp);
     }
-
-    // this isn't really working right now i don't think
-    const handleRequestSent = useCallback((targetid: string | number) => {
-        setUserPool((prev: IUser[]) => {
-            const newResults = prev.filter((user: IUser) => {
-                return user.id !== targetid;
-            })
-
-            return newResults;
-        })
-    }, [])
-
-    // load available user pool on mount
-    useEffect(() => {
-        (async function() {
-            const result = await getAllUsers();
-            if (result) setUserPool(result);
-        })();
-    }, [])
-
-    useEffect(() => {
-        if (!searchTerm) {
-            setFriendResults(new Array<IUser>());
-        } else {
-            const narrowedPool = userPool?.filter((person: IUser) => {
-                if (person.firstname.toLowerCase().includes(searchTerm) || person.lastname.toLowerCase().includes(searchTerm) || person.handle.toLowerCase().includes(searchTerm)) return person;
-            })
-
-            setFriendResults(narrowedPool);
-        }
-    }, [userPool, searchTerm])
 
     return (
         <Page>
@@ -58,16 +20,7 @@ const AddFriends: RegisterVariantType = ({ transitionDisplay }) => {
                 <p>This will allow you to share recipes and collections back and forth, and leave comments on each other's recipes.</p>
 
                 <h3>If you know their email or unique handle, type it in below!</h3>
-
-                <div id="friend-search-widget">
-                    <TextField onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value.toLowerCase())} placeholder={'Search'} />
-
-                    {
-                        friendResults && friendResults.map((friend: IUser) => {
-                            return <UserCard key={v4()} user={friend} canAdd liftData={() => handleRequestSent(friend.id!)} />
-                        })
-                    }
-                </div>
+                <FriendSearchWidget />
             </Panel>
 
             <Button onClick={handleTransition}>Finish</Button>

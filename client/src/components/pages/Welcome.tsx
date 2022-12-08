@@ -13,7 +13,7 @@ const Welcome = () => {
         <Panel extraStyles="inherit-background c-papyrus uppercase flexrow">
             <Button onClick={() => navigate('/explore')}>Browse Recipes</Button>
             <Button onClick={() => navigate('/subscriptions')}>Subscriptions</Button>
-            <Button onClick={() => navigate('/grocery-lists')}>Grocery Lists</Button>
+            <Button onClick={() => navigate('/grocery-list')}>Grocery Lists</Button>
         </Panel>
     )
 

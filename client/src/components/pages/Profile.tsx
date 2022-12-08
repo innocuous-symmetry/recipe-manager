@@ -8,7 +8,6 @@ import Friends from "../derived/Friends";
 
 export default function Profile() {
     const [message, setMessage] = useState<JSX.Element>();
-    // const { user } = useAuthContext();
     const { user } = useAuthContext();
     const navigate = useNavigate();
 

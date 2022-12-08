@@ -19,6 +19,8 @@ import CollectionBrowser from './components/pages/CollectionBrowser';
 import { Navbar } from './components/ui';
 import './sass/App.scss'
 import RichText from './components/ui/RichText';
+import GroceryList from './components/pages/GroceryList';
+import GroceryListCollection from './components/pages/GroceryListCollection';
 
 function App() {
   const [user, setUser] = useState<IAuthContext>({ user: undefined });
@@ -65,6 +67,8 @@ function App() {
             <Route path="/subscriptions/:id"      element={<Collection />} />
 
             <Route path="/add-recipe"             element={<AddRecipe />} />
+            <Route path="/grocery-list"           element={<GroceryListCollection />} />
+            <Route path="/grocery-list/:id"       element={<GroceryList />} />
           </Routes>
         </div>
       </AuthContext.Provider>

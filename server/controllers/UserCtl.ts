@@ -47,7 +47,7 @@ export default class UserCtl {
     async getFriends(id: number | string) {
         try {
             const result = await UserInstance.getFriends(id);
-            if (!result) throw createError(404, "You have no friends");
+            if (!result) return createError(404, "You have no friends");
             return result;
         } catch (e: any) {
             throw new Error(e);
