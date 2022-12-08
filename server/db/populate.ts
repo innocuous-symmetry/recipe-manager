@@ -16,14 +16,34 @@ export default async function populate() {
         ;
     `
 
+    const populateCuisines = `
+        INSERT INTO recipin.cuisine (name, datecreated, datemodified, active) VALUES
+            ('Thai', $1, $1, true),
+            ('American', $1, $1, true),
+            ('Tex Mex', $1, $1, true),
+            ('Italian', $1, $1, true),
+            ('Korean', $1, $1, true)
+        ;
+    `
+
+    const populateCourses = `
+        INSERT INTO recipin.course (name, datecreated, datemodified, active) VALUES
+            ('Breakfast', $1, $1, true),
+            ('Lunch', $1, $1, true),
+            ('Dinner', $1, $1, true),
+            ('Appetizers', $1, $1, true),
+            ('Dessert', $1, $1, true)
+        ;
+    `
+
     const populateRecipes = `
         INSERT INTO recipin.recipe
-            (name, description, preptime, authoruserid, datecreated, datemodified)
+            (name, description, preptime, authoruserid, cuisineid, courseid, datecreated, datemodified)
         VALUES
-            ('Pad Thai', 'noodles', '1 hour', 1, $1, $1),
-            ('Tacos', null, '30 minutes', 1, $1, $1),
-            ('Garlic knots', null, '1 hour', 4, $1, $1),
-            ('Cacio e pepe', 'stinky pasta', '1 hour', 3, $1, $1)
+            ('Pad Thai', 'noodles', '1 hour', 1, 1, 3, $1, $1),
+            ('Tacos', null, '30 minutes', 1, 3, 3, $1, $1),
+            ('Garlic knots', null, '1 hour', 4, 4, 3, $1, $1),
+            ('Cacio e pepe', 'stinky pasta', '1 hour', 3, 4, 3, $1, $1)
         ;
     `
 
@@ -79,9 +99,9 @@ export default async function populate() {
     `
 
     const allStatements: Array<string> = [
-        populateUsers, populateRecipes, populateCollection,
-        populateIngredients, populateGroceryList, populateFriendships,
-        populateComments
+        populateUsers, populateCuisines, populateCourses, populateRecipes,
+        populateCollection, populateIngredients, populateGroceryList,
+        populateFriendships, populateComments
     ];
 
     await pool.query(setup);

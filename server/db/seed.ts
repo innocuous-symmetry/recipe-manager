@@ -16,21 +16,23 @@ dotenv.config();
         CREATE SCHEMA IF NOT EXISTS recipin;
     `
 
-    const appusers = fs.readFileSync(appRoot + '/db/sql/create/createappusers.sql').toString();
-    const ingredient = fs.readFileSync(appRoot + '/db/sql/create/createingredient.sql').toString();
-    const collection = fs.readFileSync(appRoot + '/db/sql/create/createcollection.sql').toString();
-    const groceryList = fs.readFileSync(appRoot + '/db/sql/create/creategrocerylist.sql').toString();
-    const recipe = fs.readFileSync(appRoot + '/db/sql/create/createrecipe.sql').toString();
-    const recipecomments = fs.readFileSync(appRoot + '/db/sql/create/createrecipecomments.sql').toString();
-    const recipeingredient = fs.readFileSync(appRoot + '/db/sql/create/createcmp_recipeingredient.sql').toString();
-    const recipecollection = fs.readFileSync(appRoot + '/db/sql/create/createcmp_recipecollection.sql').toString();
-    const usersubscriptions = fs.readFileSync(appRoot + '/db/sql/create/createcmp_usersubscriptions.sql').toString();
-    const userfriendships = fs.readFileSync(appRoot + '/db/sql/create/createcmp_userfriendships.sql').toString();
+    const appusers =            fs.readFileSync(appRoot + '/db/sql/create/createappusers.sql').toString();
+    const ingredient =          fs.readFileSync(appRoot + '/db/sql/create/createingredient.sql').toString();
+    const collection =          fs.readFileSync(appRoot + '/db/sql/create/createcollection.sql').toString();
+    const groceryList =         fs.readFileSync(appRoot + '/db/sql/create/creategrocerylist.sql').toString();
+    const cuisine =             fs.readFileSync(appRoot + '/db/sql/create/createcuisine.sql').toString();
+    const course =              fs.readFileSync(appRoot + '/db/sql/create/createcourse.sql').toString();
+    const recipe =              fs.readFileSync(appRoot + '/db/sql/create/createrecipe.sql').toString();
+    const recipecomments =      fs.readFileSync(appRoot + '/db/sql/create/createrecipecomments.sql').toString();
+    const recipeingredient =    fs.readFileSync(appRoot + '/db/sql/create/createcmp_recipeingredient.sql').toString();
+    const recipecollection =    fs.readFileSync(appRoot + '/db/sql/create/createcmp_recipecollection.sql').toString();
+    const usersubscriptions =   fs.readFileSync(appRoot + '/db/sql/create/createcmp_usersubscriptions.sql').toString();
+    const userfriendships =     fs.readFileSync(appRoot + '/db/sql/create/createcmp_userfriendships.sql').toString();
 
     const allStatements = [
-        setRole, appusers, ingredient, collection, recipe, recipecomments,
-        groceryList, recipeingredient, recipecollection, usersubscriptions,
-        userfriendships
+        setRole, appusers, ingredient, collection, cuisine, course, 
+        recipe, recipecomments, groceryList, recipeingredient, 
+        recipecollection, usersubscriptions, userfriendships
     ]
 
     try {

@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS recipin.recipe (
     datecreated varchar NOT NULL,
     datemodified varchar NOT NULL,
     description varchar,
-    authoruserid int REFERENCES recipin.appusers (id)
+    authoruserid int REFERENCES recipin.appusers (id),
+    cuisineid int REFERENCES recipin.cuisine (id),
+    courseid int REFERENCES recipin.course (id)
 );

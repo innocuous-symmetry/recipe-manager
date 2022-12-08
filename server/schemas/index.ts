@@ -31,6 +31,8 @@ export interface IRecipe extends HasHistory, CanDeactivate {
     name: string
     preptime: string
     authoruserid: string | number
+    cuisineid?: string | number
+    courseid?: string | number
     description?: string
     ingredients?: string[]
 }
@@ -38,6 +40,7 @@ export interface IRecipe extends HasHistory, CanDeactivate {
 export interface IIngredient extends HasHistory {
     name: string
     description?: string
+    flavorprofile?: string | FlavorProfile['name']
     createdbyid: string | number
 }
 
@@ -56,4 +59,17 @@ export interface IFriendship extends HasHistory, CanDeactivate {
     senderid: string | number
     targetid: string | number
     pending: boolean
+}
+
+export interface ICuisine extends HasHistory, CanDeactivate {
+    name: string
+}
+
+export interface ICourse extends HasHistory, CanDeactivate {
+    name: string
+}
+
+export interface FlavorProfile extends HasHistory, CanDeactivate {
+    name: string
+    description?: string
 }
