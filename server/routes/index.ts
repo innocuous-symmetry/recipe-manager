@@ -9,6 +9,7 @@ import { authRoute } from "./auth";
 import { subscriptionRoute } from "./subscription";
 import { friendRouter } from "./friend";
 import { cuisineRouter } from "./cuisine";
+import { courseRouter } from "./course";
 
 export const routes = async (app: Express, passport: PassportStatic) => {
     console.log('routes called');
@@ -17,6 +18,7 @@ export const routes = async (app: Express, passport: PassportStatic) => {
     userRoute(app);
     friendRouter(app);
     cuisineRouter(app);
+    courseRouter(app);
     recipeRoute(app);
     collectionRoute(app);
     subscriptionRoute(app);

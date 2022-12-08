@@ -4,7 +4,8 @@ import GroceryListCtl from "./GroceryListCtl";
 import IngredientCtl from "./IngredientCtl";
 import RecipeCtl from "./RecipeCtl";
 import UserCtl from "./UserCtl";
+import CourseCtl from "./CourseCtl";
 
 export {
-    CollectionCtl, CuisineCtl, GroceryListCtl, IngredientCtl, RecipeCtl, UserCtl
+    CollectionCtl, CuisineCtl, CourseCtl, GroceryListCtl, IngredientCtl, RecipeCtl, UserCtl
 }
