@@ -22,7 +22,7 @@ const blankUser: IUser = {
 const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
     const navigate = useNavigate();
     const authContext = useAuthContext();
-    const [form, setForm] = useState<JSX.Element[]>([<p key={v4()}>Loading content...</p>]);
+    const [form, setForm] = useState<JSX.Element>(<p key={v4()}>Loading content...</p>);
     const [input, setInput] = useState<IUser>(blankUser);
     const [regSuccess, setRegSuccess] = useState<any>();
 
@@ -33,15 +33,6 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
     useEffect(() => {
         if (authContext.user) navigate('/');
     }, [authContext]);
-
-    const formConfig: FormConfig<IUser> = {
-        parent: "register",
-        keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
-        initialState: input,
-        labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password"],
-        dataTypes: ['text', 'text', 'text', 'email', 'password'],
-        getState: getFormState
-    }
 
     async function handleRegister() {
         const res = await attemptRegister(input);
@@ -60,7 +51,14 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
     }
 
     useEffect(() => {
-        setForm(new Form<IUser>(formConfig).mount());
+        setForm(new Form<IUser>({
+            parent: "register",
+            keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
+            initialState: input,
+            labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password"],
+            dataTypes: ['text', 'text', 'text', 'email', 'password'],
+            getState: getFormState
+        }).mount());
     }, [])
 
     useEffect(() => {
@@ -76,7 +74,7 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
             <h2>Tell us a bit about yourself:</h2>
 
             <Panel extraStyles="form-panel two-columns">
-                { form }
+                { form || <h2>Loading...</h2> }
                 <Button onClick={handleRegister}>Register</Button>
             </Panel>
         </Page>

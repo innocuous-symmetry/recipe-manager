@@ -6,7 +6,7 @@ import { Button, Divider, Form, Page, Panel } from "../ui"
 const AddRecipe = () => {
     const authContext = useAuthContext();
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '', ingredients: [] })
-    const [form, setForm] = useState<JSX.Element[]>();
+    const [form, setForm] = useState<JSX.Element>();
 
     const getFormState = useCallback((data: IRecipe) => {
         setInput(data);
@@ -33,9 +33,9 @@ const AddRecipe = () => {
         input.authoruserid && setForm(
             new Form<IRecipe>({
                 parent: "AddRecipe",
-                keys: ["name", "preptime", "ingredients", "description"],
-                labels: ["Recipe Name:", "Prep Time:", "Ingredients:", "Description:"],
-                dataTypes: ['text', 'text', 'custom picker', 'TINYMCE'],
+                keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
+                labels: ["Recipe Name:", "Prep Time:", "Course:", "Cuisine:", "Ingredients:", "Description:"],
+                dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'custom picker', 'TINYMCE'],
                 initialState: input,
                 getState: getFormState,
                 richTextInitialValue: "<p>Enter recipe details here!</p>"
@@ -53,7 +53,7 @@ const AddRecipe = () => {
             <Divider />
 
             <Panel>
-                { form }
+                { form || <h2>Loading...</h2> }
                 <Button onClick={handleCreate}>Create Recipe!</Button>
             </Panel>
         </Page>

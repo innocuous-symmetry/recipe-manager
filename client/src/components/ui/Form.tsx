@@ -17,6 +17,7 @@ export interface FormConfig<T> {
     labels?: string[]
     dataTypes?: string[]
     richTextInitialValue?: string
+    extraStyles?: string
 }
 
 export default class Form<T>{
@@ -27,6 +28,7 @@ export default class Form<T>{
     private state: T;
     private getState: (received: T) => void
     private richTextInitialValue?: string;
+    private extraStyles?: string
 
     constructor(config: FormConfig<T>){
         this.parent = config.parent;
@@ -36,6 +38,7 @@ export default class Form<T>{
         this.state = config.initialState;
         this.getState = config.getState;
         this.richTextInitialValue = config.richTextInitialValue;
+        this.extraStyles = config.extraStyles;
     }
 
     update(e: ChangeEvent<HTMLElement>, idx: number) {
@@ -92,6 +95,6 @@ export default class Form<T>{
             output.push(input);
         }
 
-        return output;
+        return <div className={`ui-form-component ${this.extraStyles}`}>{output}</div>;
     }
 }

@@ -9,7 +9,7 @@ export default function Login() {
     // setup and local state
     const authContext = useAuthContext();
     const navigate = useNavigate();
-    const [form, setForm] = useState<JSX.Element[]>();
+    const [form, setForm] = useState<JSX.Element>();
     const [input, setInput] = useState<IUserAuth>({ email: '', password: '' });
 
     // retrieve and store state from form
@@ -45,7 +45,7 @@ export default function Login() {
             <h1>Hello! Nice to see you again.</h1>
 
             <Panel extraStyles="form-panel">
-                { form }
+                { form || <h2>Loading...</h2> }
                 <Button onClick={handleLogin}>Log In</Button>
             </Panel>
 
