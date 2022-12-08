@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { IRecipe } from "../../schemas";
-import { Button, Divider, Form, Quill, Page, Panel } from "../ui"
+import { Button, Divider, Form, Page, Panel } from "../ui"
 
 const AddRecipe = () => {
     const authContext = useAuthContext();
@@ -35,9 +35,10 @@ const AddRecipe = () => {
                 parent: "AddRecipe",
                 keys: ["name", "preptime", "ingredients", "description"],
                 labels: ["Recipe Name:", "Prep Time:", "Ingredients:", "Description:"],
-                dataTypes: ['text', 'text', 'custom picker', 'QUILL'],
+                dataTypes: ['text', 'text', 'custom picker', 'TINYMCE'],
                 initialState: input,
-                getState: getFormState
+                getState: getFormState,
+                richTextInitialValue: "<p>Enter recipe details here!</p>"
             }).mount()
         )
     }, [input.authoruserid])

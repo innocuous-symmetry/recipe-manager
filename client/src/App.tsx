@@ -18,6 +18,7 @@ import AddRecipe from './components/pages/AddRecipe';
 import CollectionBrowser from './components/pages/CollectionBrowser';
 import { Navbar } from './components/ui';
 import './sass/App.scss'
+import RichText from './components/ui/RichText';
 
 function App() {
   const [user, setUser] = useState<IAuthContext>({ user: undefined });

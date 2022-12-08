@@ -1,6 +1,6 @@
-import { ChangeEvent, ChangeEventHandler } from "react";
-import { Quill } from '.'
+import { ChangeEvent } from "react";
 import { v4 } from 'uuid';
+import RichText from "./RichText";
 
 /**
  * For the generation of more complex form objects with
@@ -16,15 +16,17 @@ export interface FormConfig<T> {
     getState: (received: T) => void
     labels?: string[]
     dataTypes?: string[]
+    richTextInitialValue?: string
 }
 
 export default class Form<T>{
-    public parent: string;
-    public labels: string[];
-    public keys: string[];
-    public dataTypes: any[]
-    public state: T;
-    public getState: (received: T) => void
+    private parent: string;
+    private labels: string[];
+    private keys: string[];
+    private dataTypes: any[]
+    private state: T;
+    private getState: (received: T) => void
+    private richTextInitialValue?: string;
 
     constructor(config: FormConfig<T>){
         this.parent = config.parent;
@@ -33,25 +35,26 @@ export default class Form<T>{
         this.dataTypes = config.dataTypes || new Array(this.keys.length).fill('text');
         this.state = config.initialState;
         this.getState = config.getState;
+        this.richTextInitialValue = config.richTextInitialValue;
     }
 
     update(e: ChangeEvent<HTMLElement>, idx: number) {
-        let newState;
-
-        if (this.dataTypes[idx] == 'QUILL') {
-            newState = {
-                ...this.state,
-                [this.keys[idx]]: e
-            }
-        } else {
-            newState = {
-                ...this.state,
-                [this.keys[idx]]: e.target['value' as keyof EventTarget]
-            }
+        let newState = {
+            ...this.state,
+            [this.keys[idx]]: e.target['value' as keyof EventTarget]
         }
 
         this.state = newState;
         this.getState(newState);
+    }
+
+    updateRichText(txt: string, idx: number) {
+        this.state = {
+            ...this.state,
+            [this.keys[idx]]: txt
+        }
+
+        this.getState(this.state);
     }
 
     mount() {
@@ -65,11 +68,11 @@ export default class Form<T>{
                 this.dataTypes[i] = 'text';
             }
 
-            if (this.dataTypes[i] == 'QUILL') {
+            if (this.dataTypes[i] == 'TINYMCE') {
                 input = (
                     <div id={`${this.parent}-row-${i}`} key={v4()}>
                         <label htmlFor={`${this.parent}-${this.keys[i]}`}>{this.labels[i]}</label>
-                        <Quill id={`${this.parent}-${this.keys[i]}`} onChange={(e) => this.update(e, i)} />
+                        <RichText id={`${this.parent}-${this.keys[i]}`} initialValue={this.richTextInitialValue} getState={(txt) => this.updateRichText(txt, i)} />
                     </div>
                 )
             } else {
