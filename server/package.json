@@ -9,7 +9,8 @@
     "populate": "npm run build && node dist/db/examplevals.js",
     "dev": "rm -rf dist && ./node_modules/.bin/tsc --project ./tsconfig.json --watch & ts-node-dev index.ts",
     "prod": "npm run build && node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
@@ -42,6 +43,7 @@
     "@types/express": "^4.17.14",
     "@types/express-session": "^1.17.5",
     "@types/http-errors": "^2.0.1",
+    "@types/jest": "^29.2.4",
     "@types/js-yaml": "^4.0.5",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
@@ -49,8 +51,12 @@
     "@types/passport-local": "^1.0.34",
     "@types/pg": "^8.6.5",
     "@types/pg-promise": "^5.4.3",
+    "@types/supertest": "^2.0.12",
     "@types/swagger-ui-express": "^4.1.3",
+    "jest": "^29.3.1",
     "nodemon": "^2.0.20",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.0.3",
     "ts-node-dev": "^2.0.0",
     "tslint": "^6.1.3",
     "typescript": "^4.9.3"

@@ -12,11 +12,12 @@ app.use(cors());
 
 export const appRoot = path.resolve(__dirname);
 
-(async function() {
-
+export default async function main() {
     const app = express();
     await loaders(app);
     app.listen(port, () => {
         console.log('listening on port ' + port);
     })
-})();
+};
+
+main();
