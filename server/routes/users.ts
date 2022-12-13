@@ -50,8 +50,8 @@ export const userRoute = (app: Express) => {
     // create user
     router.post('/', async (req, res) => {
         const data = req.body;
-        const response = userCtl.post(data);
-        res.status(200).send(response);
+        const response = await userCtl.post(data);
+        res.status(response.code).send(response.data);
     })
 
     // get friendships by requester ID

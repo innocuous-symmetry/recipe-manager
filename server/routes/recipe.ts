@@ -1,6 +1,8 @@
 import { Express, Router } from "express"
 import { restrictAccess } from "../auth/middlewares";
 import RecipeCtl from "../controllers/RecipeCtl";
+import { IRecipe } from "../schemas";
+import { CtlResponse } from "../util/types";
 const recipectl = new RecipeCtl();
 
 const router = Router();
@@ -24,17 +26,17 @@ export const recipeRoute = (app: Express) => {
         const { filterby } = req.query;
 
         try {
-            let result;
+            let result: CtlResponse<IRecipe | string>;
             switch (filterby) {
                 case "allaccessible":
-                    result = await recipectl.getAllAccessible(user.id);
-                    break;
+                    // result = await recipectl.getAllAccessible(user.id);
+                    // break;
                 default:
                     result = await recipectl.getAllAuthored(user.id);
                     break;
             }
 
-            res.status(200).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -45,8 +47,8 @@ export const recipeRoute = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const result = await recipectl.updateOne(id, data);
-            res.status(200).send(result);
+            const result: CtlResponse<IRecipe | string> = await recipectl.updateOne(id, data);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -58,7 +60,7 @@ export const recipeRoute = (app: Express) => {
 
         try {
             const result = await recipectl.post(user.id, data);
-            res.status(201).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }

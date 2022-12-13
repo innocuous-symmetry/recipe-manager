@@ -1,5 +1,7 @@
 import { Express, Router } from "express";
 import { IngredientCtl } from "../controllers";
+import { IIngredient } from "../schemas";
+import { CtlResponse } from "../util/types";
 const IngredientInstance = new IngredientCtl();
 
 const router = Router();
@@ -9,8 +11,8 @@ export const ingredientRoute = (app: Express) => {
 
     router.get('/', async (req, res, next) => {
         try {
-            const result = await IngredientInstance.getAll();
-            res.status(200).send(result);
+            const result: CtlResponse<IIngredient[] | string> = await IngredientInstance.getAll();
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -20,8 +22,8 @@ export const ingredientRoute = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const result = await IngredientInstance.getOne(id);
-            res.status(200).send(result);
+            const result: CtlResponse<IIngredient | string> = await IngredientInstance.getOne(id);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -32,8 +34,8 @@ export const ingredientRoute = (app: Express) => {
         const data = req.body;
 
         try {
-            const result = await IngredientInstance.put(id, data);
-            res.status(200).send(result);
+            const result: CtlResponse<IIngredient | string> = await IngredientInstance.put(id, data);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -43,8 +45,8 @@ export const ingredientRoute = (app: Express) => {
         const data = req.body;
 
         try {
-            const result = await IngredientInstance.post(data);
-            res.status(201).send(result);
+            const result: CtlResponse<IIngredient | string> = await IngredientInstance.post(data);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }

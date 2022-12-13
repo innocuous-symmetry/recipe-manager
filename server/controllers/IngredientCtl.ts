@@ -1,14 +1,14 @@
-import createError from "http-errors";
 import { IIngredient } from "../schemas";
 import { Ingredient } from "../models/ingredient";
+import ControllerResponse from "../util/ControllerResponse";
 const IngredientInstance = new Ingredient();
 
 export default class IngredientCtl {
     async getAll() {
         try {
             const result = await IngredientInstance.getAll();
-            if (!result) throw createError('404', 'No ingredients found');
-            return result;
+            const ok = result !== null;
+            return new ControllerResponse(ok, (ok ? 200 : 404), (ok ? result : "No recipes found"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -17,8 +17,8 @@ export default class IngredientCtl {
     async getOne(id: string) {
         try {
             const result = await IngredientInstance.getOne(id);
-            if (!result) throw createError('404', 'No ingredient found with id ' + id);
-            return result;
+            const ok = result !== null;
+            return new ControllerResponse(ok, (ok ? 200 : 404), (ok ? result : "No recipe found with this ID"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -27,8 +27,8 @@ export default class IngredientCtl {
     async post(data: IIngredient) {
         try {
             const result = await IngredientInstance.post(data);
-            if (!result) throw createError('400', 'Bad request');
-            return result;
+            const ok = result !== null;
+            return new ControllerResponse(ok, (ok ? 201 : 400), (ok ? result : "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -37,8 +37,8 @@ export default class IngredientCtl {
     async put(id: string, data: IIngredient) {
         try {
             const result = await IngredientInstance.put(id, data);
-            if (!result) throw createError('400', 'Bad request');
-            return result;
+            const ok = result !== null;
+            return new ControllerResponse(ok, (ok ? 200 : 400), (ok ? result : "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }
