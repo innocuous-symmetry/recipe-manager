@@ -11,7 +11,7 @@ export class User {
             const statement = `SELECT * FROM recipin.appusers`;
             const result = await pool.query(statement);
             if (result.rows.length) return result.rows;
-            return null;
+            return [];
         } catch (error: any) {
             throw new Error(error);
         }

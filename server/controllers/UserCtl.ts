@@ -1,24 +1,31 @@
-import createError from 'http-errors';
 import { IUser } from '../schemas';
 import { User } from "../models/user";
+import ControllerResponse from '../util/ControllerResponse';
 const UserInstance = new User();
 
 export default class UserCtl {
+    ok?: boolean
+    code?: number
+
     async getAll() {
         try {
             const users = await UserInstance.getAllUsers();
-            if (!users) throw createError(404, "No users found");
-            return users;
+            const ok = users.length > 0;
+            const code = ok ? 200 : 404;
+            const data = ok ? users : "No users found.";
+            return new ControllerResponse(ok, code, data)
         } catch (error: any) {
             throw new Error(error);
         }
     }
 
-    async post(data: IUser) {
+    async post(body: IUser) {
         try {
-            const response = await UserInstance.post(data);
-            // if (!response) throw createError(400, "Bad request");
-            return response;
+            const response = await UserInstance.post(body);
+            const ok: boolean = response !== null;
+            const code = ok ? 201 : 400
+            const data = ok ? response : "Bad request"
+            return new ControllerResponse(ok, code, data);
         } catch (error: any) {
             throw new Error(error);
         }
@@ -27,18 +34,22 @@ export default class UserCtl {
     async getOne(id: number | string) {
         try {
             const user = await UserInstance.getOneByID(id);
-            if (!user) throw createError(404, "User not found");
-            return user;
+            const ok: boolean = user !== null;
+            const code = ok ? 200 : 404;
+            const data = ok ? user : "User by this ID not found";
+            return new ControllerResponse(ok, code, data);
         } catch (error: any) {
             throw new Error(error);
         }
     }
 
-    async updateOne(id: number | string, data: IUser) {
+    async updateOne(id: number | string, body: IUser) {
         try {
-            const result = await UserInstance.updateOneByID(id, data);
-            if (!result) throw createError(400, "Bad request");
-            return result;
+            const result = await UserInstance.updateOneByID(id, body);
+            const ok = result !== null;
+            const code = ok ? 200 : 400;
+            const data = ok ? result : "Update unsuccessful"
+            return new ControllerResponse(ok, code, data);
         } catch (error: any) {
             throw new Error(error);
         }
@@ -47,8 +58,10 @@ export default class UserCtl {
     async getFriends(id: number | string) {
         try {
             const result = await UserInstance.getFriends(id);
-            if (!result) return createError(404, "You have no friends");
-            return result;
+            const ok = result !== null
+            const code = ok ? 200 : 404;
+            const data = ok ? result : "No friends found"
+            return new ControllerResponse(ok, code, data);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -57,8 +70,7 @@ export default class UserCtl {
     async getFriendshipByID(id: number | string, userid: number | string) {
         try {
             const { ok, code, result } = await UserInstance.getFriendshipByID(id, userid);
-            if (ok) return result;
-            throw createError(code, result);
+            return new ControllerResponse(ok, code, result);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -67,8 +79,7 @@ export default class UserCtl {
     async getPendingFriendRequests(senderid: string | number) {
         try {
             const { ok, code, result } = await UserInstance.getPendingFriendRequests(senderid);
-            if (ok) return result;
-            throw createError(code, result);
+            return new ControllerResponse(ok, code, result);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -77,8 +88,10 @@ export default class UserCtl {
     async addFriendship(userid: number | string, targetid: number | string) {
         try {
             const result = await UserInstance.addFriendship(userid, targetid);
-            if (!result) throw createError(400, "something went wrong");
-            return result;
+            const ok = result !== null;
+            const code = ok ? 201 : 400;
+            const data = ok ? result : "Something went wrong"
+            return new ControllerResponse(ok, code, data);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -87,8 +100,7 @@ export default class UserCtl {
     async updateFriendship(id: number | string, userid: number | string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
         try {
             const { ok, code, result } = await UserInstance.updateFriendship(id, userid, data);
-            if (ok) return result;
-            throw createError(code, result);
+            return new ControllerResponse(ok, code, result);
         } catch (e: any) {
             throw new Error(e);
         }

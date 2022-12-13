@@ -1,6 +1,7 @@
 import { Express, Router } from 'express';
 import UserCtl from '../controllers/UserCtl';
 import { IUser } from '../schemas';
+import { CtlResponse } from '../util/types';
 const router = Router();
 const userCtl = new UserCtl();
 
@@ -9,23 +10,27 @@ export const userRoute = (app: Express) => {
 
     // get all users
     router.get('/', async (req, res) => {
-        const data = await userCtl.getAll();
-        res.status(200).send(data);
+        const result: CtlResponse<IUser | string> = await userCtl.getAll();
+        res.status(result.code).send(result.data);
     })
 
     // get, put by id
     router.get('/:userid', async (req, res, next) => {
         const { userid } = req.params;
         try {
-            const result: IUser = await userCtl.getOne(userid);
-            const { email, id, firstname, lastname, handle } = result;
-            res.status(200).send({
-                id: id,
-                email: email,
-                firstname: firstname,
-                lastname: lastname,
-                handle: handle
-            });
+            const result: CtlResponse<IUser | string> = await userCtl.getOne(userid);
+            if (result.ok) {
+                const { email, id, firstname, lastname, handle } = result.data as IUser;
+                res.status(result.code).send({
+                    id: id,
+                    email: email,
+                    firstname: firstname,
+                    lastname: lastname,
+                    handle: handle
+                });
+            } else {
+                res.status(result.code).send(result.data as string);
+            }
         } catch(e) {
             next(e);
         }
