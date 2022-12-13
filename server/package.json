@@ -10,7 +10,8 @@
     "dev": "rm -rf dist && ./node_modules/.bin/tsc --project ./tsconfig.json --watch & ts-node-dev index.ts",
     "prod": "npm run build && node dist/index.js",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:o": "jest -o"
   },
   "author": "",
   "license": "ISC",

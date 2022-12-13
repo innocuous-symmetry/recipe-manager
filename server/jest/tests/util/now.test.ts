@@ -1,4 +1,4 @@
-import now from "../../util/now";
+import now from "../../../util/now";
 
 describe('now utility', () => {
     it('returns a string', () => {

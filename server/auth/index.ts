@@ -1,12 +1,11 @@
 import { IUser, IUserAuth } from "../schemas";
 import { User } from "../models/user";
-import { Collection } from "../models/collection";
 import createError from "http-errors";
 import bcrypt from "bcrypt";
 import now from "../util/now";
 
 const UserInstance = new User();
-const CollectionInstance = new Collection();
+
 export default class AuthService {
     // methods for local strategies
     async register(data: IUser) {
@@ -18,8 +17,6 @@ export default class AuthService {
         data.isadmin = false;
 
         try {
-            let receivedUser: IUser | undefined;
-
             // not allowed to use email address that already exists
             const user = await UserInstance.getOneByEmail(email);
             if (user) throw createError('409', 'Email already in use');
