@@ -3,6 +3,7 @@ import fs from "fs";
 import pool from '../db';
 import now from "../util/now";
 import { appRoot } from "../appRoot";
+import { StatusCode } from "../util/types";
 
 export class User {
     async getAllUsers() {
@@ -11,7 +12,7 @@ export class User {
             const statement = `SELECT * FROM recipin.appusers`;
             const result = await pool.query(statement);
             if (result.rows.length) return result.rows;
-            return [];
+            return null;
         } catch (error: any) {
             throw new Error(error);
         }
@@ -115,13 +116,13 @@ export class User {
                 if (row.senderid == userid || row.targetid == userid) {
                     const sql = fs.readFileSync(appRoot + '/db/sql/get/friendshipbyid.sql').toString();
                     const formattedResult = await pool.query(sql, [id]);
-                    if (formattedResult.rows.length) return { ok: true, code: 200, result: formattedResult.rows }
-                    return { ok: false, code: 400, result: "Something went wrong" }
+                    if (formattedResult.rows.length) return { ok: true, code: StatusCode.OK, result: formattedResult.rows }
+                    return { ok: false, code: StatusCode.BadRequest, result: "Something went wrong" }
                 }
-                return { ok: true, code: 403, result: "Not authorized to access this resource" }
+                return { ok: true, code: StatusCode.Forbidden, result: "Not authorized to access this resource" }
             }
             
-            return { ok: false, code: 404, result: "No friendship found with that ID" }
+            return { ok: false, code: StatusCode.NotFound, result: "No friendship found with that ID" }
         } catch (e: any) {
             throw new Error(e);
         }
@@ -132,8 +133,8 @@ export class User {
             const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE pending = true AND senderid = $1`
             const result = await pool.query(statement, [senderid]);
 
-            if (result.rows.length) return { ok: true, code: 200, result: result.rows }
-            return { ok: true, code: 200, result: "No pending friend requests found" }
+            if (result.rows.length) return { ok: true, code: StatusCode.OK, result: result.rows }
+            return { ok: true, code: StatusCode.NotFound, result: "No pending friend requests found" }
         } catch (e: any) {
             throw new Error(e);
         }
@@ -162,9 +163,9 @@ export class User {
         try {
             const query = `SELECT * FROM recipin.cmp_userfriendships WHERE id = $1`;
             const friendship = await pool.query(query, [id]);
-            if (!friendship.rows.length) return { ok: false, code: 404, result: "Friendship with this code not found" };
+            if (!friendship.rows.length) return { ok: false, code: StatusCode.NotFound, result: "Friendship with this code not found" };
             if (!(friendship.rows[0].active) && friendship.rows[0].senderid == userid) {
-                return { ok: false, code: 403, result: "Please wait for friend request to be accepted" }
+                return { ok: false, code: StatusCode.Forbidden, result: "Please wait for friend request to be accepted" }
             }
 
             const statement = `
@@ -177,8 +178,8 @@ export class User {
             `
             const values = [data.active, data.pending, (data.dateterminated || null), id];
             const result = await pool.query(statement, values);
-            if (result.rows.length) return { ok: true, code: 200, result: result.rows[0] }
-            return { ok: false, code: 400, result: "Bad request" }
+            if (result.rows.length) return { ok: true, code: StatusCode.OK, result: result.rows[0] }
+            return { ok: false, code: StatusCode.BadRequest, result: "Bad request" }
         } catch (e: any) {
             throw new Error(e);
         }

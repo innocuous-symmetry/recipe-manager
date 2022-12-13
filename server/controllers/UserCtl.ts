@@ -1,6 +1,7 @@
 import { IUser } from '../schemas';
 import { User } from "../models/user";
 import ControllerResponse from '../util/ControllerResponse';
+import { StatusCode } from '../util/types';
 const UserInstance = new User();
 
 export default class UserCtl {
@@ -10,8 +11,8 @@ export default class UserCtl {
     async getAll() {
         try {
             const users = await UserInstance.getAllUsers();
-            const ok = users.length > 0;
-            const code = ok ? 200 : 404;
+            const ok: boolean = users !== null;
+            const code: StatusCode = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? users : "No users found.";
             return new ControllerResponse(ok, code, data)
         } catch (error: any) {
@@ -23,7 +24,7 @@ export default class UserCtl {
         try {
             const response = await UserInstance.post(body);
             const ok: boolean = response !== null;
-            const code = ok ? 201 : 400
+            const code = ok ? StatusCode.NewContent : StatusCode.BadRequest
             const data = ok ? response : "Bad request"
             return new ControllerResponse(ok, code, data);
         } catch (error: any) {
@@ -35,7 +36,7 @@ export default class UserCtl {
         try {
             const user = await UserInstance.getOneByID(id);
             const ok: boolean = user !== null;
-            const code = ok ? 200 : 404;
+            const code = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? user : "User by this ID not found";
             return new ControllerResponse(ok, code, data);
         } catch (error: any) {
@@ -47,7 +48,7 @@ export default class UserCtl {
         try {
             const result = await UserInstance.updateOneByID(id, body);
             const ok = result !== null;
-            const code = ok ? 200 : 400;
+            const code = ok ? StatusCode.OK : StatusCode.BadRequest;
             const data = ok ? result : "Update unsuccessful"
             return new ControllerResponse(ok, code, data);
         } catch (error: any) {
@@ -59,7 +60,7 @@ export default class UserCtl {
         try {
             const result = await UserInstance.getFriends(id);
             const ok = result !== null
-            const code = ok ? 200 : 404;
+            const code = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? result : "No friends found"
             return new ControllerResponse(ok, code, data);
         } catch (e: any) {
@@ -89,7 +90,7 @@ export default class UserCtl {
         try {
             const result = await UserInstance.addFriendship(userid, targetid);
             const ok = result !== null;
-            const code = ok ? 201 : 400;
+            const code = ok ? StatusCode.NewContent : StatusCode.BadRequest;
             const data = ok ? result : "Something went wrong"
             return new ControllerResponse(ok, code, data);
         } catch (e: any) {
