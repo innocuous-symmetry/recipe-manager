@@ -5,16 +5,18 @@ import { StatusCode } from '../util/types';
 const UserInstance = new User();
 
 export default class UserCtl {
-    ok?: boolean
-    code?: number
-
     async getAll() {
         try {
-            const users = await UserInstance.getAllUsers();
+            // attempt to get users from database
+            const users: IUser[] | null = await UserInstance.getAllUsers();
+
+            // construct controller response
             const ok: boolean = users !== null;
             const code: StatusCode = ok ? StatusCode.OK : StatusCode.NotFound;
-            const data = ok ? users : "No users found.";
-            return new ControllerResponse(ok, code, data)
+            const data: IUser[] | string = ok ? users! : "No users found.";
+            
+            // send formatted response with either data or informative error message
+            return new ControllerResponse<IUser[] | string>(ok, code, data)
         } catch (error: any) {
             throw new Error(error);
         }
@@ -23,7 +25,7 @@ export default class UserCtl {
     async post(body: IUser) {
         try {
             const response = await UserInstance.post(body);
-            const ok: boolean = response !== null;
+            const ok = response !== null;
             const code = ok ? StatusCode.NewContent : StatusCode.BadRequest
             const data = ok ? response : "Bad request"
             return new ControllerResponse(ok, code, data);
@@ -35,7 +37,7 @@ export default class UserCtl {
     async getOne(id: number | string) {
         try {
             const user = await UserInstance.getOneByID(id);
-            const ok: boolean = user !== null;
+            const ok = user !== null;
             const code = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? user : "User by this ID not found";
             return new ControllerResponse(ok, code, data);

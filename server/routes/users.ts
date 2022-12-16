@@ -10,7 +10,7 @@ export const userRoute = (app: Express) => {
 
     // get all users
     router.get('/', async (req, res) => {
-        const result: CtlResponse<IUser | string> = await userCtl.getAll();
+        const result: CtlResponse<IUser[] | string> = await userCtl.getAll();
         res.status(result.code).send(result.data);
     })
 

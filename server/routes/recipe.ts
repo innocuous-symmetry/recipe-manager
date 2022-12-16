@@ -26,7 +26,7 @@ export const recipeRoute = (app: Express) => {
         const { filterby } = req.query;
 
         try {
-            let result: CtlResponse<IRecipe | string>;
+            let result: CtlResponse<IRecipe[] | string>;
             switch (filterby) {
                 case "allaccessible":
                     // result = await recipectl.getAllAccessible(user.id);
