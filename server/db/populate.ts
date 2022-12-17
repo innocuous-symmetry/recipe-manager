@@ -12,7 +12,8 @@ export default async function populate() {
             ('Emily', 'Dobson', 'emjdobson', 'emily@email.com', 'password2', true, false, $1, $1),
             ('Montanna', 'Dobson', 'delayedlemon', 'montanna@email.com', 'password3', true, false, $1, $1),
             ('Christine', 'Riley', 'christine', 'christine@email.com', 'password4', true, false, $1, $1),
-            ('Someone', 'Not active', 'someone', 'someone@email.com', 'notactive', false, false, $1, $1)
+            ('Someone', 'Not active', 'someone', 'someone@email.com', 'notactive', false, false, $1, $1),
+            ('Verified', 'User', 'verifiedtestuser', 'verifieduser@test.com','$2a$10$7j1tE9mL3qAIMG8vwLsb2u1Mm3DC/7EdJI/X7KDBbQ9c34KmnLEMq', false, false, $1, $1)
         ;
     `
 
@@ -43,7 +44,8 @@ export default async function populate() {
             ('Pad Thai', 'noodles', '1 hour', 1, 1, 3, $1, $1),
             ('Tacos', null, '30 minutes', 1, 3, 3, $1, $1),
             ('Garlic knots', null, '1 hour', 4, 4, 3, $1, $1),
-            ('Cacio e pepe', 'stinky pasta', '1 hour', 3, 4, 3, $1, $1)
+            ('Cacio e pepe', 'stinky pasta', '1 hour', 3, 4, 3, $1, $1),
+            ('Green beans', 'green beans', '30 minutes', 6, 1, 1, $1, $1)
         ;
     `
 
@@ -52,7 +54,8 @@ export default async function populate() {
             (name, active, ismaincollection, ownerid, datecreated, datemodified)
         VALUES
             ('Mikayla''s collection', true, true, 1, $1, $1),
-            ('Emily''s collection', true, true, 2, $1, $1)
+            ('Emily''s collection', true, true, 2, $1, $1),
+            ('Verified user collection', true, true, 6, $1, $1)
         ;
     `
 
@@ -99,9 +102,9 @@ export default async function populate() {
     `
 
     const allStatements: Array<string> = [
-        populateUsers, populateCuisines, populateCourses, populateRecipes,
-        populateCollection, populateIngredients, populateGroceryList,
-        populateFriendships, populateComments
+        populateUsers, populateCuisines, populateCourses,
+        populateCollection, populateIngredients, populateRecipes,
+        populateGroceryList, populateFriendships, populateComments
     ];
 
     await pool.query(setup);

@@ -4,10 +4,9 @@
   "description": "REST API for recipe manager",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && ./node_modules/.bin/tsc --project ./tsconfig.json",
+    "build": "bash util/build.sh",
     "seed": "npm run build && ts-node-dev db/seed.ts",
-    "populate": "npm run build && node dist/db/examplevals.js",
-    "dev": "rm -rf dist && ./node_modules/.bin/tsc --project ./tsconfig.json --watch & ts-node-dev index.ts",
+    "dev": "bash util/dev.sh",
     "prod": "npm run build && node dist/index.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",

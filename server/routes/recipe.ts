@@ -21,7 +21,7 @@ export const recipeRoute = (app: Express) => {
         }
     })
 
-    router.get('/', async (req, res, next) => {
+    router.get('/', restrictAccess, async (req, res, next) => {
         const { user }: any = req.user;
         const { filterby } = req.query;
 
