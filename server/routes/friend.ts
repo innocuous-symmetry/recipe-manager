@@ -51,7 +51,16 @@ export const friendRouter = (app: Express) => {
         }
     })
 
-    // update a friendship by its id
+    /**
+     * Update friendship by friendship ID
+     * allows user who received a friend request to confirm it
+     * expects body schema of:
+     *     active: boolean
+     *     pending: boolean
+     *     dateterminated: string | null
+     * receives friendship ID from req.params and checks
+     * against current user ID from session
+     */
     router.put('/:id', async (req, res, next) => {
         const data = req.body;
         const { id } = req.params;

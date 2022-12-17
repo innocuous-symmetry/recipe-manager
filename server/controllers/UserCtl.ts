@@ -79,9 +79,9 @@ export default class UserCtl {
         }
     }
 
-    async getPendingFriendRequests(senderid: string | number) {
+    async getPendingFriendRequests(recipient: string | number) {
         try {
-            const { ok, code, result } = await UserInstance.getPendingFriendRequests(senderid);
+            const { ok, code, result } = await UserInstance.getPendingFriendRequests(recipient);
             return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);
@@ -102,7 +102,7 @@ export default class UserCtl {
 
     async updateFriendship(id: number | string, userid: number | string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
         try {
-            const { ok, code, result } = await UserInstance.updateFriendship(id, userid, data);
+            const { code, result } = await UserInstance.updateFriendship(id, userid, data);
             return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);

@@ -128,10 +128,10 @@ export class User {
         }
     }
 
-    async getPendingFriendRequests(senderid: number | string) {
+    async getPendingFriendRequests(recipient: number | string) {
         try {
-            const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE pending = true AND senderid = $1`
-            const result = await pool.query(statement, [senderid]);
+            const statement = `SELECT * FROM recipin.cmp_userfriendships WHERE pending = true AND targetid = $1`
+            const result = await pool.query(statement, [recipient]);
 
             if (result.rows.length) return { ok: true, code: StatusCode.OK, result: result.rows }
             return { ok: true, code: StatusCode.NotFound, result: "No pending friend requests found" }

@@ -28,11 +28,11 @@ export const recipeRoute = (app: Express) => {
         try {
             let result: CtlResponse<IRecipe[] | string>;
             switch (filterby) {
-                case "allaccessible":
-                    // result = await recipectl.getAllAccessible(user.id);
-                    // break;
-                default:
+                case "myrecipes":
                     result = await recipectl.getAllAuthored(user.id);
+                    break;
+                default:
+                    result = await recipectl.getAllAccessible(user.id);
                     break;
             }
 

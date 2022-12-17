@@ -12,15 +12,13 @@ import { cuisineRouter } from "./cuisine";
 import { courseRouter } from "./course";
 
 export const routes = async (app: Express, passport: PassportStatic) => {
-    console.log('routes called');
-
-    authRoute(app, passport);
     userRoute(app);
     friendRouter(app);
     recipeRoute(app);
     ingredientRoute(app);
     
     // to do: refactor for ctlresponse
+    authRoute(app, passport);
     collectionRoute(app);
     subscriptionRoute(app);
     groceryListRoute(app);

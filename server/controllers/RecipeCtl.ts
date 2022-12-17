@@ -29,7 +29,9 @@ export default class RecipeCtl {
 
     async getAllAccessible(id: string) {
         try {
-            
+            const result = await RecipeInstance.getAllAccessible(id);
+            const code = result !== null ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No recipes currently accessible"));
         } catch (e: any) {
             throw new Error(e);
         }

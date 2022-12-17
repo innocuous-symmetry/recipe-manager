@@ -8,7 +8,7 @@ export default async function populate() {
         INSERT INTO recipin.appusers
             (firstname, lastname, handle, email, password, active, isadmin, datecreated, datemodified)
         VALUES
-            ('Mikayla', 'Dobson', 'innocuoussymmetry', 'mikaylaherself@gmail.com', 'password1', true, true, $1, $1),
+            ('Mikayla', 'Dobson', 'innocuoussymmetry', 'mikaylaherself@gmail.com', '$2a$10$T9..JhNxfha86mQZNrwFo.CW7sR.d7w.9.T1M32aXL6r3vE2B.GhS', true, true, $1, $1),
             ('Emily', 'Dobson', 'emjdobson', 'emily@email.com', 'password2', true, false, $1, $1),
             ('Montanna', 'Dobson', 'delayedlemon', 'montanna@email.com', 'password3', true, false, $1, $1),
             ('Christine', 'Riley', 'christine', 'christine@email.com', 'password4', true, false, $1, $1),

@@ -72,7 +72,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
                 if (err) throw err;
             })
             res.clearCookie('userid');
-            res.status(204).redirect('/');
+            res.status(204).send({ ok: true });
         } catch(e) {
             next(e);
         }

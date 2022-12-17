@@ -1,4 +1,5 @@
 import { IRecipe } from "../schemas";
+import fs from 'fs';
 import pool from "../db";
 import { CollectionCtl } from "../controllers";
 import now from "../util/now";
@@ -30,7 +31,24 @@ export class Recipe {
     }
 
     async getAllAccessible(id: string) {
-
+        try {
+            const statement = `
+                SELECT * FROM recipin.recipe
+                WHERE authoruserid = $1
+                OR authoruserid IN (
+                    SELECT targetid FROM recipin.cmp_userfriendships
+                    WHERE senderid = $1
+                    UNION
+                    SELECT senderid FROM recipin.cmp_userfriendships
+                    WHERE targetid = $1
+                );
+            `
+            const result = await pool.query(statement, [id]);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
     }
 
     async fetchRecipesByCollection(collectionid: string) {
