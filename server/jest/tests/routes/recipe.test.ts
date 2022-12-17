@@ -1,27 +1,30 @@
-import supertest from 'supertest'
-import loginUser from '../../helpers/loginUser';
-import { IRecipe } from '../../../schemas'
+import superagent from 'superagent';
+import request from 'supertest';
 import dotenv from 'dotenv';
-import app from '../../..';
 dotenv.config();
 const APISTRING = process.env.APISTRING || 'localhost:8080';
-const server = supertest.agent(app);
 
 describe('/recipe', () => {
-    beforeAll(() => {
-        server.post('/auth/login')
-        .send({ email: 'verifieduser@test.com', password: 'coolpassword' });
+    const server = superagent.agent();
+    
+    beforeAll((done) => {
+        request(APISTRING).post('/auth/login')
+        .send({ email: 'verifieduser@test.com', password: 'coolpassword' })
+        .end((err, res) => {
+            if (err) throw err;
+            server.jar.setCookie(res.body.cookie);
+            return done();
+        })
     })
 
     describe('GET /', () => {
         it('gets an array of recipes', () => {
-            server.get('/recipe').end((err, res) => {
-                if (err) throw err;
-                console.log(res.body);
+            request(APISTRING).get('/recipe')
+            .withCredentials(true)
+            .end((err, res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body.ok).toBeTruthy();
-            });
-
+                expect(res.body).toBeDefined();
+            })
         });
     });
 });
