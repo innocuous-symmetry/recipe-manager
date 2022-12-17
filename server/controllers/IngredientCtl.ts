@@ -1,6 +1,7 @@
 import { IIngredient } from "../schemas";
 import { Ingredient } from "../models/ingredient";
 import ControllerResponse from "../util/ControllerResponse";
+import { StatusCode } from "../util/types";
 const IngredientInstance = new Ingredient();
 
 export default class IngredientCtl {
@@ -8,7 +9,8 @@ export default class IngredientCtl {
         try {
             const result = await IngredientInstance.getAll();
             const ok = result !== null;
-            return new ControllerResponse(ok, (ok ? 200 : 404), (ok ? result : "No recipes found"));
+            const code = ok ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No ingredients found"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -18,7 +20,8 @@ export default class IngredientCtl {
         try {
             const result = await IngredientInstance.getOne(id);
             const ok = result !== null;
-            return new ControllerResponse(ok, (ok ? 200 : 404), (ok ? result : "No recipe found with this ID"));
+            const code = ok ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No ingredient found with this ID"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -28,7 +31,8 @@ export default class IngredientCtl {
         try {
             const result = await IngredientInstance.post(data);
             const ok = result !== null;
-            return new ControllerResponse(ok, (ok ? 201 : 400), (ok ? result : "Something went wrong"));
+            const code = ok ? StatusCode.NewContent : StatusCode.BadRequest;
+            return new ControllerResponse(code, (result || "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -38,7 +42,8 @@ export default class IngredientCtl {
         try {
             const result = await IngredientInstance.put(id, data);
             const ok = result !== null;
-            return new ControllerResponse(ok, (ok ? 200 : 400), (ok ? result : "Something went wrong"));
+            const code = ok ? StatusCode.OK : StatusCode.BadRequest;
+            return new ControllerResponse(code, (result || "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }

@@ -13,8 +13,8 @@ export const friendRouter = (app: Express) => {
         const { targetid } = req.params;
 
         try {
-            const result = await UserInstance.addFriendship(user.id, targetid);
-            res.status(200).send(result);
+            const { code, data } = await UserInstance.addFriendship(user.id, targetid);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -27,11 +27,11 @@ export const friendRouter = (app: Express) => {
 
         try {
             if (pending) {
-                const result = await UserInstance.getPendingFriendRequests(user.id);
-                res.status(200).send(result);
+                const { code, data } = await UserInstance.getPendingFriendRequests(user.id);
+                res.status(code).send(data);
             } else {
-                const result = await UserInstance.getFriends(user.id);
-                res.status(200).send(result);
+                const { code, data } = await UserInstance.getFriends(user.id);
+                res.status(code).send(data);
             }
         } catch(e) {
             next(e);
@@ -44,8 +44,8 @@ export const friendRouter = (app: Express) => {
         const { user }: any = req.user;
 
         try {
-            const result = await UserInstance.getFriendshipByID(id, user.id);
-            res.status(200).send(result);
+            const { code, data } = await UserInstance.getFriendshipByID(id, user.id);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -58,8 +58,8 @@ export const friendRouter = (app: Express) => {
         const { user }: any = req.user;
 
         try {
-            const result = await UserInstance.updateFriendship(id, user.id, data);
-            res.status(200).send(result);
+            const response = await UserInstance.updateFriendship(id, user.id, data);
+            res.status(response.code).send(response.data);
         } catch(e) {
             next(e);
         }

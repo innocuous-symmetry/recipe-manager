@@ -14,8 +14,8 @@ export const recipeRoute = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const result = await recipectl.getOne(id);
-            res.status(200).send(result);
+            const { code, data } = await recipectl.getOne(id);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }

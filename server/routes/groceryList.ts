@@ -12,11 +12,11 @@ export const groceryListRoute = (app: Express) => {
 
         try {
             if (userid) {
-                const result = await groceryinstance.getByUserID(userid);
-                res.status(200).send(result);
+                const { code, data } = await groceryinstance.getByUserID(userid);
+                res.status(code).send(data);
             } else {
-                const result = await groceryinstance.getAll();
-                res.status(200).send(result);
+                const { code, data } = await groceryinstance.getAll();
+                res.status(code).send(data);
             }
         } catch(e) {
             next(e);
@@ -26,8 +26,8 @@ export const groceryListRoute = (app: Express) => {
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
         try {
-            const result = await groceryinstance.getOne(id);
-            res.status(200).send(result);
+            const { code, data } = await groceryinstance.getOne(id);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -37,7 +37,7 @@ export const groceryListRoute = (app: Express) => {
         const data = req.body;
         try {
             const result = await groceryinstance.post(data);
-            res.status(201).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }
@@ -49,7 +49,7 @@ export const groceryListRoute = (app: Express) => {
 
         try {
             const result = await groceryinstance.put(id, data);
-            res.status(200).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }

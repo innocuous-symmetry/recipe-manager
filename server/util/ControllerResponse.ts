@@ -5,10 +5,10 @@ export default class ControllerResponse<T> implements CtlResponse<T> {
     code: StatusCode
     data: T | string
 
-    constructor(ok: boolean, code: StatusCode, data: T | string) {
-        this.ok = ok
+    constructor(code: StatusCode, data: T | string, ok?: boolean) {
         this.code = code
         this.data = data
+        this.ok = ok || (this.data !== null)
     }
 
     send() {

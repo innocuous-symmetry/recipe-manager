@@ -16,7 +16,7 @@ export default class UserCtl {
             const data: IUser[] | string = ok ? users! : "No users found.";
             
             // send formatted response with either data or informative error message
-            return new ControllerResponse<IUser[] | string>(ok, code, data)
+            return new ControllerResponse<IUser[] | string>(code, data, ok)
         } catch (error: any) {
             throw new Error(error);
         }
@@ -28,7 +28,7 @@ export default class UserCtl {
             const ok = response !== null;
             const code = ok ? StatusCode.NewContent : StatusCode.BadRequest
             const data = ok ? response : "Bad request"
-            return new ControllerResponse(ok, code, data);
+            return new ControllerResponse(code, data);
         } catch (error: any) {
             throw new Error(error);
         }
@@ -40,7 +40,7 @@ export default class UserCtl {
             const ok = user !== null;
             const code = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? user : "User by this ID not found";
-            return new ControllerResponse(ok, code, data);
+            return new ControllerResponse(code, data);
         } catch (error: any) {
             throw new Error(error);
         }
@@ -52,7 +52,7 @@ export default class UserCtl {
             const ok = result !== null;
             const code = ok ? StatusCode.OK : StatusCode.BadRequest;
             const data = ok ? result : "Update unsuccessful"
-            return new ControllerResponse(ok, code, data);
+            return new ControllerResponse(code, data);
         } catch (error: any) {
             throw new Error(error);
         }
@@ -64,7 +64,7 @@ export default class UserCtl {
             const ok = result !== null
             const code = ok ? StatusCode.OK : StatusCode.NotFound;
             const data = ok ? result : "No friends found"
-            return new ControllerResponse(ok, code, data);
+            return new ControllerResponse(code, data);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -73,7 +73,7 @@ export default class UserCtl {
     async getFriendshipByID(id: number | string, userid: number | string) {
         try {
             const { ok, code, result } = await UserInstance.getFriendshipByID(id, userid);
-            return new ControllerResponse(ok, code, result);
+            return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -82,7 +82,7 @@ export default class UserCtl {
     async getPendingFriendRequests(senderid: string | number) {
         try {
             const { ok, code, result } = await UserInstance.getPendingFriendRequests(senderid);
-            return new ControllerResponse(ok, code, result);
+            return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -94,7 +94,7 @@ export default class UserCtl {
             const ok = result !== null;
             const code = ok ? StatusCode.NewContent : StatusCode.BadRequest;
             const data = ok ? result : "Something went wrong"
-            return new ControllerResponse(ok, code, data);
+            return new ControllerResponse(code, data);
         } catch (e: any) {
             throw new Error(e);
         }
@@ -103,7 +103,7 @@ export default class UserCtl {
     async updateFriendship(id: number | string, userid: number | string, data: { active: boolean, pending: boolean, dateterminated?: string }) {
         try {
             const { ok, code, result } = await UserInstance.updateFriendship(id, userid, data);
-            return new ControllerResponse(ok, code, result);
+            return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);
         }

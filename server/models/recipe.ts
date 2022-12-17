@@ -2,6 +2,7 @@ import { IRecipe } from "../schemas";
 import pool from "../db";
 import { CollectionCtl } from "../controllers";
 import now from "../util/now";
+import { CtlResponse } from "../util/types";
 const CollectionInstance = new CollectionCtl();
 
 export class Recipe {
@@ -76,13 +77,18 @@ export class Recipe {
             if (!result.rows.length) return null;
 
             // associate recipe with default collection once created
-            const collection = await CollectionInstance.getUserDefault(userid);
+            const collection: CtlResponse<IRecipe> = await CollectionInstance.getUserDefault(userid);
             const associateToCollection = `
                 INSERT INTO recipin.cmp_recipecollection
                 (recipeid, collectionid)
                 VALUES ($1, $2) RETURNING *
             `
-            const associateResult = await pool.query(associateToCollection, [result.rows[0].id, collection.id]);
+
+            if (typeof collection.data == 'string') {
+                return null;
+            }
+
+            const associateResult = await pool.query(associateToCollection, [result.rows[0].id, collection.data.id]);
             if (!associateResult.rows.length) return null;
             
             return { recipe: result.rows[0], collection: associateResult.rows[0] }

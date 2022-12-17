@@ -11,8 +11,8 @@ export const collectionRoute = (app: Express) => {
     router.get('/:id', restrictAccess, async (req, res, next) => {
         const { id } = req.params;
         try {
-            const result = await CollectionInstance.getOne(id);
-            res.status(200).send(result);
+            const { code, data } = await CollectionInstance.getOne(id);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -21,8 +21,8 @@ export const collectionRoute = (app: Express) => {
     // implement is admin on this route
     router.get('/', restrictAccess, async (req, res, next) => {
         try {
-            const result = await CollectionInstance.getAll();
-            res.status(200).send(result);
+            const { code, data } = await CollectionInstance.getAll();
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -32,7 +32,7 @@ export const collectionRoute = (app: Express) => {
         const data = req.body;
         try {
             const result = await CollectionInstance.post(data);
-            res.status(201).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }

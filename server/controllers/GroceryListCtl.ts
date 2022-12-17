@@ -1,14 +1,16 @@
 import createError from "http-errors";
 import { IGroceryList } from "../schemas";
 import { GroceryList } from "../models/groceryList";
+import { StatusCode } from "../util/types";
+import ControllerResponse from "../util/ControllerResponse";
 const GroceryInstance = new GroceryList();
 
 export default class GroceryListCtl {
     async getAll() {
         try {
             const result = await GroceryInstance.getAll();
-            if (!result) throw createError('404', 'No results found');
-            return result;
+            const code = (result !== null) ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No grocery list data found"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -17,8 +19,8 @@ export default class GroceryListCtl {
     async getOne(id: string) {
         try {
             const result = await GroceryInstance.getOne(id);
-            if (!result) throw createError('404', 'No results found');
-            return result;
+            const code = (result !== null) ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No grocery list data found with this ID"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -27,8 +29,8 @@ export default class GroceryListCtl {
     async getByUserID(userid: string) {
         try {
             const result = await GroceryInstance.getByUserID(userid);
-            if (!result) throw createError('404', 'No results found');
-            return result;
+            const code = (result !== null) ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No grocery list data found matching this user ID"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -37,8 +39,8 @@ export default class GroceryListCtl {
     async post(data: IGroceryList) {
         try {
             const result = await GroceryInstance.post(data);
-            if (!result) throw createError('400', 'Bad request');
-            return result;
+            const code = (result !== null) ? StatusCode.NewContent : StatusCode.BadRequest;
+            return new ControllerResponse(code, (result || "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }
@@ -47,8 +49,8 @@ export default class GroceryListCtl {
     async put(id: string, data: IGroceryList) {
         try {
             const result = await GroceryInstance.put(id, data);
-            if (!result) throw createError('400', 'Bad request');
-            return result;
+            const code = (result !== null) ? StatusCode.OK : StatusCode.BadRequest;
+            return new ControllerResponse(code, (result || "Something went wrong"));
         } catch (e: any) {
             throw new Error(e);
         }

@@ -67,7 +67,6 @@ export class Collection {
     async getSubscriptions(userid: number | string) {
         try {
             const sql = fs.readFileSync(appRoot + '/db/sql/get/getsubscriptions.sql').toString();
-            console.log(sql);
             const result = await pool.query(sql, [userid]);
             if (result.rows.length) return result.rows;
             return null;

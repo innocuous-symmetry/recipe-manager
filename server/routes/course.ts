@@ -8,8 +8,8 @@ export const courseRouter = (app: Express) => {
 
     router.get('/', async (req, res, next) => {
         try {
-            const result = await CourseInstance.getAll();
-            res.status(200).send(result);
+            const { code, data } = await CourseInstance.getAll();
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -19,8 +19,8 @@ export const courseRouter = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const result = await CourseInstance.getOne(id);
-            res.status(200).send(result);
+            const { code, data } = await CourseInstance.getOne(id);
+            res.status(code).send(data);
         } catch(e) {
             next(e);
         }
@@ -31,7 +31,7 @@ export const courseRouter = (app: Express) => {
 
         try {
             const result = await CourseInstance.post(data);
-            res.status(201).send(result);
+            res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
         }

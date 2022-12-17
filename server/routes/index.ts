@@ -17,11 +17,15 @@ export const routes = async (app: Express, passport: PassportStatic) => {
     authRoute(app, passport);
     userRoute(app);
     friendRouter(app);
-    cuisineRouter(app);
-    courseRouter(app);
     recipeRoute(app);
+    ingredientRoute(app);
+    
+    // to do: refactor for ctlresponse
     collectionRoute(app);
     subscriptionRoute(app);
-    ingredientRoute(app);
     groceryListRoute(app);
+    courseRouter(app);
+
+    // deprecate?
+    cuisineRouter(app);
 }
