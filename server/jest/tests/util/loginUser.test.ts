@@ -7,7 +7,14 @@ const server = supertest.agent(APISTRING);
 
 describe('login user', () => {
     beforeAll(() => {
-        loginUser(server);
+        server.post('/auth/login')
+            .send({ email: 'verifieduser@test.com', password: 'coolpassword' })
+            .end((err, res) => {
+                console.log(res);
+                if (err) throw err;
+                expect(res.status).toBe(200);
+            }
+        )
     })
 
     it('allows access to protected resources', () => {
