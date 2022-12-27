@@ -18,6 +18,14 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, receiveChan
         setUser(login.user);
     }
 
+    useEffect(() => {
+        if (input) {
+            setTimeout(() => {
+                unwrapLogin(input);
+            }, 750);
+        }
+    }, [])
+
     const handleClick = async () => {
         if (!user) return;
         const collection: ICollection = {
@@ -29,20 +37,14 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, receiveChan
             datemodified: now
         }
 
+        console.log(collection);
+
         const result = await createNewCollection(collection);
         console.log(result);
         if (result) transitionDisplay(VariantLabel.AddFriends);
     }
 
-    useEffect(() => {
-        if (input) {
-            setTimeout(() => {
-                unwrapLogin(input);
-            }, 2000);
-        }
-    }, [])
-
-    useEffect(() => {
+    useEffect(() => {    
         if (user && receiveChange) {
             receiveChange(user);
             setView(

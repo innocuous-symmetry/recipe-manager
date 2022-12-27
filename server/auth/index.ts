@@ -9,8 +9,6 @@ const UserInstance = new User();
 export default class AuthService {
     // methods for local strategies
     async register(data: IUser) {
-        const { email, password } = data;
-
         data.datecreated = now;
         data.datemodified = now;
         data.active = true;
@@ -18,19 +16,23 @@ export default class AuthService {
 
         try {
             // not allowed to use email address that already exists
-            const user = await UserInstance.getOneByEmail(email);
+            const user = await UserInstance.getOneByEmail(data.email);
+
             if (user) throw createError('409', 'Email already in use');
 
             // hash password and create new user record
-            const salt = await bcrypt.genSalt();
-            bcrypt.hash(password!, salt, async (err, hash) => {
+            const salt = await bcrypt.genSalt(12);
+            console.log(salt);
+            console.log(data.password);
+
+            bcrypt.hash(data.password!, salt, (err, hash) => {
                 if (err) throw err;
                 const newData = {
                     ...data,
                     password: hash
                 }
 
-                await UserInstance.post(newData);
+                UserInstance.post(newData);
             })
 
             return true;

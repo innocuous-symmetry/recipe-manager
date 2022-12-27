@@ -3,7 +3,7 @@ import { IAuthContext } from "../context/AuthContext";
 import axios from "axios";
 const API = import.meta.env.APISTRING || "http://localhost:8080";
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 axios.defaults.headers['Content-Type'] = 'application/json';
 
 export const getBaseAPI = async () => {
@@ -57,7 +57,7 @@ export const attemptRegister = async (body: IUser) => {
         const response = await axios({
             method: "POST",
             url: API + '/auth/register',
-            data: JSON.stringify(body)
+            data: body
         })
 
         return Promise.resolve(response.data);
@@ -72,8 +72,8 @@ export const createNewCollection = async (body: ICollection) => {
         const response = await axios({
             method: "POST",
             url: API + '/collection',
-            data: JSON.stringify(body)
-        });
+            data: body
+        })
 
         return Promise.resolve(response.data);
     } catch (e: any) {

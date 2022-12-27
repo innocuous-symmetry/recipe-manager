@@ -30,6 +30,8 @@ export const collectionRoute = (app: Express) => {
 
     router.post('/', restrictAccess, async (req, res, next) => {
         const data = req.body;
+        console.log(data);
+
         try {
             const result = await CollectionInstance.post(data);
             res.status(result.code).send(result.data);

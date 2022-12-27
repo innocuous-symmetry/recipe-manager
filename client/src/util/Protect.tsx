@@ -4,7 +4,7 @@ import Divider from "../components/ui/Divider";
 import { useAuthContext } from "../context/AuthContext";
 import { ProtectPortal } from "./types";
 
-const Protect: ProtectPortal = ({ children = <></> }) => {
+const Protect: ProtectPortal = ({ children }) => {
     const { user } = useAuthContext();
     const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const Protect: ProtectPortal = ({ children = <></> }) => {
     } else {
         return (
             <Page>
-                { children }
+                { children || <></> }
             </Page>
         )
     }

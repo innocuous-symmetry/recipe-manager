@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, FC } from "react";
 import { v4 } from 'uuid';
 import RichText from "./RichText";
 
@@ -20,7 +20,7 @@ export interface FormConfig<T> {
     extraStyles?: string
 }
 
-export default class Form<T>{
+export default class Form<T> {
     private parent: string;
     private labels: string[];
     private keys: string[];
@@ -39,6 +39,8 @@ export default class Form<T>{
         this.getState = config.getState;
         this.richTextInitialValue = config.richTextInitialValue;
         this.extraStyles = config.extraStyles;
+
+        this.mount();
     }
 
     update(e: ChangeEvent<HTMLElement>, idx: number) {

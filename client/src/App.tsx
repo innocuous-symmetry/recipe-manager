@@ -7,7 +7,7 @@ import { IUser } from './schemas';
 
 // pages, ui, styles
 import Subscriptions from './components/pages/Subscriptions/Subscriptions';
-import Browser from './components/pages/Browser';
+import Browser from './components/ui/Browser';
 import Collection from './components/pages/Collection';
 import Login from './components/pages/Login';
 import Profile from './components/pages/Profile';
@@ -61,7 +61,7 @@ function App() {
             <Route path="/profile"                element={<Profile />} />
             <Route path="/collections"            element={<CollectionBrowser />} />
             <Route path="/collections/:id"        element={<Collection />} />
-            <Route path="/explore"                element={<Browser />} />
+            <Route path="/explore"                element={<Browser header="" searchFunction={() => {}} />} />
             <Route path="/recipe/:id"             element={<Recipe />} />
             <Route path="/subscriptions"          element={<Subscriptions />} />
             <Route path="/subscriptions/:id"      element={<Collection />} />
