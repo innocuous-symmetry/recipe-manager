@@ -1,5 +1,5 @@
 // framework tools and custom utils
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthContext, IAuthContext, useAuthContext } from './context/AuthContext';
 import { attemptLogout, checkCredientials } from './util/apiUtils';
@@ -17,26 +17,26 @@ import Welcome from './components/pages/Welcome';
 import AddRecipe from './components/pages/AddRecipe';
 import CollectionBrowser from './components/pages/CollectionBrowser';
 import { Navbar } from './components/ui';
-import './sass/App.scss'
-import RichText from './components/ui/RichText';
 import GroceryList from './components/pages/GroceryList';
 import GroceryListCollection from './components/pages/GroceryListCollection';
+import './sass/App.scss';
 
 function App() {
-  const [user, setUser] = useState<IAuthContext>({ user: undefined });
-  const authContext = useAuthContext();
+  const [user, setUser] = useState<any>();
+  const parentState = { user, setUser };
 
-  const receiveChange = useCallback((change: IUser) => {
-    console.log(change);
-    authContext.user = change;
-  }, [])
+  const receiveChange = (() => {});
 
   useEffect(() => {
     const wrapper = async () => {
       try {
         const result: IAuthContext | undefined = await checkCredientials();
-        if (result == undefined) setUser({ user: undefined });
-        setUser(result!);
+        
+        if (result == undefined) {
+          setUser({ user: undefined });
+        } else {
+          setUser(result);
+        }
       } catch(e) {
         console.error(e);
       }
@@ -45,13 +45,9 @@ function App() {
     wrapper();
   }, [])
 
-  useEffect(() => {
-    console.log(authContext);
-  }, [authContext]);
-
   return (
     <BrowserRouter>
-      <AuthContext.Provider value={ user }>
+      <AuthContext.Provider value={ parentState }>
         <div className="App">
           <Navbar receiveChange={receiveChange} />
           <Routes>

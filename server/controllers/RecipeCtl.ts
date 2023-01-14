@@ -5,7 +5,7 @@ import { StatusCode } from "../util/types";
 const RecipeInstance = new Recipe();
 
 export default class RecipeCtl {
-    async getOne(id: string) {
+    async getOne(id: number) {
         try {
             const result = await RecipeInstance.getOneByID(id);
             const ok = result !== null;
@@ -16,7 +16,7 @@ export default class RecipeCtl {
         }
     }
 
-    async getAllAuthored(id: string) {
+    async getAllAuthored(id: number) {
         try {
             const result = await RecipeInstance.getAllAuthored(id);
             const ok = result !== null;
@@ -27,7 +27,7 @@ export default class RecipeCtl {
         }
     }
 
-    async getAllAccessible(id: string) {
+    async getAllAccessible(id: number) {
         try {
             const result = await RecipeInstance.getAllAccessible(id);
             const code = result !== null ? StatusCode.OK : StatusCode.NotFound;
@@ -37,7 +37,7 @@ export default class RecipeCtl {
         }
     }
 
-    async updateOne(id: string, data: IRecipe) {
+    async updateOne(id: number, data: IRecipe) {
         try {
             const result = await RecipeInstance.updateOneByID(id, data);
             const ok = result !== null;
@@ -48,7 +48,7 @@ export default class RecipeCtl {
         }
     }
 
-    async post(userid: string, data: IRecipe) {
+    async post(userid: number, data: IRecipe) {
         try {
             const result = await RecipeInstance.post(userid, data);
             const ok = result !== null;

@@ -4,7 +4,7 @@ import Divider from "../components/ui/Divider";
 import { useAuthContext } from "../context/AuthContext";
 import { ProtectPortal } from "./types";
 
-const Protect: ProtectPortal = ({ children }) => {
+const Protect: ProtectPortal = ({ children, redirect = '' }) => {
     const { user } = useAuthContext();
     const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ const Protect: ProtectPortal = ({ children }) => {
                     <h1>Hi there! You don't look too familiar.</h1>
                     <p>To view the content on this page, please log in below:</p>
                     <Divider />
-                    <Button onClick={() => navigate('/login')}>Log In</Button>
+                    <Button onClick={() => navigate(redirect ? `/login?redirect=${redirect}` : '/login')}>Log In</Button>
                 </div>
             </Page>
         )

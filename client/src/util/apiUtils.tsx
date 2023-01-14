@@ -1,10 +1,7 @@
 import { ICollection, IUser, IUserAuth } from "../schemas";
-import { IAuthContext } from "../context/AuthContext";
+// import { IAuthContext } from "../context/AuthContext";
 import axios from "axios";
 const API = import.meta.env.APISTRING || "http://localhost:8080";
-
-axios.defaults.withCredentials = false;
-axios.defaults.headers['Content-Type'] = 'application/json';
 
 export const getBaseAPI = async () => {
     return fetch(API);
@@ -26,14 +23,26 @@ export const checkCredientials = async () => {
 
 export const attemptLogin = async (data: IUserAuth) => {
     try {
-        const response = await axios({
+        const response = await fetch(API + '/auth/login', {
+            body: JSON.stringify(data),
             method: "POST",
-            url: API + '/auth/login',
-            data: data
+            headers: {
+                'Content-Type': "application/json"
+            }
         });
 
-        const result = Promise.resolve(response.data);
-        return result;
+        const json = await response.json();
+        console.log(json);
+        return json;
+        
+        // const response = await axios({
+        //     method: "POST",
+        //     url: API + '/auth/login',
+        //     data: data
+        // });
+
+        // const result = Promise.resolve(response.data);
+        // return result;
     } catch (e: any) {
         throw e;
     }
@@ -72,8 +81,10 @@ export const createNewCollection = async (body: ICollection) => {
         const response = await axios({
             method: "POST",
             url: API + '/collection',
-            data: body
+            data: JSON.stringify(body)
         })
+
+        console.log(response);
 
         return Promise.resolve(response.data);
     } catch (e: any) {

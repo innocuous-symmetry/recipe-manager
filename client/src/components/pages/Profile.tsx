@@ -12,7 +12,7 @@ export default function Profile() {
     const navigate = useNavigate();
 
     return (
-        <Protect>
+        <Protect redirect="profile">
             <div className="profile-authenticated">
                 <h1>{user?.firstname}'s Profile</h1>
                 <p>Things and stuff!</p>

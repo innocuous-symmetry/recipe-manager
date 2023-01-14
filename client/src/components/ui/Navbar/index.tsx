@@ -8,13 +8,17 @@ import "/src/sass/components/Navbar.scss";
 const Navbar: FC<{receiveChange: (change: IUser) => void}> = ({ receiveChange }) => {
     // setup and local state
     const navigate = useNavigate();
-    const authContext = useAuthContext();
+    const { user, setUser } = useAuthContext();
     const [received, setReceived] = useState<IUser | undefined>();
     const [displayed, setDisplayed] = useState<JSX.Element>();
 
     // lift and store state from navbar variants
     const liftChange = useCallback((newValue: IUser | undefined) => {
-        authContext.user = newValue;
+        if (!newValue) {
+            return;
+        }
+        
+        setUser(newValue);
         setReceived(newValue);
     }, [])
 
@@ -26,8 +30,8 @@ const Navbar: FC<{receiveChange: (change: IUser) => void}> = ({ receiveChange })
 
     // side effects for live rendering
     useEffect(() => {
-        authContext && setReceived(authContext.user);
-    }, [authContext])
+        user && setReceived(user);
+    }, [user])
 
     useEffect(() => {
         if (received) receiveChange(received);

@@ -7,7 +7,7 @@ import { CtlResponse } from "../util/types";
 const CollectionInstance = new CollectionCtl();
 
 export class Recipe {
-    async getOneByID(id: string) {
+    async getOneByID(id: number) {
         try {
             const statement = `SELECT * FROM recipin.recipe WHERE id = $1`;
             const values = [id];
@@ -19,7 +19,7 @@ export class Recipe {
         }
     }
 
-    async getAllAuthored(id: string) {
+    async getAllAuthored(id: number) {
         try {
             const statement = `SELECT * FROM recipin.recipe WHERE authoruserid = $1`;
             const result = await pool.query(statement, [id]);
@@ -30,7 +30,7 @@ export class Recipe {
         }
     }
 
-    async getAllAccessible(id: string) {
+    async getAllAccessible(id: number) {
         try {
             const statement = `
                 SELECT * FROM recipin.recipe
@@ -51,7 +51,7 @@ export class Recipe {
         }
     }
 
-    async fetchRecipesByCollection(collectionid: string) {
+    async fetchRecipesByCollection(collectionid: number) {
         try {
             
         } catch (e: any) {
@@ -59,7 +59,7 @@ export class Recipe {
         }
     }
 
-    async updateOneByID(id: string, data: IRecipe) {
+    async updateOneByID(id: number, data: IRecipe) {
         const { name, description, preptime } = data;
         try {
             const statement = `
@@ -79,7 +79,7 @@ export class Recipe {
         }
     }
 
-    async post(userid: string, data: IRecipe) {
+    async post(userid: number, data: IRecipe) {
         const { name, description, preptime } = data;
 
         try {

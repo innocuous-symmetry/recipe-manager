@@ -9,7 +9,7 @@ export const subscriptionRoute = (app: Express) => {
 
     router.get('/', async (req, res, next) => {
         // @ts-ignore
-        const { user } = req.user;
+        const { user } = req.session.user;
         if (!user) return;
 
         try {
@@ -22,7 +22,7 @@ export const subscriptionRoute = (app: Express) => {
 
     router.post('/', restrictAccess, async (req, res, next) => {
         // @ts-ignore
-        const { user } = req.user;
+        const { user } = req.session.user;
         const { collection } = req.query;
 
         try {

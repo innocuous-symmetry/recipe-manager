@@ -43,7 +43,7 @@ export const collectionRoute = (app: Express) => {
     // router.get('/subscriptions', restrictAccess, async (req, res, next) => {
     //     res.send('sanity check');
     //     // // @ts-ignore
-    //     // const { user } = req.user;
+    //     // const { user } = req.session.user;
     //     // if (!user) return;
 
     //     // try {
@@ -56,7 +56,7 @@ export const collectionRoute = (app: Express) => {
 
     // router.post('/subscribe', restrictAccess, async (req, res, next) => {
     //     // @ts-ignore
-    //     const { user } = req.user;
+    //     const { user } = req.session.user;
     //     const { collection } = req.query;
 
     //     try {

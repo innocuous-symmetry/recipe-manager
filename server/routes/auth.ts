@@ -6,27 +6,43 @@ import { UserCtl } from "../controllers";
 import now from "../util/now";
 import { restrictAccess } from "../auth/middlewares";
 import { Session } from "express-session";
+import ControllerResponse from "../util/ControllerResponse";
 const AuthInstance = new AuthService();
-const UserControl = new UserCtl();
+const UserInstance = new UserCtl();
 
 const router = Router();
 
 export const authRoute = (app: Express, passport: PassportStatic) => {
     app.use('/auth', router);
 
-    router.get('/', restrictAccess, (req, res, next) => {
-        if (!req.user) res.send({ user: undefined });
+    // router.use((req, res, next) => {
+    //     console.log(req.isAuthenticated());
+    //     console.log(req.session.user);
+    //     console.log(req.cookies);
+    //     console.log();
 
-        // @ts-ignore: does not recognize structure of req.user
-        const { user } = req.user;
-        const userData = {
-            id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            handle: user.handle,
-            email: user.email
+    //     next();
+    // })
+
+    router.use((req, res, next) => {
+        console.log(req.session);
+        next();
+    })
+
+    router.get('/', restrictAccess, (req, res, next) => {
+        if (req.session.user) {
+            const user = req.session.user;
+            const userData = {
+                id: user.id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                handle: user.handle,
+                email: user.email
+            }
+            res.send({ user: userData });
+        } else {
+            res.send({ user: undefined })
         }
-        res.send({ user: userData });
     })
 
     router.get('/protected', restrictAccess, (req, res, next) => {
@@ -36,15 +52,24 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
     router.post('/login', passport.authenticate('local'), async (req, res, next) => {
         try {
             const data: IUserAuth = req.body;
-            const response = await AuthInstance.login(data);
+            console.log(data);
+
+            const response: ControllerResponse<any> = await AuthInstance.login(data);
 
             if (response.ok) {
-                req.logIn(response.user, (error: any) => {
-                    if (error) throw error;
-                    console.log('login successful');
+                const user = response.data as IUser;
+
+                req.session.regenerate((err) => {
+                    if (err) next(err);
+                    req.session.user = user;
+
+                    req.session.save((err) => {
+                        if (err) return next(err);
+                    })
                 })
-                
-                res.cookie('userid', response.user.id, { maxAge: 1000 * 60 * 60 * 24 });
+
+                res.cookie('userid', user.id, { maxAge: 1000 * 60 * 60 * 24 });
+
                 res.send(response);
                 res.end();
             } else {

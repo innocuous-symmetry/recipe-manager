@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext, useAuthContext } from "../../context/AuthContext";
 import { attemptLogin } from "../../util/apiUtils";
 import { IUserAuth } from "../../schemas";
 import { Button, Form, Page, Panel } from "../ui";
 
 export default function Login() {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+    const { user, setUser } = useContext(AuthContext);
+
     // setup and local state
-    const authContext = useAuthContext();
     const navigate = useNavigate();
     const [form, setForm] = useState<JSX.Element>();
     const [input, setInput] = useState<IUserAuth>({ email: '', password: '' });
@@ -20,14 +23,14 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!input.email || !input.password) return;
-        const result = await attemptLogin(input);
-        authContext.user = result.user;
-        navigate('/');
+        const { data, ok } = await attemptLogin(input);
+        if (ok) setUser(data);
+        navigate(`/${redirect ?? ''}`);
     }
 
     // check for logged in user and mount form
     useEffect(() => {
-        if (authContext.user) navigate('/');
+        if (user) navigate('/');
         setForm(
             new Form<IUserAuth>({
                 parent: 'login',

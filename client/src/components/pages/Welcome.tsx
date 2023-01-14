@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 import { attemptLogout, checkCredientials } from "../../util/apiUtils";
@@ -6,8 +6,8 @@ import { Button, Page, Panel } from "../ui"
 import Divider from "../ui/Divider";
 
 const Welcome = () => {
-    const authContext = useAuthContext();
     const navigate = useNavigate();
+    const { user, setUser } = useAuthContext();
 
     const authUserActions = (
         <Panel extraStyles="inherit-background c-papyrus uppercase flexrow">
@@ -41,11 +41,12 @@ const Welcome = () => {
 
             <Panel extraStyles="inherit-background c-papyrus uppercase">
                 <h2>Build Shopping Lists Directly from Your Recipes</h2>
+                <button onClick={checkCredientials}></button>
             </Panel>
 
             <Divider />
 
-            { authContext && authContext.user ? authUserActions : callToRegister }
+            { user ? authUserActions : callToRegister }
         </Page>
     )
 }

@@ -5,6 +5,13 @@ import morgan from 'morgan';
 import cors from 'cors';
 import session from 'express-session';
 import pgSessionStore from '../db/sessionStore';
+import { IUser } from '../schemas';
+
+declare module "express-session" {
+    interface SessionData {
+        user: IUser
+    }
+}
 
 export const expressLoader = async (app: Express) => {
     app.use(cors({
@@ -25,8 +32,10 @@ export const expressLoader = async (app: Express) => {
         res.cookie('name', 'express').send('cookie set');
     })
 
+    const secret = process.env.SESSIONSECRET as string;
+
     app.use(session({
-        secret: process.env.SESSIONSECRET || "",
+        secret: secret,
         cookie: {
             maxAge: 8 * 60 * 60 * 1000,
             secure: false

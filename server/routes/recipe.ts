@@ -1,7 +1,7 @@
 import { Express, Router } from "express"
 import { restrictAccess } from "../auth/middlewares";
 import RecipeCtl from "../controllers/RecipeCtl";
-import { IRecipe } from "../schemas";
+import { IRecipe, IUser } from "../schemas";
 import { CtlResponse } from "../util/types";
 const recipectl = new RecipeCtl();
 
@@ -14,7 +14,7 @@ export const recipeRoute = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const { code, data } = await recipectl.getOne(id);
+            const { code, data } = await recipectl.getOne(parseInt(id));
             res.status(code).send(data);
         } catch(e) {
             next(e);
@@ -22,17 +22,17 @@ export const recipeRoute = (app: Express) => {
     })
 
     router.get('/', restrictAccess, async (req, res, next) => {
-        const { user }: any = req.user;
+        const user = req.session.user as IUser;
         const { filterby } = req.query;
 
         try {
             let result: CtlResponse<IRecipe[] | string>;
             switch (filterby) {
                 case "myrecipes":
-                    result = await recipectl.getAllAuthored(user.id);
+                    result = await recipectl.getAllAuthored(user.id as number);
                     break;
                 default:
-                    result = await recipectl.getAllAccessible(user.id);
+                    result = await recipectl.getAllAccessible(user.id as number);
                     break;
             }
 
@@ -47,7 +47,7 @@ export const recipeRoute = (app: Express) => {
         const { id } = req.params;
 
         try {
-            const result: CtlResponse<IRecipe | string> = await recipectl.updateOne(id, data);
+            const result: CtlResponse<IRecipe | string> = await recipectl.updateOne(parseInt(id), data);
             res.status(result.code).send(result.data);
         } catch(e) {
             next(e);
@@ -55,11 +55,11 @@ export const recipeRoute = (app: Express) => {
     })
 
     router.post('/', restrictAccess, async (req, res, next) => {
-        const { user }: any = req.user;
+        const user = req.session.user as IUser;
         const data = req.body;
 
         try {
-            const result = await recipectl.post(user.id, data);
+            const result = await recipectl.post(user.id as number, data);
             res.status(result.code).send(result.data);
         } catch(e) {
             next(e);

@@ -3,6 +3,8 @@ import { User } from "../models/user";
 import createError from "http-errors";
 import bcrypt from "bcrypt";
 import now from "../util/now";
+import ControllerResponse from "../util/ControllerResponse";
+import { StatusCode } from "../util/types";
 
 const UserInstance = new User();
 
@@ -46,13 +48,13 @@ export default class AuthService {
         const { email, password } = data;
 
         try {
-            const user = await UserInstance.getOneByEmail(email);
-            if (!user) return { ok: false, user: null }
-            const match = await bcrypt.compare(password, user.password);
-            return {
-                ok: match,
-                user: match ? user : null
-            }
+            const response: IUser = await UserInstance.getOneByEmail(email);
+            const match = await bcrypt.compare(password, response.password!);
+            const user = match ? response : null;
+            const code = match ? StatusCode.OK : StatusCode.Forbidden;
+
+            return new ControllerResponse(code, user, match);
+
         } catch (e: any) {
             throw new Error(e);
         }

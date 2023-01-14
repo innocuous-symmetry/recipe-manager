@@ -3,10 +3,12 @@ import { IUser } from "../schemas";
 
 export interface IAuthContext {
     user?: IUser
+    setUser: Dispatch<SetStateAction<IUser>> | VoidFunction
 }
 
 export const defaultValue: IAuthContext = {
-    user: undefined
+    user: undefined,
+    setUser: () => {}
 }
 
 export const AuthContext = createContext<IAuthContext>(defaultValue);

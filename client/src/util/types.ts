@@ -4,7 +4,7 @@ import { Form } from "../components/ui";
 import { IUser } from "../schemas";
 
 export interface PortalBase {
-    children?: ReactNode
+    children?: ReactNode | ReactNode[]
     extraStyles?: string
 }
 
@@ -14,8 +14,8 @@ interface ButtonParams extends PortalBase {
     disabledText?: string
 }
 
-export interface MultiChildPortal extends PortalBase {
-    children?: ReactNode | ReactNode[]
+export interface ProtectParams extends PortalBase {
+    redirect?: string
 }
 
 interface UserCardProps extends PortalBase {
@@ -43,7 +43,7 @@ interface CheckboxProps {
 export type PageComponent = FC<PortalBase>
 export type PanelComponent = FC<PortalBase>
 export type ButtonComponent = FC<ButtonParams>
-export type ProtectPortal = FC<MultiChildPortal>
+export type ProtectPortal = FC<ProtectParams>
 export type UserCardType = FC<UserCardProps>
 export type NavbarType = FC<NavbarProps>
 export type CheckboxType = FC<CheckboxProps>
