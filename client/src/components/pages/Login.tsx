@@ -2,23 +2,24 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext, useAuthContext } from "../../context/AuthContext";
 import { attemptLogin } from "../../util/apiUtils";
-import { IUserAuth } from "../../schemas";
+import { IUser, IUserAuth } from "../../schemas";
 import { Button, Form, Page, Panel } from "../ui";
+import { FormConfig } from "../ui/Form";
 
 export default function Login() {
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get("redirect");
     const { user, setUser } = useContext(AuthContext);
+    const [form, setForm] = useState<JSX.Element>();
 
     // setup and local state
     const navigate = useNavigate();
-    const [form, setForm] = useState<JSX.Element>();
     const [input, setInput] = useState<IUserAuth>({ email: '', password: '' });
 
     // retrieve and store state from form
     const getFormState = useCallback((received: IUserAuth) => {
         setInput(received);
-    }, [])
+    }, [input])
 
 
     const handleLogin = async () => {
@@ -31,25 +32,35 @@ export default function Login() {
     // check for logged in user and mount form
     useEffect(() => {
         if (user) navigate('/');
-        setForm(
-            new Form<IUserAuth>({
-                parent: 'login',
-                keys: Object.keys(input),
-                labels: ["Email", "Password"],
-                dataTypes: Object.keys(input),
-                initialState: input,
-                getState: getFormState
-            }).mount()
-        );
     }, [])
+
+    // useEffect(() => {
+    //     setForm(
+            
+    //     )
+    // }, [getFormState])
+
+    useEffect(() => {
+        console.log(input);
+    }, [getFormState])
 
     return (
         <Page>
             <h1>Hello! Nice to see you again.</h1>
 
             <Panel extraStyles="form-panel">
-                { form || <h2>Loading...</h2> }
+
+                <Form parent={input} _config={{
+                    parent: 'login',
+                    keys: Object.keys(input),
+                    labels: ["Email", "Password"],
+                    dataTypes: Object.keys(input),
+                    initialState: input,
+                    getState: getFormState
+                } as FormConfig<typeof input>} />
+
                 <Button onClick={handleLogin}>Log In</Button>
+
             </Panel>
 
             <aside>Not registered yet? You can do that <a href="/register">here.</a></aside>
