@@ -7,7 +7,7 @@ const IngredientInstance = new IngredientCtl();
 const router = Router();
 
 export const ingredientRoute = (app: Express) => {
-    app.use('/ingredient', router);
+    app.use('/app/ingredient', router);
 
     router.get('/', async (req, res, next) => {
         try {

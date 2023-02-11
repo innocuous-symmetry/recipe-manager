@@ -1,13 +1,11 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { loaders } from './loaders';
 
 dotenv.config();
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 const app = express();
-app.use(cors());
 
 async function main() {
     await loaders(app);

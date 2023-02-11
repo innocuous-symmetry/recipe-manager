@@ -8,10 +8,14 @@ export default class ControllerResponse<T> implements CtlResponse<T> {
     constructor(code: StatusCode, data: T | string, ok?: boolean) {
         this.code = code
         this.data = data
-        this.ok = ok || (this.data !== null)
+        this.ok = ok ?? (this.data !== null)
     }
 
     send() {
         return { ok: this.ok, code: this.code, data: this.data }
+    }
+
+    represent() {
+        console.log({ ok: this.ok, code: this.code, data: this.data });
     }
 }

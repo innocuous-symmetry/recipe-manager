@@ -5,7 +5,7 @@ const groceryinstance = new GroceryListCtl();
 const router = Router();
 
 export const groceryListRoute = (app: Express) => {
-    app.use('/grocery-list', router);
+    app.use('/app/grocery-list', router);
 
     router.get('/', async (req, res, next) => {
         const userid = req.query.userid as string;

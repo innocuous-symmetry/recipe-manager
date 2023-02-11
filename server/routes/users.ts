@@ -6,7 +6,7 @@ const router = Router();
 const userCtl = new UserCtl();
 
 export const userRoute = (app: Express) => {
-    app.use('/users', router);
+    app.use('/app/users', router);
 
     // get all users
     router.get('/', async (req, res) => {

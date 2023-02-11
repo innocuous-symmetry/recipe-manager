@@ -1,5 +1,6 @@
-import { Express, Request, Router } from "express"
+import { Express, Router } from "express"
 import { PassportStatic } from "passport";
+import jwt from "jsonwebtoken";
 import { IUser, IUserAuth } from "../schemas";
 import AuthService from "../auth";
 import { UserCtl } from "../controllers";
@@ -12,17 +13,8 @@ const UserInstance = new UserCtl();
 
 const router = Router();
 
-export const authRoute = (app: Express, passport: PassportStatic) => {
+export const authRoute = (app: Express) => {
     app.use('/auth', router);
-
-    // router.use((req, res, next) => {
-    //     console.log(req.isAuthenticated());
-    //     console.log(req.session.user);
-    //     console.log(req.cookies);
-    //     console.log();
-
-    //     next();
-    // })
 
     router.use((req, res, next) => {
         console.log(req.session);
@@ -49,7 +41,7 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
         res.status(200).send({ message: "Cool restricted content!" });
     })
 
-    router.post('/login', passport.authenticate('local'), async (req, res, next) => {
+    router.post('/login', async (req, res, next) => {
         try {
             const data: IUserAuth = req.body;
             console.log(data);
@@ -59,19 +51,27 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
             if (response.ok) {
                 const user = response.data as IUser;
 
-                req.session.regenerate((err) => {
-                    if (err) next(err);
-                    req.session.user = user;
+                req.user = user;
+                req.session.user = user;
 
-                    req.session.save((err) => {
-                        if (err) return next(err);
-                    })
+                const safeUserData = {
+                    id: user.id,
+                    handle: user.handle,
+                    email: user.email,
+                    datecreated: user.datecreated,
+                    datemodified: user.datemodified
+                }
+
+                const token = jwt.sign({ user: safeUserData }, process.env.SESSIONSECRET as string);
+
+                req.session.save((err) => {
+                    return next(err);
                 })
 
-                res.cookie('userid', user.id, { maxAge: 1000 * 60 * 60 * 24 });
+                console.log(req.session);
 
-                res.send(response);
-                res.end();
+                res.cookie('token', token, { httpOnly: true });
+                res.json({ token });
             } else {
                 res.status(401).send({ message: "Login unsuccessful" });
             }
@@ -82,10 +82,11 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
 
     router.post('/register', async (req, res, next) => {
         try {
-            const data = req.body;
+            const data: IUser = req.body;
             const response = await AuthInstance.register(data);
-            if (!response) res.status(400).send({ ok: false });
-            res.status(200).send({ ok: true });
+            response.represent();
+            
+            res.status(response.code).send({ ok: response.ok, message: response.data });
         } catch(e) {
             next(e);
         }
@@ -93,11 +94,9 @@ export const authRoute = (app: Express, passport: PassportStatic) => {
 
     router.delete('/logout', async (req, res, next) => {
         try {
-            req.session.destroy((err) => {
-                if (err) throw err;
-            })
-            res.clearCookie('userid');
-            res.status(204).send({ ok: true });
+            res.clearCookie('connect.sid').clearCookie('token');
+            res.status(204).send("logout successful");
+            res.end();
         } catch(e) {
             next(e);
         }
