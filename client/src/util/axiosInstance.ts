@@ -10,13 +10,9 @@ const instance = axios.create({
 instance.interceptors.response.use((res: AxiosResponse<any,any>) => {
     if (res?.data.token) {
         document.cookie = `token=${res.data.token}`;
-
-        return res;
-    } else {
-        console.error("Token was not found in response");
-
-        return res;
     }
+    
+    return res;
 }, (err) => {
     return Promise.reject(err);
 })

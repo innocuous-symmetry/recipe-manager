@@ -19,17 +19,17 @@ export enum VariantLabel {
     FinishUp
 }
 
-const Register: FC<{receiveChange: (change: IUser) => void}> = ({ receiveChange }) => {
+const Register = () => {
     const [displayed, setDisplayed] = useState<JSX.Element>();
-    const authContext = useAuthContext();
+    const { user } = useAuthContext();
 
-    const transitionDisplay = (variant: number | VariantLabel, user?: IUser) => {
+    const transitionDisplay = (variant: number | VariantLabel) => {
         switch (variant) {
             case 0:
                 setDisplayed(<AboutYou transitionDisplay={transitionDisplay} />);
                 break;
             case 1:
-                setDisplayed(<InitialCollection transitionDisplay={transitionDisplay} input={user} receiveChange={receiveChange} />);
+                setDisplayed(<InitialCollection transitionDisplay={transitionDisplay} input={user} />);
                 break;
             case 2:
                 setDisplayed(<AddFriends transitionDisplay={transitionDisplay} input={user} />);
@@ -38,7 +38,7 @@ const Register: FC<{receiveChange: (change: IUser) => void}> = ({ receiveChange 
                 setDisplayed(<FinishUp transitionDisplay={transitionDisplay} />);
                 break;
             default:
-                setDisplayed(<AboutYou transitionDisplay={transitionDisplay} input={authContext.user || user} />);
+                setDisplayed(<AboutYou transitionDisplay={transitionDisplay} input={user} />);
                 break;
         }
     }

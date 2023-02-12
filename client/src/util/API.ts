@@ -2,7 +2,7 @@ import { AxiosHeaders, AxiosRequestHeaders } from "axios";
 import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList } from "../schemas";
 import { default as _instance } from "./axiosInstance";
 
-export module API {
+module API {
     const APISTRING = import.meta.env.APISTRING || "http://localhost:8080";
 
     abstract class RestController<T> {
@@ -150,3 +150,5 @@ export module API {
         }
     }
 }
+
+export default API

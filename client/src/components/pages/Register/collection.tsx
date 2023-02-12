@@ -6,7 +6,7 @@ import { attemptLogin, createNewCollection } from "../../../util/apiUtils";
 import { Button, Divider, Page, Panel } from "../../ui";
 import TextField from "../../ui/TextField";
 
-const InitialCollection: RegisterVariantType = ({ transitionDisplay, receiveChange, input }) => {
+const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) => {
     const [collectionName, setCollectionName] = useState<string>();
     const [view, setView] = useState<JSX.Element>(<Page><h1>Loading...</h1></Page>);
     const [user, setUser] = useState<IUser>();
@@ -45,8 +45,7 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, receiveChan
     }
 
     useEffect(() => {    
-        if (user && receiveChange) {
-            receiveChange(user);
+        if (user) {
             setView(
                 <Page>
                     <h1>Hi, {user.firstname}! Great to meet you.</h1>

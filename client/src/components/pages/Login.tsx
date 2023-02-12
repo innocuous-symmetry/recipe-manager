@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext, useAuthContext } from "../../context/AuthContext";
-import { attemptLogin } from "../../util/apiUtils";
+import { useNavigate, useParams } from "react-router-dom";
 import { IUser, IUserAuth } from "../../schemas";
 import { Button, Form, Page, Panel } from "../ui";
 import { FormConfig } from "../ui/Form";
+import API from "../../util/API";
 
 export default function Login() {
     const params = new URLSearchParams(window.location.search);
@@ -24,9 +24,12 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!input.email || !input.password) return;
-        const { data, ok } = await attemptLogin(input);
-        if (ok) setUser(data);
-        navigate(`/${redirect ?? ''}`);
+        const result = await new API.Auth().login(input);
+        console.log(result);
+
+        // const { data, ok } = await attemptLogin(input);
+        // if (ok) setUser(data);
+        // navigate(`/${redirect ?? ''}`);
     }
 
     // check for logged in user and mount form
