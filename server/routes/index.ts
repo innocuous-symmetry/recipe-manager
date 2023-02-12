@@ -21,6 +21,7 @@ export const routes = async (app: Express) => {
     // middleware to check for auth on cookies on each request in protected routes
     app.use('/app', async (req, res, next) => {
         // pull jwt from request headers
+        console.log(req.headers);
         const token = req.headers['authorization']?.split(" ")[1];
         console.log(token);
 

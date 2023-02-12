@@ -2,9 +2,9 @@ import { createContext, Dispatch, SetStateAction, useContext } from "react";
 import { IUser } from "../schemas";
 
 export interface IAuthContext {
-    user?: IUser
+    user: IUser | undefined
     setUser: Dispatch<SetStateAction<IUser | undefined>> | VoidFunction
-    token?: string
+    token: string | undefined
     setToken: Dispatch<SetStateAction<string | undefined>> | VoidFunction
 }
 

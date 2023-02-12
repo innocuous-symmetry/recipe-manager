@@ -21,21 +21,27 @@ import GroceryList from './components/pages/GroceryList';
 import GroceryListCollection from './components/pages/GroceryListCollection';
 import { TokenType } from './util/types';
 import './sass/App.scss';
+import handleToken from './util/handleToken';
 
 function App() {
   const { setUser, token, setToken } = useAuthContext();
 
   useEffect(() => {
     if (document.cookie) {
-      const extractedToken: Partial<TokenType> = jwtDecode(document.cookie.split("=")[1]);
-      setToken(document.cookie.split("=")[1]);
-      setUser(extractedToken.user);
+      const response = handleToken();
+      if (response) {
+        setToken(response.token);
+        setUser(response.user);
+      }
     }
   }, [document.cookie]);
 
   useEffect(() => {
-    token && API.Settings.setToken(token);
-  }, [token])
+    if (token) {
+      const response = handleToken();
+      response && setUser(response.user);
+    }
+  }, [setToken])
 
   return (
     <BrowserRouter>

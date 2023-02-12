@@ -9,15 +9,16 @@ import TextField from "../../ui/TextField";
 import { useAuthContext } from "../../../context/AuthContext";
 
 const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) => {
-    const { user, setUser } = useAuthContext();
+    const { user, token } = useAuthContext();
     const [collectionName, setCollectionName] = useState<string>();
     const [view, setView] = useState<JSX.Element>(<Page><h1>Loading...</h1></Page>);
     const now = useNow();
 
-    const collectionAPI = new API.Collection();
-
     const handleClick = async () => {
-        if (!user) return;
+        if (!user || !token) return;
+
+        const collectionAPI = new API.Collection(token);
+
         const collection: ICollection = {
             name: collectionName ?? (user.firstname + "'s Collection"),
             active: true,
@@ -35,7 +36,7 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) =>
     }
 
     useEffect(() => {    
-        if (user) {
+        if (user && token) {
             setView(
                 <Page>
                     <h1>Hi, {user.firstname}! Great to meet you.</h1>

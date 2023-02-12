@@ -25,15 +25,14 @@ module API {
         protected endpoint: string;
         protected headers?: any
 
-        constructor(endpoint: string) {
+        constructor(endpoint: string, token: string) {
             this.endpoint = endpoint;
-
-            if (Settings.getToken()) {
-                this.headers = {
+            this.headers = {
+                headers: {
                     "Content-Type": "application/json",
-                    "Authorization": ("Bearer " + Settings.getToken())
-                };
-            }
+                    "Authorization": ("Bearer " + token)
+                }
+            };
         }
 
         async getAll() {
@@ -112,14 +111,14 @@ module API {
     }
 
     export class User extends RestController<IUser> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/users");
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/users", token);
         }
     }
 
     export class Friendship extends RestController<IFriendship> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/friends");
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/friends", token);
         }
 
         async getPendingFriendRequests() {
@@ -129,26 +128,27 @@ module API {
     }
 
     export class Recipe extends RestController<IRecipe> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/recipes");
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/recipes", token);
         }
     }
 
     export class Ingredient extends RestController<IIngredient> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/ingredients");
+        constructor(token: string) {
+            if (!token) throw new Error("Missing required token");
+            super(Settings.getAPISTRING() + "/app/ingredients", token);
         }
     }
 
     export class Collection extends RestController<ICollection> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/collection");
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/collection", token);
         }
     }
 
     export class GroceryList extends RestController<IGroceryList> {
-        constructor() {
-            super(Settings.getAPISTRING() + "/app/grocery-list")
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/grocery-list", token)
         }
     }
 }
