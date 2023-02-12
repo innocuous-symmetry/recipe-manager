@@ -8,6 +8,12 @@ const router = Router();
 export const collectionRoute = (app: Express) => {
     app.use('/app/collection', router);
 
+    router.use((req, res, next) => {
+        console.log('what gives');
+        console.log(req.body);
+        next();
+    })
+
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
         try {
@@ -30,7 +36,7 @@ export const collectionRoute = (app: Express) => {
 
     router.post('/', async (req, res, next) => {
         const data = req.body;
-        console.log(data);
+        console.log(req.body ?? "sanity check");
 
         try {
             const result = await CollectionInstance.post(data);

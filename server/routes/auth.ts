@@ -56,6 +56,8 @@ export const authRoute = (app: Express) => {
 
                 const safeUserData = {
                     id: user.id,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
                     handle: user.handle,
                     email: user.email,
                     datecreated: user.datecreated,

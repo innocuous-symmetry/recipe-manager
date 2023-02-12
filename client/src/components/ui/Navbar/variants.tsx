@@ -1,7 +1,7 @@
 import API from "../../../util/API";
 import { NavbarType } from "../../../util/types";
 import { Button, Dropdown } from '..'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -40,6 +40,10 @@ const LoggedIn = () => {
         navigate(payload);
     }
 
+    useEffect(() => {
+        console.log(user);
+    }, [])
+
     return (
         <div>
             <div id="navbar">
@@ -47,7 +51,7 @@ const LoggedIn = () => {
                     <a onClick={() => navigate('/')}>RECIPIN</a>
                 </div>
                 <div className="navbar-block">
-                    <p>Hi, {user?.firstname}.</p>
+                    <p>Hi, {user && user.firstname}.</p>
                     <span id="search-icon"></span>
                     <Button onClick={() => handleUIChange("SEARCH")}>Search</Button>
                     <Button onClick={() => handleUIChange("ACTIONS")}>Actions</Button>

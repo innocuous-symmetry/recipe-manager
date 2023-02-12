@@ -3,57 +3,61 @@ import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroc
 import { default as _instance } from "./axiosInstance";
 
 module API {
-    const APISTRING = import.meta.env.APISTRING || "http://localhost:8080";
+    export class Settings {
+        private static APISTRING = import.meta.env.APISTRING || "http://localhost:8080";
+        private static token?: string;
+
+        public static getAPISTRING() {
+            return Settings.APISTRING;
+        }
+
+        public static getToken() {
+            return Settings.token;
+        }
+
+        public static setToken(newToken: string) {
+            Settings.token = newToken;
+        }
+    }
 
     abstract class RestController<T> {
         protected instance = _instance;
         protected endpoint: string;
-        protected token?: string;
         protected headers?: any
 
-        constructor(endpoint: string, token?: string) {
+        constructor(endpoint: string) {
             this.endpoint = endpoint;
-            this.token = token;
 
-            if (token) {
+            if (Settings.getToken()) {
                 this.headers = {
                     "Content-Type": "application/json",
-                    "Authorization": ("Bearer " + token)
+                    "Authorization": ("Bearer " + Settings.getToken())
                 };
             }
         }
 
         async getAll() {
-            if (!this.token) return null;
-
             const response = await this.instance.get(this.endpoint, this.headers);
             return Promise.resolve(response.data);
         }
 
         async getByID(id: string) {
-            if (!this.token) return null;
-
             const response = await this.instance.get(this.endpoint + "/" + id, this.headers);
             return Promise.resolve(response.data);
         }
 
-        async postOne(data: T) {
-            if (!this.token) return null;
-
+        async post(data: T) {
+            console.log(data);
             const response = await this.instance.post(this.endpoint, data, this.headers);
             return Promise.resolve(response.data);
         }
 
         async put(id: string, data: T | Partial<T>) {
-            if (!this.token) return null;
-
-            const response = await this.instance.put(this.endpoint + "/" + id, data, this.headers);
+            const response = await this.instance.put(this.endpoint + "/" + id, JSON.stringify(data), this.headers);
             return Promise.resolve(response.data);
         }
 
         async delete(id: string) {
-            if (!this.token) return null;
-
             const response = await this.instance.delete(this.endpoint + '/' + id, this.headers);
             return Promise.resolve(response.data);
         }
@@ -61,7 +65,7 @@ module API {
 
     export class Auth {
         private instance = _instance;
-        private endpoint = APISTRING + "/auth";
+        private endpoint = Settings.getAPISTRING() + "/auth";
 
         async login(data: IUserAuth | Partial<IUser>) {
             try {
@@ -109,18 +113,16 @@ module API {
 
     export class User extends RestController<IUser> {
         constructor() {
-            super(APISTRING + "/app/users");
+            super(Settings.getAPISTRING() + "/app/users");
         }
     }
 
     export class Friendship extends RestController<IFriendship> {
         constructor() {
-            super(APISTRING + "/app/friends");
+            super(Settings.getAPISTRING() + "/app/friends");
         }
 
         async getPendingFriendRequests() {
-            if (!this.token) return null;
-
             const response = await this.instance.get(this.endpoint + "?pending=true", this.headers);
             return Promise.resolve(response.data);
         }
@@ -128,25 +130,25 @@ module API {
 
     export class Recipe extends RestController<IRecipe> {
         constructor() {
-            super(APISTRING + "/app/recipes");
+            super(Settings.getAPISTRING() + "/app/recipes");
         }
     }
 
     export class Ingredient extends RestController<IIngredient> {
         constructor() {
-            super(APISTRING + "/app/ingredients");
+            super(Settings.getAPISTRING() + "/app/ingredients");
         }
     }
 
     export class Collection extends RestController<ICollection> {
         constructor() {
-            super(APISTRING + "/app/collections");
+            super(Settings.getAPISTRING() + "/app/collection");
         }
     }
 
     export class GroceryList extends RestController<IGroceryList> {
         constructor() {
-            super(APISTRING + "/app/grocery-list")
+            super(Settings.getAPISTRING() + "/app/grocery-list")
         }
     }
 }

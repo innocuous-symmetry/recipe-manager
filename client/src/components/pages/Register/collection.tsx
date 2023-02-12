@@ -3,33 +3,23 @@ import { RegisterVariantType, VariantLabel } from ".";
 import { useNow } from "../../../hooks/useNow";
 import { ICollection, IUser, IUserAuth } from "../../../schemas";
 import { attemptLogin, createNewCollection } from "../../../util/apiUtils";
+import API from "../../../util/API";
 import { Button, Divider, Page, Panel } from "../../ui";
 import TextField from "../../ui/TextField";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) => {
+    const { user, setUser } = useAuthContext();
     const [collectionName, setCollectionName] = useState<string>();
     const [view, setView] = useState<JSX.Element>(<Page><h1>Loading...</h1></Page>);
-    const [user, setUser] = useState<IUser>();
     const now = useNow();
 
-    async function unwrapLogin(data: IUser) {
-        const userInfo: IUserAuth = { email: data.email, password: data.password! }
-        const login = await attemptLogin(userInfo);
-        setUser(login.user);
-    }
-
-    useEffect(() => {
-        if (input) {
-            setTimeout(() => {
-                unwrapLogin(input);
-            }, 750);
-        }
-    }, [])
+    const collectionAPI = new API.Collection();
 
     const handleClick = async () => {
         if (!user) return;
         const collection: ICollection = {
-            name: collectionName || (user.firstname + "'s Collection"),
+            name: collectionName ?? (user.firstname + "'s Collection"),
             active: true,
             ismaincollection: true,
             ownerid: user.id!.toString(),
@@ -39,7 +29,7 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) =>
 
         console.log(collection);
 
-        const result = await createNewCollection(collection);
+        const result = await collectionAPI.post(collection);
         console.log(result);
         if (result) transitionDisplay(VariantLabel.AddFriends);
     }
@@ -58,7 +48,8 @@ const InitialCollection: RegisterVariantType = ({ transitionDisplay, input }) =>
                         <Divider />
                         <h3>What would you like to call your main collection?</h3>
 
-                        <TextField onChange={(e: ChangeEvent<HTMLInputElement>) => setCollectionName(e.target.value)} placeholder={user.firstname + 's Collection'} />
+                        {/* <TextField onChange={(e: ChangeEvent<HTMLInputElement>) => setCollectionName(e.target.value)} placeholder={user.firstname + 's Collection'} /> */}
+                        <input type="text" onChange={(e) => setCollectionName(e.target.value)} placeholder={user.firstname + 's Collection'}></input>
                     </Panel>
 
                     <Button onClick={handleClick}>Next</Button>

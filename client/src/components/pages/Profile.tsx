@@ -14,8 +14,7 @@ export default function Profile() {
     return (
         <Protect redirect="profile">
             <div className="profile-authenticated">
-                <h1>{user?.firstname}'s Profile</h1>
-                <p>Things and stuff!</p>
+                <h1>{user && user.firstname}'s Profile</h1>
                 <Friends />
             </div>
         </Protect>

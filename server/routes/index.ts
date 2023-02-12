@@ -25,7 +25,7 @@ export const routes = async (app: Express) => {
         console.log(token);
 
         if (!token) {
-            res.status(403).send("Unauthorized");
+            res.status(403).send("Unauthorized, did not receive token");
         } else {
             jwt.verify(token, process.env.SESSIONSECRET as string, (err, data) => {
                 if (err) {

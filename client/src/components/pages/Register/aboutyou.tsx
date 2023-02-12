@@ -5,9 +5,10 @@ import { RegisterVariantType, VariantLabel } from ".";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IUser, IUserAuth } from "../../../schemas";
 import { attemptLogin, attemptRegister } from "../../../util/apiUtils";
+import API from "../../../util/API";
 import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";
-import Form, { FormConfig } from "../../ui/Form";
+import Form from "../../ui/Form";
 
 const blankUser: IUser = {
     firstname: '',
@@ -20,50 +21,30 @@ const blankUser: IUser = {
 }
 
 const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
+    const auth = new API.Auth();
     const navigate = useNavigate();
-    const authContext = useAuthContext();
-    const [form, setForm] = useState<JSX.Element>(<p key={v4()}>Loading content...</p>);
+    const { user, setToken } = useAuthContext();
     const [input, setInput] = useState<IUser>(blankUser);
-    const [regSuccess, setRegSuccess] = useState<any>();
 
     const getFormState = useCallback((received: IUser) => {
         setInput(received);
     }, []);
 
     useEffect(() => {
-        if (authContext.user) navigate('/');
-    }, [authContext]);
+        if (user) navigate('/');
+    }, [user]);
 
     async function handleRegister() {
-        const res = await attemptRegister(input);
+        const res = await auth.register(input);
         if (res.ok) {
+            setTimeout(async () => {
+                const result = await auth.login(input);
+                setToken(result.token);
+            }, 750);
+
             transitionDisplay(VariantLabel.InitialCollection, input);
         }
     }
-
-    async function unwrapLogin() {
-        const data: IUserAuth = { email: input.email, password: input.password || "" }
-        const login = await attemptLogin(data);
-        if (login) {
-            authContext.user = login.user;
-        }
-        navigate('/');
-    }
-
-    useEffect(() => {
-        setForm(new Form<IUser>({
-            parent: "register",
-            keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
-            initialState: input,
-            labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password"],
-            dataTypes: ['text', 'text', 'text', 'email', 'password'],
-            getState: getFormState
-        }).mount());
-    }, [])
-
-    useEffect(() => {
-        if (regSuccess) unwrapLogin();
-    }, [regSuccess])
 
     return (
         <Page>
@@ -74,7 +55,16 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
             <h2>Tell us a bit about yourself:</h2>
 
             <Panel extraStyles="form-panel two-columns">
-                { form || <h2>Loading...</h2> }
+
+                <Form parent={input} _config={{
+                    parent: "register",
+                    keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
+                    initialState: input,
+                    labels: ['First Name', 'Last Name', 'Handle', 'Email', "Password"],
+                    dataTypes: ['text', 'text', 'text', 'email', 'password'],
+                    getState: getFormState
+                }} />
+
                 <Button onClick={handleRegister}>Register</Button>
             </Panel>
         </Page>

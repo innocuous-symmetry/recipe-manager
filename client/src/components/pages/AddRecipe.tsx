@@ -10,7 +10,7 @@ const AddRecipe = () => {
 
     const getFormState = useCallback((data: IRecipe) => {
         setInput(data);
-    }, [])
+    }, [input])
 
     const handleCreate = () => {
         for (let field of Object.keys(input)) {
@@ -28,20 +28,6 @@ const AddRecipe = () => {
             }
         })
     }, [authContext])
-    
-    useEffect(() => {
-        input.authoruserid && setForm(
-            new Form<IRecipe>({
-                parent: "AddRecipe",
-                keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
-                labels: ["Recipe Name:", "Prep Time:", "Course:", "Cuisine:", "Ingredients:", "Description:"],
-                dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'custom picker', 'TINYMCE'],
-                initialState: input,
-                getState: getFormState,
-                richTextInitialValue: "<p>Enter recipe details here!</p>"
-            }).mount()
-        )
-    }, [input.authoruserid])
 
     useEffect(() => {
         console.log(input);
@@ -53,7 +39,18 @@ const AddRecipe = () => {
             <Divider />
 
             <Panel>
+                <Form parent={input} _config={{
+                    parent: "AddRecipe",
+                    keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
+                    labels: ["Recipe Name:", "Prep Time:", "Course:", "Cuisine:", "Ingredients:", "Description:"],
+                    dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'custom picker', 'TINYMCE'],
+                    initialState: input,
+                    getState: getFormState,
+                    richTextInitialValue: "<p>Enter recipe details here!</p>"
+                }} />
+
                 { form || <h2>Loading...</h2> }
+
                 <Button onClick={handleCreate}>Create Recipe!</Button>
             </Panel>
         </Page>

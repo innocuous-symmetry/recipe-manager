@@ -3,11 +3,14 @@ import { IUser } from "../../../schemas";
 import { TextField, UserCard } from "..";
 import { v4 } from "uuid";
 import { getAllUsers } from "../../../util/apiUtils";
+import API from "../../../util/API";
 
 const FriendSearchWidget: FC<{}> = () => {
     const [searchTerm, setSearchTerm] = useState<string>();
     const [userPool, setUserPool] = useState<IUser[]>([]);
     const [friendResults, setFriendResults] = useState<IUser[]>([]);
+
+    const users = new API.User();
 
     // this isn't really working right now i don't think
     const handleRequestSent = useCallback((targetid: string | number) => {
@@ -23,7 +26,7 @@ const FriendSearchWidget: FC<{}> = () => {
     // load available user pool on mount
     useEffect(() => {
         (async function() {
-            const result = await getAllUsers();
+            const result = await users.getAll();
             if (result) setUserPool(result);
         })();
     }, [])

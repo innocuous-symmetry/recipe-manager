@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -19,8 +19,8 @@ declare module 'express-session' {
 
 export const expressLoader = async (app: Express) => {
     app.use(cors({ origin: origin }));
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser());
     app.use(morgan('tiny'));
     app.use(requireSessionSecret);

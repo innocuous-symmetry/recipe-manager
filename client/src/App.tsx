@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthContext } from './context/AuthContext';
 import jwtDecode from 'jwt-decode';
+import API from './util/API';
 
 // pages, ui, components, styles
 import Subscriptions from './components/pages/Subscriptions/Subscriptions';
@@ -22,7 +23,7 @@ import { TokenType } from './util/types';
 import './sass/App.scss';
 
 function App() {
-  const { setUser, setToken } = useAuthContext();
+  const { setUser, token, setToken } = useAuthContext();
 
   useEffect(() => {
     if (document.cookie) {
@@ -30,7 +31,11 @@ function App() {
       setToken(document.cookie.split("=")[1]);
       setUser(extractedToken.user);
     }
-  }, []);
+  }, [document.cookie]);
+
+  useEffect(() => {
+    token && API.Settings.setToken(token);
+  }, [token])
 
   return (
     <BrowserRouter>
