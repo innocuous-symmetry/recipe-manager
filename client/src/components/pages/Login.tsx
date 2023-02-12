@@ -34,12 +34,6 @@ export default function Login() {
         if (user) navigate('/');
     }, [])
 
-    // useEffect(() => {
-    //     setForm(
-            
-    //     )
-    // }, [getFormState])
-
     useEffect(() => {
         console.log(input);
     }, [getFormState])
