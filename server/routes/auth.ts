@@ -16,11 +16,6 @@ const router = Router();
 export const authRoute = (app: Express) => {
     app.use('/auth', router);
 
-    router.use((req, res, next) => {
-        console.log(req.session);
-        next();
-    })
-
     router.get('/', restrictAccess, (req, res, next) => {
         if (req.session.user) {
             const user = req.session.user;
@@ -44,8 +39,6 @@ export const authRoute = (app: Express) => {
     router.post('/login', async (req, res, next) => {
         try {
             const data: IUserAuth = req.body;
-            console.log(data);
-
             const response: ControllerResponse<any> = await AuthInstance.login(data);
 
             if (response.ok) {
@@ -69,8 +62,6 @@ export const authRoute = (app: Express) => {
                 req.session.save((err) => {
                     return next(err);
                 })
-
-                console.log(req.session);
 
                 res.cookie('token', token, { httpOnly: true });
                 res.json({ token });

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { useAuthContext } from "../../context/AuthContext";
 import { getAllUsers, getFriendships, getPendingFriendRequests, getUserByID } from "../../util/apiUtils";
+import API from "../../util/API";
 import UserCard from "../ui/UserCard";
 import { IUser, IFriendship } from "../../schemas";
 import { Card, Divider, Panel } from "../ui";
@@ -10,27 +11,32 @@ import FriendSearchWidget from "../ui/Widgets/FriendSearchWidget";
 export default function Friends() {
     const [friends, setFriends] = useState<IFriendship[]>();
     const [userList, setUserList] = useState(new Array<IUser>());
-    const { user } = useAuthContext();
+    const { user, token } = useAuthContext();
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || !token) return;
         (async function() {
             try {
-                const rawResult = await getFriendships();
+                const Friends = new API.Friendship(token);
+                const result = await Friends.getAll();
     
-                if (rawResult.length) {
-                    const result = rawResult.filter((item: IFriendship) => (item.senderid == user.id) && !(item.pending));
+                if (result.length) {
                     setFriends(result);
                 }
-            } catch(e) {
-                console.error(e);
+
+                console.log(result);
+            } catch (error) {
+                console.error(error);
             }
-        })()
-    }, [user])
+        })();
+    }, [])
 
     useEffect(() => {
-        friends && friends.map(async (friend: IFriendship) => {
-            const userData = await getUserByID(friend.targetid);
+        if (!token || !friends) return;
+        
+        friends.map(async (friend: IFriendship) => {
+            const Friends = new API.Friendship(token);
+            const userData = await Friends.getByID(friend.targetid as string);
             if (userData) setUserList((prev: IUser[]) => {
                 return [...prev, userData]
             })
@@ -45,14 +51,14 @@ export default function Friends() {
         <>
         { userList.length ? 
         (
-            <Panel extraStyles="flex-row">
+            <Card extraStyles="flex-row">
                 <h2>Your friendships:</h2>
                 {
                     userList.map((user: IUser) => {
                         return <UserCard key={v4()} user={user} />
                     })
                 }
-            </Panel>
+            </Card>
         ) : 
         (
             <Card>

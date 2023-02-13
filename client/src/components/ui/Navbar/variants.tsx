@@ -1,7 +1,6 @@
 import API from "../../../util/API";
-import { NavbarType } from "../../../util/types";
 import { Button, Dropdown } from '..'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -14,8 +13,7 @@ const LoggedIn = () => {
     const [searchActive, setSearchActive] = useState(false);
 
     const handleLogout = async () => {
-        const success = await auth.logout();
-        console.log(success);
+        await auth.logout();
 
         // nullify cookie and unset user/token data
         document.cookie = `token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
@@ -39,10 +37,6 @@ const LoggedIn = () => {
         setDropdownActive(false);
         navigate(payload);
     }
-
-    useEffect(() => {
-        console.log(user);
-    }, [])
 
     return (
         <div>

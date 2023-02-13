@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 } from "uuid";
 import { RegisterVariantType, VariantLabel } from ".";
 import { useAuthContext } from "../../../context/AuthContext";
-import { IUser, IUserAuth } from "../../../schemas";
-import { attemptLogin, attemptRegister } from "../../../util/apiUtils";
+import { IUser } from "../../../schemas";
 import API from "../../../util/API";
 import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";

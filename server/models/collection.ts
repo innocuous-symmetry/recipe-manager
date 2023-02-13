@@ -18,6 +18,22 @@ export class Collection {
         }
     }
 
+    async getAllAuthored(id: number | string) {
+        console.log(id, typeof id);
+        try {
+            const statement = `
+                SELECT * FROM recipin.collection
+                WHERE ownerid = $1;
+            `
+            const result = await pool.query(statement, [id]);
+            console.log(result.rows);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async getUserDefault(id: number | string) {
         try {
             const statement = `
@@ -46,7 +62,6 @@ export class Collection {
     }
 
     async post(data: ICollection) {
-        console.log('new default collection');
         const { name, active, ismaincollection, ownerid } = data;
         try {
             const statement = `

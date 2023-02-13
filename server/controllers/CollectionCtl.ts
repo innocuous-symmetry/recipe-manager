@@ -23,6 +23,13 @@ export default class CollectionCtl {
         return new ControllerResponse(code, data);
     }
 
+    async getAllAuthored(id: number | string) {
+        const result = await CollectionInstance.getAllAuthored(id);
+        const code = (result !== null) ? StatusCode.OK : StatusCode.NotFound;
+        const data = result || "No collections found";
+        return new ControllerResponse(code, data);
+    }
+
     async getUserDefault(id: number | string) {
         const result = await CollectionInstance.getUserDefault(id);
         const code = (result !== null) ? StatusCode.OK : StatusCode.NotFound;

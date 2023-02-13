@@ -3,6 +3,13 @@ import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroc
 import { default as _instance } from "./axiosInstance";
 
 module API {
+    export enum CRUDMETHOD {
+        GET,
+        PUT,
+        POST,
+        DELETE
+    }
+
     export class Settings {
         private static APISTRING = import.meta.env.APISTRING || "http://localhost:8080";
         private static token?: string;
@@ -23,7 +30,7 @@ module API {
     abstract class RestController<T> {
         protected instance = _instance;
         protected endpoint: string;
-        protected headers?: any
+        protected headers?: any;
 
         constructor(endpoint: string, token: string) {
             this.endpoint = endpoint;
@@ -33,6 +40,19 @@ module API {
                     "Authorization": ("Bearer " + token)
                 }
             };
+        }
+
+        async customRoute(method: CRUDMETHOD, path: string, data?: any, requireHeaders = true) {
+            switch (method) {
+                case CRUDMETHOD.GET:
+                    return this.instance.get(this.endpoint + path, (requireHeaders && this.headers));
+                case CRUDMETHOD.PUT:
+                    return this.instance.put(this.endpoint + path, data, (requireHeaders && this.headers));
+                case CRUDMETHOD.POST:
+                    return this.instance.post(this.endpoint + path, data, (requireHeaders && this.headers));
+                case CRUDMETHOD.DELETE:
+                    return this.instance.delete(this.endpoint + path, (requireHeaders && this.headers));
+            }
         }
 
         async getAll() {
@@ -143,6 +163,11 @@ module API {
     export class Collection extends RestController<ICollection> {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/collection", token);
+        }
+
+        async getAllAuthored() {
+            const response = await this.customRoute(CRUDMETHOD.GET, "?authored=true");
+            return Promise.resolve(response.data);
         }
     }
 

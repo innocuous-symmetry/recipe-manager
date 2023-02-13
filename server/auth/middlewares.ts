@@ -5,7 +5,7 @@ import { IUser } from "../schemas";
 dotenv.config();
 
 export function restrictAccess(req: Request, res: Response, next: NextFunction) {
-    if (req.session.user == undefined) {
+    if (req.user == undefined) {
         res.send("content restricted");
     } else {
         next();

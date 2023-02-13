@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IUser } from "../../../schemas";
 import AboutYou from "./aboutyou";
