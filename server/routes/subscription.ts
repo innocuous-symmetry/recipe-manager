@@ -5,7 +5,7 @@ const CollectionInstance = new CollectionCtl();
 const router = Router();
 
 export const subscriptionRoute = (app: Express) => {
-    app.use('/subscription', router);
+    app.use('/app/subscription', router);
 
     router.get('/', async (req, res, next) => {
         // @ts-ignore

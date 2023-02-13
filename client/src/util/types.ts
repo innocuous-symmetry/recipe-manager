@@ -47,3 +47,7 @@ export type ProtectPortal = FC<ProtectParams>
 export type UserCardType = FC<UserCardProps>
 export type NavbarType = FC<NavbarProps>
 export type CheckboxType = FC<CheckboxProps>
+
+export interface TokenType {
+    user: IUser
+}

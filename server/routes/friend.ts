@@ -7,7 +7,7 @@ const UserInstance = new UserCtl();
 const router = Router();
 
 export const friendRouter = (app: Express) => {
-    app.use('/friend', router);
+    app.use('/app/friend', router);
 
     router.use((req, res, next) => {
         let test = req.session.user;

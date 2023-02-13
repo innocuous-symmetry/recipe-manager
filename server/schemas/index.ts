@@ -19,7 +19,7 @@ export interface IUser extends HasHistory, CanDeactivate {
     handle: string
     email: string
     isadmin: boolean
-    password?: string
+    password: string
 }
 
 export interface IUserAuth {

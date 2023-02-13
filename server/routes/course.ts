@@ -4,7 +4,7 @@ const CourseInstance = new CourseCtl();
 const router = Router();
 
 export const courseRouter = (app: Express) => {
-    app.use('/course', router);
+    app.use('/app/course', router);
 
     router.get('/', async (req, res, next) => {
         try {

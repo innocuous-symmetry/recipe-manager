@@ -1,5 +1,5 @@
 import { ICollection, IUser, IUserAuth } from "../schemas";
-// import { IAuthContext } from "../context/AuthContext";
+import instance from "./axiosInstance";
 import axios from "axios";
 const API = import.meta.env.APISTRING || "http://localhost:8080";
 

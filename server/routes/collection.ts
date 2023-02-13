@@ -1,14 +1,20 @@
 import { Express, Router } from "express";
-import { restrictAccess } from "../auth/middlewares";
+import { checkIsAdmin, restrictAccess } from "../auth/middlewares";
 import CollectionCtl from "../controllers/CollectionCtl";
 const CollectionInstance = new CollectionCtl();
 
 const router = Router();
 
 export const collectionRoute = (app: Express) => {
-    app.use('/collection', router);
+    app.use('/app/collection', router);
 
-    router.get('/:id', restrictAccess, async (req, res, next) => {
+    router.use((req, res, next) => {
+        console.log('what gives');
+        console.log(req.body);
+        next();
+    })
+
+    router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
         try {
             const { code, data } = await CollectionInstance.getOne(id);
@@ -19,7 +25,7 @@ export const collectionRoute = (app: Express) => {
     })
 
     // implement is admin on this route
-    router.get('/', restrictAccess, async (req, res, next) => {
+    router.get('/', checkIsAdmin, async (req, res, next) => {
         try {
             const { code, data } = await CollectionInstance.getAll();
             res.status(code).send(data);
@@ -28,9 +34,9 @@ export const collectionRoute = (app: Express) => {
         }
     })
 
-    router.post('/', restrictAccess, async (req, res, next) => {
+    router.post('/', async (req, res, next) => {
         const data = req.body;
-        console.log(data);
+        console.log(req.body ?? "sanity check");
 
         try {
             const result = await CollectionInstance.post(data);

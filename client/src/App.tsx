@@ -1,11 +1,11 @@
 // framework tools and custom utils
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthContext, IAuthContext, useAuthContext } from './context/AuthContext';
-import { attemptLogout, checkCredientials } from './util/apiUtils';
-import { IUser } from './schemas';
+import { useAuthContext } from './context/AuthContext';
+import jwtDecode from 'jwt-decode';
+import API from './util/API';
 
-// pages, ui, styles
+// pages, ui, components, styles
 import Subscriptions from './components/pages/Subscriptions/Subscriptions';
 import Browser from './components/ui/Browser';
 import Collection from './components/pages/Collection';
@@ -19,55 +19,51 @@ import CollectionBrowser from './components/pages/CollectionBrowser';
 import { Navbar } from './components/ui';
 import GroceryList from './components/pages/GroceryList';
 import GroceryListCollection from './components/pages/GroceryListCollection';
+import { TokenType } from './util/types';
 import './sass/App.scss';
+import handleToken from './util/handleToken';
 
 function App() {
-  const [user, setUser] = useState<any>();
-  const parentState = { user, setUser };
-
-  const receiveChange = (() => {});
+  const { setUser, token, setToken } = useAuthContext();
 
   useEffect(() => {
-    const wrapper = async () => {
-      try {
-        const result: IAuthContext | undefined = await checkCredientials();
-        
-        if (result == undefined) {
-          setUser({ user: undefined });
-        } else {
-          setUser(result);
-        }
-      } catch(e) {
-        console.error(e);
+    if (document.cookie) {
+      const response = handleToken();
+      if (response) {
+        setToken(response.token);
+        setUser(response.user);
       }
     }
+  }, [document.cookie]);
 
-    wrapper();
-  }, [])
+  useEffect(() => {
+    if (token) {
+      const response = handleToken();
+      response && setUser(response.user);
+    }
+  }, [setToken])
 
   return (
     <BrowserRouter>
-      <AuthContext.Provider value={ parentState }>
-        <div className="App">
-          <Navbar receiveChange={receiveChange} />
-          <Routes>
-            <Route path="/"                       element={<Welcome />} />
-            <Route path="/register"               element={<Register receiveChange={receiveChange} />} />
-            <Route path="/login"                  element={<Login />} />
-            <Route path="/profile"                element={<Profile />} />
-            <Route path="/collections"            element={<CollectionBrowser />} />
-            <Route path="/collections/:id"        element={<Collection />} />
-            <Route path="/explore"                element={<Browser header="" searchFunction={() => {}} />} />
-            <Route path="/recipe/:id"             element={<Recipe />} />
-            <Route path="/subscriptions"          element={<Subscriptions />} />
-            <Route path="/subscriptions/:id"      element={<Collection />} />
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/"                       element={<Welcome />} />
+          <Route path="/register"               element={<Register />} />
+          <Route path="/login"                  element={<Login />} />
+          <Route path="/profile"                element={<Profile />} />
+          <Route path="/collections"            element={<CollectionBrowser />} />
+          <Route path="/collections/:id"        element={<Collection />} />
+          <Route path="/explore"                element={<Browser header="" searchFunction={() => {}} />} />
+          <Route path="/recipe/:id"             element={<Recipe />} />
+          <Route path="/subscriptions"          element={<Subscriptions />} />
+          <Route path="/subscriptions/:id"      element={<Collection />} />
 
-            <Route path="/add-recipe"             element={<AddRecipe />} />
-            <Route path="/grocery-list"           element={<GroceryListCollection />} />
-            <Route path="/grocery-list/:id"       element={<GroceryList />} />
-          </Routes>
-        </div>
-      </AuthContext.Provider>
+          <Route path="/add-recipe"             element={<AddRecipe />} />
+          <Route path="/grocery-list"           element={<GroceryListCollection />} />
+          <Route path="/grocery-list/:id"       element={<GroceryList />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   )
 }

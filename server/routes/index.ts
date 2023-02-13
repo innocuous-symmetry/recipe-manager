@@ -1,5 +1,6 @@
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
 import { Express } from "express"
-import { PassportStatic } from "passport";
 import { userRoute } from "./users";
 import { recipeRoute } from "./recipe";
 import { collectionRoute } from "./collection";
@@ -11,14 +12,39 @@ import { friendRouter } from "./friend";
 import { cuisineRouter } from "./cuisine";
 import { courseRouter } from "./course";
 
-export const routes = async (app: Express, passport: PassportStatic) => {
+dotenv.config();
+
+export const routes = async (app: Express) => {
+    // unprotected routes
+    authRoute(app);
+
+    // middleware to check for auth on cookies on each request in protected routes
+    app.use('/app', async (req, res, next) => {
+        // pull jwt from request headers
+        console.log(req.headers);
+        const token = req.headers['authorization']?.split(" ")[1];
+        console.log(token);
+
+        if (!token) {
+            res.status(403).send("Unauthorized, did not receive token");
+        } else {
+            jwt.verify(token, process.env.SESSIONSECRET as string, (err, data) => {
+                if (err) {
+                    res.status(403).send(err);
+                } else {
+                    console.log(data);
+                    req.user = data;
+                    next();
+                }
+            })
+        }
+    })
+
+    // protected routes
     userRoute(app);
     friendRouter(app);
     recipeRoute(app);
     ingredientRoute(app);
-    
-    // to do: refactor for ctlresponse
-    authRoute(app, passport);
     collectionRoute(app);
     subscriptionRoute(app);
     groceryListRoute(app);

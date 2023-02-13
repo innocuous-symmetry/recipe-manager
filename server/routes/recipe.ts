@@ -8,7 +8,7 @@ const recipectl = new RecipeCtl();
 const router = Router();
 
 export const recipeRoute = (app: Express) => {
-    app.use('/recipe', router);
+    app.use('/app/recipe', router);
 
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;

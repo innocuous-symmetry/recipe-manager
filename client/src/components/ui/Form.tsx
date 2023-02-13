@@ -1,13 +1,6 @@
-import { ChangeEvent, FC } from "react";
-import { v4 } from 'uuid';
-import RichText from "./RichText";
-
-/**
- * For the generation of more complex form objects with
- * larger stateful values; expects to receive an object of
- * type T to a form which can mutate T with a state setter
- * of type Dispatch<SetStateAction<T>>
-**/
+import { ChangeEvent, FC, useEffect, useState } from "react"
+import { v4 } from "uuid"
+import RichText from "./RichText"
 
 export interface FormConfig<T> {
     parent: string
@@ -20,83 +13,95 @@ export interface FormConfig<T> {
     extraStyles?: string
 }
 
-export default class Form<T> {
-    private parent: string;
-    private labels: string[];
-    private keys: string[];
-    private dataTypes: any[]
-    private state: T;
-    private getState: (received: T) => void
-    private richTextInitialValue?: string;
-    private extraStyles?: string
-
-    constructor(config: FormConfig<T>){
-        this.parent = config.parent;
-        this.keys = config.keys;
-        this.labels = config.labels || this.keys;
-        this.dataTypes = config.dataTypes || new Array(this.keys.length).fill('text');
-        this.state = config.initialState;
-        this.getState = config.getState;
-        this.richTextInitialValue = config.richTextInitialValue;
-        this.extraStyles = config.extraStyles;
-
-        this.mount();
-    }
-
-    update(e: ChangeEvent<HTMLElement>, idx: number) {
-        let newState = {
-            ...this.state,
-            [this.keys[idx]]: e.target['value' as keyof EventTarget]
-        }
-
-        this.state = newState;
-        this.getState(newState);
-    }
-
-    updateRichText(txt: string, idx: number) {
-        this.state = {
-            ...this.state,
-            [this.keys[idx]]: txt
-        }
-
-        this.getState(this.state);
-    }
-
-    mount() {
-        let output = new Array<JSX.Element>();
-
-        for (let i = 0; i < this.keys.length; i++) {
-            let input: JSX.Element | null;
-
-            if (this.dataTypes[i] == 'custom picker') {
-                console.log('noted!');
-                this.dataTypes[i] = 'text';
-            }
-
-            if (this.dataTypes[i] == 'TINYMCE') {
-                input = (
-                    <div id={`${this.parent}-row-${i}`} key={v4()}>
-                        <label htmlFor={`${this.parent}-${this.keys[i]}`}>{this.labels[i]}</label>
-                        <RichText id={`${this.parent}-${this.keys[i]}`} initialValue={this.richTextInitialValue} getState={(txt) => this.updateRichText(txt, i)} />
-                    </div>
-                )
-            } else {
-                input = (
-                    <div id={`${this.parent}-row-${i}`} key={v4()}>
-                        <label htmlFor={`${this.parent}-${this.keys[i]}`}>{this.labels[i]}</label>
-                        <input
-                            type={this.dataTypes[i]}
-                            id={`${this.parent}-${this.keys[i]}`}
-                            onChange={(e) => this.update(e, i)}
-                            value={this.state[i as keyof T] as string}>
-                        </input>
-                    </div>
-                )
-            }
-
-            output.push(input);
-        }
-
-        return <div className={`ui-form-component ${this.extraStyles}`}>{output}</div>;
-    }
+interface FormProps {
+    parent: any
+    _config: FormConfig<any>
 }
+
+const Form: FC<FormProps> = ({ parent, _config }) => {
+    type T = typeof parent;
+    const { getState } = _config;
+
+    const [config, setConfig] = useState<FormConfig<T>>();
+    const [state, setState] = useState<T>();
+    const [contents, setContents] = useState<JSX.Element[]>();
+
+    // initial setup
+    useEffect(() => {
+        if (!config) setConfig({
+            ..._config,
+            labels: _config.labels ?? _config.keys,
+            dataTypes: _config.dataTypes ?? new Array(_config.keys?.length).fill("text"),
+        });
+
+        if (!state) setState(_config.initialState);
+    }, [])
+
+    // usecallback handling
+    useEffect(() => {
+        state && getState(state);
+    }, [state]);
+
+    // update methods
+    function updateRichText(txt: string, idx: number) {
+        if (!config) return;
+
+        setState((prev: T) => {
+            return {
+                ...prev,
+                [config.keys[idx]]: txt
+            }
+        })
+    }
+
+    function update(e: ChangeEvent<HTMLElement>, idx: number) {
+        if (!config) return;
+
+        setState((prev: T) => {
+            return {
+                ...prev,
+                [config.keys[idx]]: e.target['value' as keyof EventTarget]
+            }
+        })
+    }
+
+    // mount the form once config has been loaded
+    useEffect(() => {
+        if (state && config) {
+            const result = config.keys.map((each: string, i: number) => {
+                
+                if (config.dataTypes![i] == 'TINYMCE') {
+                    return (
+                        <div id={`${config.parent}-row-${i}`} key={v4()}>
+                            <label htmlFor={`${config.parent}-${each}`}>{config.labels![i]}</label>
+                            <RichText id={`${config.parent}-${each}`} initialValue={config.richTextInitialValue} getState={(txt) => updateRichText(txt, i)} />
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div id={`${config.parent}-row-${i}`} key={v4()}>
+                            <label htmlFor={`${config.parent}-${each}`}>{config.labels![i]}</label>
+                            <input
+                                type={config.dataTypes![i]}
+                                id={`${config.parent}-${each}`}
+                                onChange={(e) => update(e, i)}
+                                value={state[i as keyof T] as string}>
+                            </input>
+                        </div>
+                    )
+                }
+            });
+
+            setContents(result);
+
+        }
+    }, [config]);
+
+    return (
+        <div className={`ui-form-component ${_config.extraStyles}`}>
+            { contents }
+        </div>
+    )
+}
+
+export default Form;

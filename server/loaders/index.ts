@@ -6,7 +6,7 @@ import { passportLoader } from './passport';
 
 export const loaders = async (app: Express) => {
     const expressApp = await expressLoader(app);
-    const passportApp = await passportLoader(expressApp);
+    await passportLoader(expressApp);
     await swaggerLoader(expressApp);
-    await routes(expressApp, passportApp);
+    await routes(expressApp);
 }

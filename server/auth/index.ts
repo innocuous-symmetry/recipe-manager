@@ -20,12 +20,25 @@ export default class AuthService {
             // not allowed to use email address that already exists
             const user = await UserInstance.getOneByEmail(data.email);
 
-            if (user) throw createError('409', 'Email already in use');
+            if (user) {
+                return new ControllerResponse(StatusCode.Conflict, "Email already in use", false);
+            }
+
+            // check that all required fields are populated
+            let missingFields = new Array<string>();
+            let requiredFields: Array<keyof IUser> = ['firstname', 'lastname', 'handle', 'email', 'isadmin', 'password'];
+            for (let field of requiredFields) {
+                if (!(field in data)) {
+                    missingFields.push(field as string);
+                }
+            }
+
+            if (missingFields.length) {
+                return new ControllerResponse(StatusCode.BadRequest, `Missing fields in output: ${missingFields.join(", ")}`, false);
+            }
 
             // hash password and create new user record
             const salt = await bcrypt.genSalt(12);
-            console.log(salt);
-            console.log(data.password);
 
             bcrypt.hash(data.password!, salt, (err, hash) => {
                 if (err) throw err;
@@ -37,7 +50,7 @@ export default class AuthService {
                 UserInstance.post(newData);
             })
 
-            return true;
+            return new ControllerResponse(StatusCode.NewContent, "registered successfully", true);
         } catch (e: any) {
             throw new Error(e);
         }
