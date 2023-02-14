@@ -1,33 +1,53 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useRef, useEffect, useState, createRef } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import { Button, Card, Divider, Form, Page, Panel } from "../ui"
 import { IRecipe } from "../../schemas";
-import { Button, Divider, Form, Page, Panel } from "../ui"
+import API from "../../util/API";
 
 const AddRecipe = () => {
-    const authContext = useAuthContext();
+    const { user, token } = useAuthContext();
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '', ingredients: [] })
-    const [form, setForm] = useState<JSX.Element>();
+    const [toast, setToast] = useState(<></>)
 
     const getFormState = useCallback((data: IRecipe) => {
         setInput(data);
     }, [input])
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
+        if (!token) return;
+
         for (let field of Object.keys(input)) {
-            if (!input[field as keyof IRecipe]) return;
+            if (!input[field as keyof IRecipe]) {
+                console.log(field);
+                return;
+            }
         }
 
         console.log('good to go!')
+
+        const recipe = new API.Recipe(token);
+        const result = await recipe.post(input);
+
+        const recipeID = result.recipe.id;
+        const recipeName = result.recipe.name;
+        
+        setToast(
+            <Card>
+                <p>Created recipe {recipeName} successfully!</p>
+                <p>View your new recipe <a href={`/recipe/${recipeID}`}>here!</a></p>
+            </Card>
+        )
     }
 
     useEffect(() => {
-        authContext.user && setInput((prev: IRecipe) => {
+        if (!user) return;
+        user && setInput((prev: IRecipe) => {
             return {
                 ...prev,
-                authoruserid: authContext.user!.id!
+                authoruserid: user.id!
             }
         })
-    }, [authContext])
+    }, [user])
 
     useEffect(() => {
         console.log(input);
@@ -38,7 +58,7 @@ const AddRecipe = () => {
             <h1>Add a New Recipe</h1>
             <Divider />
 
-            <Panel>
+            <Panel extraStyles="width-80">
                 <Form parent={input} _config={{
                     parent: "AddRecipe",
                     keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
@@ -49,9 +69,9 @@ const AddRecipe = () => {
                     richTextInitialValue: "<p>Enter recipe details here!</p>"
                 }} />
 
-                { form || <h2>Loading...</h2> }
-
                 <Button onClick={handleCreate}>Create Recipe!</Button>
+
+                <div id="toast">{ toast }</div>
             </Panel>
         </Page>
     )

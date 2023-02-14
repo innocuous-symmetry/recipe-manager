@@ -22,12 +22,12 @@ export const recipeRoute = (app: Express) => {
     })
 
     router.get('/', restrictAccess, async (req, res, next) => {
-        const user = req.session.user as IUser;
-        const { filterby } = req.query;
+        const user = req.user as IUser;
+        const { filter } = req.query;
 
         try {
             let result: CtlResponse<IRecipe[] | string>;
-            switch (filterby) {
+            switch (filter) {
                 case "myrecipes":
                     result = await recipectl.getAllAuthored(user.id as number);
                     break;
@@ -55,7 +55,7 @@ export const recipeRoute = (app: Express) => {
     })
 
     router.post('/', restrictAccess, async (req, res, next) => {
-        const user = req.session.user as IUser;
+        const user = req.user as IUser;
         const data = req.body;
 
         try {

@@ -1,0 +1,32 @@
+.ui-form-component {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 75%;
+    
+    .form-row {
+        display: inline-flex;
+        justify-content: flex-start;
+        margin-bottom: 6px;
+
+        label {
+            text-align: left;
+            width: 25%;
+        }
+        input {
+            border-radius: 4px;
+            width: 65%;
+        }
+    }
+
+    .form-row-editor {
+        display: inline-flex;
+        flex-direction: column;
+        text-align: left;
+        justify-content: flex-start;
+
+        label {
+            padding-bottom: 8px;
+        }
+    }
+}

@@ -167,7 +167,7 @@ module API {
 
     export class Recipe extends RestController<IRecipe> {
         constructor(token: string) {
-            super(Settings.getAPISTRING() + "/app/recipes", token);
+            super(Settings.getAPISTRING() + "/app/recipe", token);
         }
     }
 
@@ -181,6 +181,11 @@ module API {
     export class Collection extends RestController<ICollection> {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/collection", token);
+        }
+
+        async getRecipesFromOne(id?: number | string) {
+            const response = await this.instance.get(this.endpoint + `/${id}?getRecipes=true`, this.headers);
+            return Promise.resolve(response.data);
         }
 
         async getAllAuthored(id?: number | string) {

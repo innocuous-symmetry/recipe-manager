@@ -15,6 +15,14 @@ export default class CollectionCtl {
         return new ControllerResponse(code, data);
     }
 
+    async getRecipesFromOne(id: number | string) {
+        const result = await CollectionInstance.getRecipesFromOne(id);
+        const ok: boolean = result !== null;
+        const code: StatusCode = ok ? StatusCode.OK : StatusCode.NotFound;
+        const data: string | ICollection[] = result || "No collection found with this ID";
+        return new ControllerResponse(code, data);
+    }
+
     async getAll() {
         const result = await CollectionInstance.getAll();
         const ok = result !== null;

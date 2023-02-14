@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from "react"
 import { v4 } from "uuid"
 import RichText from "./RichText"
+import "/src/sass/components/Form.scss";
 
 export interface FormConfig<T> {
     parent: string
@@ -72,14 +73,14 @@ const Form: FC<FormProps> = ({ parent, _config }) => {
                 
                 if (config.dataTypes![i] == 'TINYMCE') {
                     return (
-                        <div id={`${config.parent}-row-${i}`} key={v4()}>
+                        <div className="form-row-editor" id={`${config.parent}-row-${i}`} key={v4()}>
                             <label htmlFor={`${config.parent}-${each}`}>{config.labels![i]}</label>
                             <RichText id={`${config.parent}-${each}`} initialValue={config.richTextInitialValue} getState={(txt) => updateRichText(txt, i)} />
                         </div>
                     )
                 } else {
                     return (
-                        <div id={`${config.parent}-row-${i}`} key={v4()}>
+                        <div className="form-row" id={`${config.parent}-row-${i}`} key={v4()}>
                             <label htmlFor={`${config.parent}-${each}`}>{config.labels![i]}</label>
                             <input
                                 type={config.dataTypes![i]}
@@ -98,7 +99,7 @@ const Form: FC<FormProps> = ({ parent, _config }) => {
     }, [config]);
 
     return (
-        <div className={`ui-form-component ${_config.extraStyles}`}>
+        <div className={`ui-form-component ${_config.extraStyles ?? ""}`}>
             { contents }
         </div>
     )

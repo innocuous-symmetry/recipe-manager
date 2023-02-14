@@ -18,6 +18,23 @@ export class Collection {
         }
     }
 
+    async getRecipesFromOne(id: number | string) {
+        try {
+            const statement = `
+                SELECT * FROM recipin.recipe
+                INNER JOIN recipin.cmp_recipecollection
+                ON recipe.id = cmp_recipecollection.recipeid
+                WHERE cmp_recipecollection.collectionid = $1;
+            `;
+            const values = [id];
+            const result = await pool.query(statement, values);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async getAllAuthored(id: number | string) {
         console.log(id, typeof id);
         try {

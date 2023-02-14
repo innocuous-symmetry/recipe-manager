@@ -10,11 +10,18 @@ const router = Router();
 export const collectionRoute = (app: Express) => {
     app.use('/app/collection', router);
 
-    router.get('/:id', async (req, res, next) => {
+    router.get('/:id', restrictAccess, async (req, res, next) => {
         const { id } = req.params;
+        const { getRecipes } = req.query;
+
         try {
-            const { code, data } = await CollectionInstance.getOne(id);
-            res.status(code).send(data);
+            if (getRecipes || getRecipes == "true") {
+                const { code, data } = await CollectionInstance.getRecipesFromOne(id);
+                res.status(code).send(data);
+            } else {
+                const { code, data } = await CollectionInstance.getOne(id);
+                res.status(code).send(data);
+            }
         } catch(e) {
             next(e);
         }
@@ -45,7 +52,7 @@ export const collectionRoute = (app: Express) => {
         }
     })
 
-    router.post('/', async (req, res, next) => {
+    router.post('/', restrictAccess, async (req, res, next) => {
         const data = req.body;
 
         try {
