@@ -55,6 +55,7 @@ const LoggedIn = () => {
                 dropdownActive && (
                     <Dropdown extraStyles="top-menu-bar actions-bar">
                         <Button onClick={() => handleOptionSelect('/add-recipe')}>Add a Recipe</Button>
+                        <Button onClick={() => handleOptionSelect("/add-friends")}>Add Friends</Button>
                         <Button onClick={() => handleOptionSelect('/collections')}>My Collections</Button>
                         <Button onClick={() => handleOptionSelect('/subscriptions')}>Subscriptions</Button>
                         <Button onClick={() => handleOptionSelect('/profile')}>Profile</Button>

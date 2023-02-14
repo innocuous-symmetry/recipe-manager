@@ -9,19 +9,8 @@ const router = Router();
 export const friendRouter = (app: Express) => {
     app.use('/app/friend', router);
 
-    router.use((req, res, next) => {
-        let test = req.session.user;
-
-        if (req.session.user == undefined) {
-            throw new Error("No session found");
-        } else {
-            const narrowed = req.session.user;
-            next();
-        }
-    })
-
     router.post('/:targetid', restrictAccess, async (req, res, next) => {
-        const user = req.session.user as IUser;
+        const user = req.user as IUser;
         const { targetid } = req.params;
 
         try {
@@ -34,7 +23,7 @@ export const friendRouter = (app: Express) => {
 
     // get all friendships for a user
     router.get('/', async (req, res, next) => {
-        const user = req.session.user as IUser;
+        const user = req.user as IUser;
         const { pending } = req.query;
 
         try {
@@ -53,7 +42,7 @@ export const friendRouter = (app: Express) => {
     // get one friendship by its id
     router.get('/:id', async (req, res, next) => {
         const { id } = req.params;
-        const user = req.session.user as IUser;
+        const user = req.user as IUser;
 
         try {
             const { code, data } = await UserInstance.getFriendshipByID(id, user.id as number);
@@ -76,7 +65,7 @@ export const friendRouter = (app: Express) => {
     router.put('/:id', async (req, res, next) => {
         const data = req.body;
         const { id } = req.params;
-        const user = req.session.user as IUser;
+        const user = req.user as IUser;
 
         try {
             const response = await UserInstance.updateFriendship(id, user.id as number, data);
@@ -85,4 +74,6 @@ export const friendRouter = (app: Express) => {
             next(e);
         }
     })
+
+    return router;
 }

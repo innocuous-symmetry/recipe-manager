@@ -1,4 +1,4 @@
-import { AxiosHeaders, AxiosRequestHeaders, AxiosResponse } from "axios";
+import { AxiosError, AxiosHeaders, AxiosRequestHeaders, AxiosResponse } from "axios";
 import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList } from "../schemas";
 import { default as _instance } from "./axiosInstance";
 
@@ -138,11 +138,29 @@ module API {
 
     export class Friendship extends RestController<IFriendship> {
         constructor(token: string) {
-            super(Settings.getAPISTRING() + "/app/friends", token);
+            super(Settings.getAPISTRING() + "/app/friend", token);
+        }
+
+        override async getAll() {
+            try {
+                const response = await this.instance.get(this.endpoint, this.headers);
+                return Promise.resolve(response.data);
+            } catch(e) {
+                const error = e as AxiosError;
+                if (error.response?.status == 404) {
+                    console.log('no friends found');
+                    return [];
+                }
+            }
         }
 
         async getPendingFriendRequests() {
             const response = await this.instance.get(this.endpoint + "?pending=true", this.headers);
+            return Promise.resolve(response.data);
+        }
+
+        async addFriend(id: string | number) {
+            const response = await this.instance.post(this.endpoint + `/${id}`, this.headers);
             return Promise.resolve(response.data);
         }
     }

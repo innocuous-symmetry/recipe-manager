@@ -22,6 +22,7 @@ import GroceryListCollection from './components/pages/GroceryListCollection';
 import { TokenType } from './util/types';
 import './sass/App.scss';
 import handleToken from './util/handleToken';
+import AddFriends from './components/pages/AddFriends';
 
 function App() {
   const { setUser, token, setToken } = useAuthContext();
@@ -54,6 +55,7 @@ function App() {
           <Route path="/profile"                element={<Profile />} />
           <Route path="/collections"            element={<CollectionBrowser />} />
           <Route path="/collections/:id"        element={<Collection />} />
+          <Route path="/add-friends"            element={<AddFriends />} />
           <Route path="/explore"                element={<Browser header="" searchFunction={() => {}} />} />
           <Route path="/recipe/:id"             element={<Recipe />} />
           <Route path="/subscriptions"          element={<Subscriptions />} />

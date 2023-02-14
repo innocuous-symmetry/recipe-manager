@@ -1,31 +1,38 @@
 import { useEffect, useState } from "react";
-import { addFriend, getPendingFriendRequests } from "../../util/apiUtils";
+import { useAuthContext } from "../../context/AuthContext";
+import API from "../../util/API";
+// import { addFriend, getPendingFriendRequests } from "../../util/apiUtils";
 import { UserCardType } from "../../util/types";
 import Button from "./Button";
 import Card from "./Card";
 
-const UserCard: UserCardType = ({ extraStyles, user, canAdd = false, liftData }) => {
-    const [shouldDisable, setShouldDisable] = useState<boolean>(canAdd);
-    
+const UserCard: UserCardType = ({ extraStyles, user }) => {
+    const { token } = useAuthContext();
+
     useEffect(() => {
+        if (!token) return;
+
         (async function() {
-            const requestsOpen = await getPendingFriendRequests();
+            const friends = new API.Friendship(token);
+            const requestsOpen = await friends.getPendingFriendRequests();
+            console.log(requestsOpen);
             if (!requestsOpen) return;
 
             for (let req of requestsOpen) {
                 if (req.targetid == user.id) {
-                    setShouldDisable(true);
+                    console.log('should disable');
                     return;
                 }
             }
 
-            setShouldDisable(false);
-        })();
+            console.log('should not disable');
+        });
     }, [])
 
     const handleClick = async () => {
-        const { id } = user;
-        const request = await addFriend(id!.toString());
+        if (!token) return;
+        const friends = new API.Friendship(token);
+        const request = await friends.addFriend(user.id!.toString());
         if (request) console.log("Friend request sent to " + user.firstname);
     }
 
@@ -34,7 +41,7 @@ const UserCard: UserCardType = ({ extraStyles, user, canAdd = false, liftData })
             <div className="avatar"></div>
             <h3>{user.firstname} {user.lastname.substring(0,1)}.</h3>
             <h4>@{user.handle}</h4>
-            { canAdd && <Button disabledText={"Request Sent"} disabled={shouldDisable} onClick={handleClick}>Add Me</Button> }
+            <Button disabledText={"Request Sent"} onClick={handleClick}>Add Me</Button>
         </Card>
     )
 }
