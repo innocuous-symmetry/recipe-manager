@@ -1,4 +1,4 @@
-import { AxiosHeaders, AxiosRequestHeaders } from "axios";
+import { AxiosHeaders, AxiosRequestHeaders, AxiosResponse } from "axios";
 import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList } from "../schemas";
 import { default as _instance } from "./axiosInstance";
 
@@ -165,8 +165,15 @@ module API {
             super(Settings.getAPISTRING() + "/app/collection", token);
         }
 
-        async getAllAuthored() {
-            const response = await this.customRoute(CRUDMETHOD.GET, "?authored=true");
+        async getAllAuthored(id?: number | string) {
+            let response: AxiosResponse;
+
+            if (id) {
+                response = await this.customRoute(CRUDMETHOD.GET, `?authored=true&authorID=${id}`);
+            } else {
+                response = await this.customRoute(CRUDMETHOD.GET, "?authored=true");
+            }
+
             return Promise.resolve(response.data);
         }
     }

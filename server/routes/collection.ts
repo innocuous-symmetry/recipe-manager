@@ -2,6 +2,7 @@ import { Express, Router } from "express";
 import { checkIsAdmin, restrictAccess } from "../auth/middlewares";
 import CollectionCtl from "../controllers/CollectionCtl";
 import { IUser } from "../schemas";
+import { StatusCode } from "../util/types";
 const CollectionInstance = new CollectionCtl();
 
 const router = Router();
@@ -19,30 +20,24 @@ export const collectionRoute = (app: Express) => {
         }
     })
 
-    router.get('&authored=true', restrictAccess, async (req, res, next) => {
-        const user = req.user as IUser;
-        console.log(user.id);
-        try {
-            const { code, data } = await CollectionInstance.getAllAuthored(user.id as number);
-            res.status(code).send(data);
-        } catch (e) {
-            next(e);
-        }
-    })
-
     // implement is admin on this route
     router.get('/', restrictAccess, async (req, res, next) => {
         const user = req.user as IUser;
-        const { authored } = req.query;
+        const { authored, authorID } = req.query;
         
         try {
-            if (authored || authored == "true") {
+            if (authorID) {
+                const { code, data } = await CollectionInstance.getAllAuthored(parseInt(authorID as string));
+                res.status(code).send(data);
+            } else if (authored || authored == "true") {
                 const { code, data } = await CollectionInstance.getAllAuthored(user.id as number);
                 res.status(code).send(data);
             } else {
                 if (user.isadmin) {
                     const { code, data } = await CollectionInstance.getAll();
                     res.status(code).send(data);
+                } else {
+                    res.status(403).send("Unauthorized");
                 }
             }
         } catch(e) {
