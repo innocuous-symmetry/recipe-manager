@@ -1,47 +1,55 @@
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
-import API from "../../util/API";
-// import { addFriend, getPendingFriendRequests } from "../../util/apiUtils";
 import { UserCardType } from "../../util/types";
+import API from "../../util/API";
 import Button from "./Button";
 import Card from "./Card";
 
-const UserCard: UserCardType = ({ extraStyles, user }) => {
+const UserCard: UserCardType = ({ extraStyles, targetUser }) => {
+    const [buttonVariant, setButtonVariant] = useState(<></>);
     const { token } = useAuthContext();
 
     useEffect(() => {
         if (!token) return;
 
         (async function() {
-            const friends = new API.Friendship(token);
-            const requestsOpen = await friends.getPendingFriendRequests();
-            console.log(requestsOpen);
-            if (!requestsOpen) return;
-
-            for (let req of requestsOpen) {
-                if (req.targetid == user.id) {
-                    console.log('should disable');
-                    return;
+            try {
+                const friends = new API.Friendship(token);
+                const requestsOpen = await friends.getPendingFriendRequests();
+                if (!requestsOpen) return;
+    
+                for (let req of requestsOpen) {
+                    if (req.targetid == targetUser.id) {
+                        setButtonVariant(<Button disabled>Request Sent!</Button>)
+                        return;
+                    }
+                }
+    
+                setButtonVariant(<Button onClick={handleClick}>Send Request</Button>)
+            } catch (error) {
+                if (error instanceof AxiosError) {
+                    console.log(error.response?.statusText);
                 }
             }
-
-            console.log('should not disable');
-        });
+        })();
     }, [])
 
     const handleClick = async () => {
         if (!token) return;
         const friends = new API.Friendship(token);
-        const request = await friends.addFriend(user.id!.toString());
-        if (request) console.log("Friend request sent to " + user.firstname);
+        const request = await friends.addFriend(targetUser.id!.toString());
+        if (request) {
+            setButtonVariant(<Button disabled>Request Sent!</Button>)
+        }
     }
 
     return (
         <Card extraStyles={'user-card' + extraStyles}>
             <div className="avatar"></div>
-            <h3>{user.firstname} {user.lastname.substring(0,1)}.</h3>
-            <h4>@{user.handle}</h4>
-            <Button disabledText={"Request Sent"} onClick={handleClick}>Add Me</Button>
+            <h3><a href={`/profile?id=${targetUser.id}`}>{targetUser.firstname} {targetUser.lastname.substring(0,1)}.</a></h3>
+            <h4>@{targetUser.handle}</h4>
+            { buttonVariant }
         </Card>
     )
 }

@@ -154,6 +154,19 @@ module API {
             }
         }
 
+        async getTargetUserFriendships(id: string | number) {
+            try {
+                const response = await this.instance.get(this.endpoint + `?targetUser=${id}`, this.headers);
+                return Promise.resolve(response.data);
+            } catch (e) {
+                const error = e as AxiosError;
+                if (error.response?.status == 404) {
+                    console.log('no friends found');
+                    return [];
+                }
+            }
+        }
+
         async getPendingFriendRequests() {
             const response = await this.instance.get(this.endpoint + "?pending=true", this.headers);
             return Promise.resolve(response.data);

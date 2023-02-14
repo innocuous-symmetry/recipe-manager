@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Page, Panel } from "../ui";
-import { IRecipe } from "../../util/types";
+import { IRecipe } from "../../schemas";
 import { getRecipeByID } from "../../util/apiUtils";
 
 export default function Recipe() {

@@ -1,53 +1,67 @@
 import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { useAuthContext } from "../../context/AuthContext";
-import { ICollection, IRecipe } from "../../schemas";
+import { ICollection } from "../../schemas";
 import API from "../../util/API";
-import { Card, Page } from "../ui";
-
-interface CollectionDetails {
-    idx: number
-    collection: ICollection
-    recipes: IRecipe[]
-}
+import { Page, Panel } from "../ui";
 
 const CollectionBrowser = () => {
     const [list, setList] = useState<ICollection[]>();
     const { token } = useAuthContext();
 
+    async function getRecipeCount(collection: ICollection) {
+        if (!token) return [];
+        const collections = new API.Collection(token);
+        const result = await collections.getRecipesFromOne(collection.id);
+        if (result) return result;
+        return [];
+    }
+
+    async function mapRecipes() {
+        if (!list) return;
+
+        return list.map(async (each) => {
+            const count = await getRecipeCount(each);
+
+            return (
+                <Panel key={v4()}>
+                    <h2>{each.name}</h2>
+                    <p>{count.length} recipes</p>
+                    <a href={`/collections/${each.id}`}>Link to details</a>
+                </Panel>
+            )
+        })
+    }
+
     useEffect(() => {
         if (!token) return;
         (async() => {
             const collections = new API.Collection(token);
-            const recipes = new API.Recipe(token);
-
             const allRecipes = await collections.getAllAuthored();
-            if (allRecipes) {
-                const result = new Array<CollectionDetails[]>();
-
-                let i = 0;
-                for (let each of allRecipes) {
-                }
-                
-                setList(allRecipes);
-            }
+            if (allRecipes) setList(allRecipes);
         })();
     }, [token])
 
+    useEffect(() => {
+
+    }, [list])
+
     return (
         <Page>
-            <h1>Browsing your {2} collections:</h1>
-
-            {
-                list && list.map(each => {
+            { list && (
+                <>
+                <h1>Browsing your {list.length} collection{ (list.length !== 1) && "s" }:</h1>
+    
+                { list.map(each => {
                     return (
-                        <Card key={v4()}>
+                        <Panel key={v4()}>
                             <h2>{each.name}</h2>
                             <a href={`/collections/${each.id}`}>Link to details</a>
-                        </Card>
+                        </Panel>
                     )
-                })
-            }
+                })}
+                </>
+            )}
         </Page>
     )
 }

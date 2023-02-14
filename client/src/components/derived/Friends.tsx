@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { useAuthContext } from "../../context/AuthContext";
 import { getAllUsers, getFriendships, getPendingFriendRequests, getUserByID } from "../../util/apiUtils";
@@ -8,7 +8,7 @@ import { IUser, IFriendship } from "../../schemas";
 import { Card, Divider, Panel } from "../ui";
 import FriendSearchWidget from "../ui/Widgets/FriendSearchWidget";
 
-export default function Friends() {
+const Friends: FC<{ targetUser?: IUser }> = ({ targetUser }) => {
     const [friends, setFriends] = useState<IFriendship[]>();
     const [userList, setUserList] = useState(new Array<IUser>());
     const { user, token } = useAuthContext();
@@ -35,29 +35,35 @@ export default function Friends() {
         if (!token || !friends) return;
         
         friends.map(async (friend: IFriendship) => {
-            const Friends = new API.Friendship(token);
-            const userData = await Friends.getByID(friend.targetid as string);
+            const User = new API.User(token);
+            const userData = await User.getByID(friend.targetid as string);
             if (userData) setUserList((prev: IUser[]) => {
-                return [...prev, userData]
+                if (prev.includes(userData)) {
+                    return prev;
+                } else {
+                    return [...prev, userData]
+                }
             })
         })
     }, [friends]);
-
-    useEffect(() => {
-        console.log(userList);
-    }, [setUserList])
 
     return (
         <>
         { userList.length ? 
         (
             <Card extraStyles="flex-row">
-                <h2>Your friendships:</h2>
+                <h2>Friends ({ userList?.length ?? "0" }):</h2>
+
                 {
                     userList.map((user: IUser) => {
-                        return <UserCard key={v4()} user={user} />
+                        return <UserCard key={v4()} targetUser={user} />
                     })
                 }
+
+                <aside>
+                    <p>Looking for someone else?</p>
+                    <p>You can search for more friends <a href="/add-friends">here!</a></p>
+                </aside>
             </Card>
         ) : 
         (
@@ -74,3 +80,5 @@ export default function Friends() {
         </>
     )
 }
+
+export default Friends

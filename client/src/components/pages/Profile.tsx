@@ -37,8 +37,6 @@ export default function Profile() {
         isSet: false
     });
 
-    const dateFormatter = new Intl.DateTimeFormat('en-US', { timeStyle: undefined, dateStyle: "long" });
-
     // STEP 1: FETCH METADATA (requires token)
     useEffect(() => {
         if (!token || !user) return;
@@ -115,10 +113,6 @@ export default function Profile() {
                 }
             })();
 
-            (async() => {
-                const Friends = new API.Friendship(token);
-            })
-
             setMetadata((prev) => {
                 return {
                     ...prev,
@@ -135,6 +129,8 @@ export default function Profile() {
     // STEP 2: set up page UI based on profile config above
     useEffect(() => {
         if (metadata.isSet) {
+
+            // if this is another user's profile
             if (metadata.targetUser) {
                 setContents(
                     <Protect redirect="/">
@@ -148,12 +144,12 @@ export default function Profile() {
                                 </Panel>
     
                                 <Panel>
-                                    <h2>My collections:</h2>
+                                    <h2>{metadata.targetUser.firstname}'s collections ({ metadata.collections.length ?? "0" }):</h2>
                                     <CollectionList targetID={metadata.targetUser.id} />
                                 </Panel>
     
                                 <Panel>
-                                    <h2>My friends:</h2>
+                                    <h2>{metadata.targetUser.firstname}'s friends:</h2>
                                     <Friends />
                                 </Panel>
                             </div>
@@ -161,6 +157,8 @@ export default function Profile() {
                     </Protect>
                 )
             } else {
+
+                // if this is the current user's profile
                 setContents(
                     <Protect redirect="profile">
                         <div className="profile-authenticated">
@@ -178,12 +176,11 @@ export default function Profile() {
     
                                 <Panel>
                                     {/* include number of collections */}
-                                    <h2>My collections ({ metadata.collections.length || 0 }):</h2>
+                                    <h2><a href="/collections">My collections</a> ({ metadata.collections.length || 0 }):</h2>
                                     <CollectionList />
                                 </Panel>
     
                                 <Panel>
-                                    <h2>My friends:</h2>
                                     <Friends />
                                 </Panel>
                             </div>

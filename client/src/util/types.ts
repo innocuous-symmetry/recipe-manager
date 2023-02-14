@@ -19,7 +19,7 @@ export interface ProtectParams extends PortalBase {
 }
 
 interface UserCardProps extends PortalBase {
-    user: IUser
+    targetUser: IUser
     canAdd?: boolean
     liftData?: (data: any) => void
 }
