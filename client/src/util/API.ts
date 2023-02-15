@@ -42,7 +42,7 @@ module API {
             };
         }
 
-        async customRoute(method: CRUDMETHOD, path: string, data?: any, requireHeaders = true) {
+        protected async customRoute(method: CRUDMETHOD, path: string, data?: any, requireHeaders = true) {
             switch (method) {
                 case CRUDMETHOD.GET:
                     return this.instance.get(this.endpoint + path, (requireHeaders && this.headers));
@@ -186,7 +186,6 @@ module API {
 
     export class Ingredient extends RestController<IIngredient> {
         constructor(token: string) {
-            if (!token) throw new Error("Missing required token");
             super(Settings.getAPISTRING() + "/app/ingredients", token);
         }
     }

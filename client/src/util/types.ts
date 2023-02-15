@@ -20,8 +20,6 @@ export interface ProtectParams extends PortalBase {
 
 interface UserCardProps extends PortalBase {
     targetUser: IUser
-    canAdd?: boolean
-    liftData?: (data: any) => void
 }
 
 interface NavbarProps {

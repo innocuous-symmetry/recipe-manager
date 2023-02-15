@@ -46,10 +46,12 @@ const UserCard: UserCardType = ({ extraStyles, targetUser }) => {
 
     return (
         <Card extraStyles={'user-card' + extraStyles}>
+            <>
             <div className="avatar"></div>
             <h3><a href={`/profile?id=${targetUser.id}`}>{targetUser.firstname} {targetUser.lastname.substring(0,1)}.</a></h3>
             <h4>@{targetUser.handle}</h4>
             { buttonVariant }
+            </>
         </Card>
     )
 }

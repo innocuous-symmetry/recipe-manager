@@ -1,10 +1,10 @@
-import { FC } from "react"
-import { MultiChildPortal } from "../../util/types"
+import { FC } from "react";
 
-const Card: FC<MultiChildPortal> = ({ children = <></>, extraStyles = ""}) => {
+
+const Card: FC<{ children?: JSX.Element | JSX.Element[], extraStyles?: string }> = ({ children = <></>, extraStyles = ""}) => {
     return (
         <div className={`ui-card ${extraStyles}`}>
-            { children }
+            { Array.isArray(children) ? <>{children}</> : children }
         </div>
     )
 }

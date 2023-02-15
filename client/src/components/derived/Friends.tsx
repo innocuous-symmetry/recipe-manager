@@ -54,11 +54,13 @@ const Friends: FC<{ targetUser?: IUser }> = ({ targetUser }) => {
             <Card extraStyles="flex-row">
                 <h2>Friends ({ userList?.length ?? "0" }):</h2>
 
+                <div className="friends-list">
                 {
                     userList.map((user: IUser) => {
                         return <UserCard key={v4()} targetUser={user} />
                     })
                 }
+                </div>
 
                 <aside>
                     <p>Looking for someone else?</p>

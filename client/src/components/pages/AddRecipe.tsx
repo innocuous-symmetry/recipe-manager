@@ -63,7 +63,7 @@ const AddRecipe = () => {
                     parent: "AddRecipe",
                     keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
                     labels: ["Recipe Name:", "Prep Time:", "Course:", "Cuisine:", "Ingredients:", "Description:"],
-                    dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'custom picker', 'TINYMCE'],
+                    dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'SELECTOR', 'TINYMCE'],
                     initialState: input,
                     getState: getFormState,
                     richTextInitialValue: "<p>Enter recipe details here!</p>"
