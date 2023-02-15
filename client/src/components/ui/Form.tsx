@@ -85,7 +85,7 @@ const Form: FC<FormProps> = ({ parent, _config }) => {
                 break;
         }
 
-        return null;
+        return [];
     }
 
     // mount the form once config has been loaded
@@ -108,7 +108,7 @@ const Form: FC<FormProps> = ({ parent, _config }) => {
                             return null;
                         })();
     
-                        return <Selector<StrongType> optionList={storedResult || []} />
+                        return <Selector<StrongType> config={config} idx={i} optionList={storedResult || []} />
                     } else {
                         return (
                             <div className="form-row" id={`${config.parent}-row-${i}`} key={v4()}>

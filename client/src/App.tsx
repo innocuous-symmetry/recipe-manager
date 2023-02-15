@@ -23,6 +23,7 @@ import { TokenType } from './util/types';
 import './sass/App.scss';
 import handleToken from './util/handleToken';
 import AddFriends from './components/pages/AddFriends';
+import Sandbox from './components/Sandbox';
 
 function App() {
   const { setUser, token, setToken } = useAuthContext();
@@ -64,6 +65,7 @@ function App() {
           <Route path="/add-recipe"             element={<AddRecipe />} />
           <Route path="/grocery-list"           element={<GroceryListCollection />} />
           <Route path="/grocery-list/:id"       element={<GroceryList />} />
+          <Route path="/sandbox"                element={<Sandbox />} />
         </Routes>
       </div>
     </BrowserRouter>

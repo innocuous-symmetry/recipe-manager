@@ -186,7 +186,7 @@ module API {
 
     export class Ingredient extends RestController<IIngredient> {
         constructor(token: string) {
-            super(Settings.getAPISTRING() + "/app/ingredients", token);
+            super(Settings.getAPISTRING() + "/app/ingredient", token);
         }
     }
 
