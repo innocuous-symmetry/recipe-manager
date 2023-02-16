@@ -4,8 +4,8 @@ import { OptionType } from "../util/types"
 interface SelectorContextProps<T> {
     data: Array<T>
     setData: Dispatch<SetStateAction<Array<T>>> | VoidFunction
-    selected: Array<OptionType>
-    setSelected: Dispatch<SetStateAction<Array<OptionType>>> | VoidFunction
+    selected: Array<string>
+    setSelected: Dispatch<SetStateAction<Array<string>>> | VoidFunction
     options: Array<OptionType>
     setOptions: Dispatch<SetStateAction<Array<OptionType>>> | VoidFunction
     selector: JSX.Element
@@ -17,7 +17,7 @@ interface SelectorContextProps<T> {
 const defaultValue: SelectorContextProps<any> = {
     data: new Array<any>(),
     setData: () => {},
-    selected: new Array<any>(),
+    selected: new Array<string>(),
     setSelected: () => {},
     options: new Array<OptionType>(),
     setOptions: () => {},

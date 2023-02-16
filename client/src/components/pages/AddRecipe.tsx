@@ -26,7 +26,7 @@ const AddRecipe = () => {
     // clear out selector state on page load
     useEffect(() => {
         setData(new Array<IIngredient>());
-        setSelected(new Array<OptionType>());
+        setSelected(new Array<string>());
         setOptions(new Array<OptionType>());
     }, [])
 
@@ -60,20 +60,25 @@ const AddRecipe = () => {
                     multiple
                     freeSolo
                     autoHighlight
+                    fullWidth
                     filterSelectedOptions
-                    style={{ width: '50vw' }}
                     className="ui-creatable-component" 
                     id="ingredient-autocomplete"
                     options={options.map(each => each.label)}
+                    onChange={(e) => updateSelection(e.target['innerText' as keyof EventTarget].toString())}
                     onKeyDown={(e) => {
                         if (e.code == 'Enter') {
                             const inputVal: string = e.target['value' as keyof EventTarget].toString();
-                            const newOption = createOptionFromText(inputVal, optionCount + 1);
-                            setOptions((prev) => [...prev, newOption]);
-                            setOptionCount(prev => prev + 1);
+                            console.log(inputVal)
+                            if (inputVal.length) {
+                                setSelected(prev => [...prev, inputVal])
+                                const newOption = createOptionFromText(inputVal, optionCount + 1);
+                                setOptions((prev) => [...prev, newOption]);
+                                setOptionCount(prev => prev + 1);
+                            }
                         }
                     }}
-                    renderTags={(value, getTagProps) => value.map((option, idx) => <Chip variant="outlined" label={option} { ...getTagProps({ index: idx }) } onDelete={(target: string) => handleDelete(target)} />)}
+                    renderTags={(value, getTagProps) => value.map((option, idx) => <Chip variant="outlined" label={option} { ...getTagProps({ index: idx }) } onDelete={() => handleDelete(option)} />)}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -85,6 +90,7 @@ const AddRecipe = () => {
             )
 
             // create dropdown from new data
+            /*
             const selectorInstance = <Creatable 
                 className="ui-creatable-component" 
                 id="ingredient-selector" 
@@ -93,11 +99,13 @@ const AddRecipe = () => {
                 options={options} 
                 onChange={(selection: MultiValue<OptionType>) => onChange(selection)}
                 onCreateOption={(input: string) => onCreateOption(input, () => {})}
-            />
+            /> 
+            */
+
             data.length && setSelector(autocompleteInstance);
             setTriggerChange(true);
         }
-    }, [data, options])
+    }, [data, options, selected])
 
     // once the dropdown data has populated, mount it within the full form
     useEffect(() => {
@@ -135,9 +143,15 @@ const AddRecipe = () => {
         setInput(data);
     }, [input])
 
+    const updateSelection = (target: string) => {
+        setSelected((prev) => {
+            return [...prev, target];
+        })
+    }
+
     const handleDelete = (target: string) => {
-        setOptions((prev) => {
-            return prev.filter(option => option.label !== target);
+        setSelected((prev) => {
+            return prev.filter(option => option !== target);
         })
     }
 

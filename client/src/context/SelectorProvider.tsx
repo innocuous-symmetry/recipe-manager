@@ -6,7 +6,7 @@ function SelectorProvider<T>({ children }: { children: JSX.Element | JSX.Element
     const [data, setData] = useState<Array<T>>([]);
     const [selector, setSelector] = useState<JSX.Element>(<></>)
     const [options, setOptions] = useState<Array<OptionType>>([]);
-    const [selected, setSelected] = useState<Array<OptionType>>([]);
+    const [selected, setSelected] = useState<Array<string>>([]);
 
     /**
      * Event handler for a change in selection state
@@ -20,7 +20,7 @@ function SelectorProvider<T>({ children }: { children: JSX.Element | JSX.Element
         const newOption: OptionType = { label: label, value: newID }
 
         setOptions((prev) => [...prev, newOption]);
-        setSelected((prev) => [...prev, newOption]);
+        setSelected((prev) => [...prev, newOption.label]);
         setData((prev) => [...prev, generateObject(label, newID)]);
     }
 
