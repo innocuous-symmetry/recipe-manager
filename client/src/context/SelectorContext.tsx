@@ -27,5 +27,12 @@ const defaultValue: SelectorContextProps<any> = {
     onCreateOption: (label: string) => {},
 }
 
+export function createOptionFromText(label: string, value?: number): OptionType {
+    return {
+        value: value || 0,
+        label: label,
+    }
+}
+
 export const SelectorContext = createContext<SelectorContextProps<any>>(defaultValue);
 export const useSelectorContext = () => useContext(SelectorContext);

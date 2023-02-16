@@ -5,8 +5,9 @@ import { IIngredient, IRecipe } from "../../schemas";
 import API from "../../util/API";
 import Creatable from "react-select/creatable";
 import { OptionType } from "../../util/types";
-import { useSelectorContext } from "../../context/SelectorContext";
+import { createOptionFromText, useSelectorContext } from "../../context/SelectorContext";
 import { MultiValue } from "react-select";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
@@ -17,6 +18,7 @@ const AddRecipe = () => {
     } = useSelectorContext();
 
     const [triggerChange, setTriggerChange] = useState(false);
+    const [optionCount, setOptionCount] = useState(0);
     const [form, setForm] = useState<JSX.Element>();
     const [toast, setToast] = useState(<></>)
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
@@ -41,6 +43,8 @@ const AddRecipe = () => {
                 setOptions(result.map((each: IIngredient) => {
                     return { label: each.name, value: each.id }
                 }));
+
+                setOptionCount(result.length);
             }
         })();
     }, [token])
@@ -51,7 +55,35 @@ const AddRecipe = () => {
 
     useEffect(() => {
         if (data.length) {
-            console.log('caught');
+            const autocompleteInstance = (
+                <Autocomplete
+                    multiple
+                    freeSolo
+                    autoHighlight
+                    filterSelectedOptions
+                    style={{ width: '50vw' }}
+                    className="ui-creatable-component" 
+                    id="ingredient-autocomplete"
+                    options={options.map(each => each.label)}
+                    onKeyDown={(e) => {
+                        if (e.code == 'Enter') {
+                            const inputVal: string = e.target['value' as keyof EventTarget].toString();
+                            const newOption = createOptionFromText(inputVal, optionCount + 1);
+                            setOptions((prev) => [...prev, newOption]);
+                            setOptionCount(prev => prev + 1);
+                        }
+                    }}
+                    renderTags={(value, getTagProps) => value.map((option, idx) => <Chip variant="outlined" label={option} { ...getTagProps({ index: idx }) } onDelete={(target: string) => handleDelete(target)} />)}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            variant="filled"
+                            placeholder="Ingredient Name"
+                        />
+                    )}
+                />
+            )
+
             // create dropdown from new data
             const selectorInstance = <Creatable 
                 className="ui-creatable-component" 
@@ -62,7 +94,7 @@ const AddRecipe = () => {
                 onChange={(selection: MultiValue<OptionType>) => onChange(selection)}
                 onCreateOption={(input: string) => onCreateOption(input, () => {})}
             />
-            data.length && setSelector(selectorInstance);
+            data.length && setSelector(autocompleteInstance);
             setTriggerChange(true);
         }
     }, [data, options])
@@ -83,6 +115,10 @@ const AddRecipe = () => {
         )
     }, [triggerChange])
 
+    useEffect(() => {
+        console.log(options);
+    }, [options])
+
     // once user information is available, store it in recipe data
     useEffect(() => {
         if (!user) return;
@@ -98,6 +134,12 @@ const AddRecipe = () => {
     const getFormState = useCallback((data: IRecipe) => {
         setInput(data);
     }, [input])
+
+    const handleDelete = (target: string) => {
+        setOptions((prev) => {
+            return prev.filter(option => option.label !== target);
+        })
+    }
 
     // submit handler
     const handleCreate = async () => {
