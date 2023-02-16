@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { PortalBase } from "../../util/types";
 
-const Tooltip: FC<PortalBase> = ({ children, extraStyles = null }) => {
+const Tooltip: FC<PortalBase> = ({ children, extraClasses = null }) => {
     return (
-        <aside className={`ui-tooltip ${extraStyles}`}>
+        <aside className={`ui-tooltip ${extraClasses}`}>
             { children }
         </aside>
     )

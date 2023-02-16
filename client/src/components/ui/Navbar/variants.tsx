@@ -53,7 +53,7 @@ const LoggedIn = () => {
             </div>
             {
                 dropdownActive && (
-                    <Dropdown extraStyles="top-menu-bar actions-bar">
+                    <Dropdown extraClasses="top-menu-bar actions-bar">
                         <Button onClick={() => handleOptionSelect('/add-recipe')}>Add a Recipe</Button>
                         <Button onClick={() => handleOptionSelect("/add-friends")}>Add Friends</Button>
                         <Button onClick={() => handleOptionSelect('/collections')}>My Collections</Button>
@@ -65,7 +65,7 @@ const LoggedIn = () => {
             }
             {
                 searchActive && (
-                    <Dropdown extraStyles="top-menu-bar search-bar">
+                    <Dropdown extraClasses="top-menu-bar search-bar">
                         <Button>Run Search</Button>
                     </Dropdown>
                 )

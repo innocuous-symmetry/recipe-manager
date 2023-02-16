@@ -1,4 +1,4 @@
-import { FormConfig } from "./Form"
+import { FormConfig } from "./Form/Form"
 
 interface OptionType {
     value: number

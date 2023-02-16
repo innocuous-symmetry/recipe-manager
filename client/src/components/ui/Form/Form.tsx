@@ -1,12 +1,12 @@
 import { ChangeEvent, FC, useEffect, useState } from "react"
 import { v4 } from "uuid"
-import { useAuthContext } from "../../context/AuthContext";
-import { useSelectorContext } from "../../context/SelectorContext";
-import SelectorProvider from "../../context/SelectorProvider";
-import { IIngredient, IUser } from "../../schemas";
-import API from "../../util/API";
-import RichText from "./RichText"
-import Selector from "./Selector";
+import { useAuthContext } from "../../../context/AuthContext";
+import { useSelectorContext } from "../../../context/SelectorContext";
+import SelectorProvider from "../../../context/SelectorProvider";
+import { IIngredient, IUser } from "../../../schemas";
+import API from "../../../util/API";
+import RichText from "../RichText"
+import Selector from "../Selector";
 import "/src/sass/components/Form.scss";
 
 export interface FormConfig<T> {
@@ -17,7 +17,7 @@ export interface FormConfig<T> {
     labels?: string[]
     dataTypes?: string[]
     richTextInitialValue?: string
-    extraStyles?: string
+    extraClasses?: string
     selectorInstance?: JSX.Element
 }
 
@@ -132,7 +132,7 @@ function Form<T>({ _config }: FormProps) {
     }, [config]);
 
     return (
-        <div className={`ui-form-component ${_config.extraStyles ?? ""}`}>
+        <div className={`ui-form-component ${_config.extraClasses ?? ""}`}>
             { contents }
         </div>
     )

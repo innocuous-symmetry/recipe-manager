@@ -3,7 +3,7 @@ import { AuthContext, useAuthContext } from "../../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { IUser, IUserAuth } from "../../schemas";
 import { Button, Form, Page, Panel } from "../ui";
-import { FormConfig } from "../ui/Form";
+import { FormConfig } from "../ui/Form/Form";
 import API from "../../util/API";
 
 export default function Login() {
@@ -41,7 +41,7 @@ export default function Login() {
         <Page>
             <h1>Hello! Nice to see you again.</h1>
 
-            <Panel extraStyles="form-panel">
+            <Panel extraClasses="form-panel">
 
                 <Form<IUserAuth> _config={{
                     parent: 'login',

@@ -5,10 +5,10 @@ import { PageComponent } from "../../util/types"
 import Navbar from "./Navbar";
 import "/src/sass/components/Page.scss";
 
-const Page: PageComponent = ({ extraStyles, children }) => {
+const Page: PageComponent = ({ extraClasses, children }) => {
     return (
         <main id="view">
-            <section className={`Page ${extraStyles || null}`}>
+            <section className={`Page ${extraClasses || null}`}>
                 { children || null }
             </section>
         </main>

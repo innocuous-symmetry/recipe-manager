@@ -6,7 +6,7 @@ import { IUser } from "../../../schemas";
 import API from "../../../util/API";
 import { Button, Page, Panel } from "../../ui";
 import Divider from "../../ui/Divider";
-import Form from "../../ui/Form";
+import Form from "../../ui/Form/Form";
 
 const blankUser: IUser = {
     firstname: '',
@@ -52,7 +52,7 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
             
             <h2>Tell us a bit about yourself:</h2>
 
-            <Panel extraStyles="form-panel two-columns">
+            <Panel extraClasses="form-panel two-columns">
 
                 <Form<IUser> _config={{
                     parent: "register",

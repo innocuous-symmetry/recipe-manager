@@ -1,9 +1,9 @@
 import { FC } from "react";
 
 
-const Card: FC<{ children?: JSX.Element | JSX.Element[], extraStyles?: string }> = ({ children = <></>, extraStyles = ""}) => {
+const Card: FC<{ children?: JSX.Element | JSX.Element[], extraClasses?: string }> = ({ children = <></>, extraClasses = ""}) => {
     return (
-        <div className={`ui-card ${extraStyles}`}>
+        <div className={`ui-card ${extraClasses}`}>
             { Array.isArray(children) ? <>{children}</> : children }
         </div>
     )

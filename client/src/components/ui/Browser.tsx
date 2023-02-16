@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import Protect from "../../util/Protect";
-import Form from "./Form";
+import Form from "./Form/Form";
 
 interface BrowserProps {
     children?: JSX.Element[]

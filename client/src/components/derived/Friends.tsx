@@ -51,7 +51,7 @@ const Friends: FC<{ targetUser?: IUser }> = ({ targetUser }) => {
         <>
         { userList.length ? 
         (
-            <Card extraStyles="flex-row">
+            <Card extraClasses="flex-row">
                 <h2>Friends ({ userList?.length ?? "0" }):</h2>
 
                 <div className="friends-list">

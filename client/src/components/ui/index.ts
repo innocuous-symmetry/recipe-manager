@@ -2,7 +2,7 @@ import Button from "./Button";
 import Card from "./Card";
 import Divider from "./Divider";
 import Dropdown from "./Dropdown";
-import Form from "./Form";
+import Form from "./Form/Form";
 import Navbar from "./Navbar";
 import Page from "./Page";
 import Panel from "./Panel";

@@ -1,9 +1,9 @@
 import { ButtonComponent } from "../../util/types"
 import "/src/sass/components/Button.scss";
 
-const Button: ButtonComponent = ({ onClick = (() => {}), children, extraStyles, disabled = false, disabledText = null }) => {
+const Button: ButtonComponent = ({ onClick = (() => {}), children, extraClasses, disabled = false, disabledText = null }) => {
     return (
-        <button onClick={onClick} disabled={disabled} className={`ui-button ${extraStyles || ''}`}>
+        <button onClick={onClick} disabled={disabled} className={`ui-button ${extraClasses || ''}`}>
             { disabled ? (disabledText || children || "Button") : (children || "Button") }
         </button>
     )

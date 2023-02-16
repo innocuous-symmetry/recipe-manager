@@ -5,7 +5,8 @@ import { IUser } from "../schemas";
 
 export interface PortalBase {
     children?: ReactNode | ReactNode[]
-    extraStyles?: string
+    extraClasses?: string
+    id?: string
 }
 
 interface ButtonParams extends PortalBase {

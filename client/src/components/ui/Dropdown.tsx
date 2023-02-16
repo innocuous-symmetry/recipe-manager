@@ -4,9 +4,9 @@ import { PortalBase } from "../../util/types";
 import "/src/sass/components/Dropdown.scss";
 
 // expects to receive buttons as children
-const Dropdown: FC<PortalBase> = ({ children, extraStyles = null }) => {
+const Dropdown: FC<PortalBase> = ({ children, extraClasses = null }) => {
     return (
-        <Panel extraStyles={`ui-dropdown ${extraStyles}`}>
+        <Panel extraClasses={`ui-dropdown ${extraClasses}`}>
             { children }
         </Panel>
     )

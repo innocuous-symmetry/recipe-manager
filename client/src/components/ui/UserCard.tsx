@@ -6,7 +6,7 @@ import API from "../../util/API";
 import Button from "./Button";
 import Card from "./Card";
 
-const UserCard: UserCardType = ({ extraStyles, targetUser }) => {
+const UserCard: UserCardType = ({ extraClasses, targetUser }) => {
     const [buttonVariant, setButtonVariant] = useState(<></>);
     const { token } = useAuthContext();
 
@@ -45,7 +45,7 @@ const UserCard: UserCardType = ({ extraStyles, targetUser }) => {
     }
 
     return (
-        <Card extraStyles={'user-card' + extraStyles}>
+        <Card extraClasses={'user-card' + extraClasses}>
             <>
             <div className="avatar"></div>
             <h3><a href={`/profile?id=${targetUser.id}`}>{targetUser.firstname} {targetUser.lastname.substring(0,1)}.</a></h3>
