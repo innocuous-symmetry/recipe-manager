@@ -1,7 +1,7 @@
 import { useAuthContext } from "../../context/AuthContext";
 import { useCallback, useEffect, useState } from "react";
 import { Button, Card, Divider, Page, Panel } from "../ui"
-import { IIngredient, IRecipe } from "../../schemas";
+import { DropdownData, IIngredient, IRecipe } from "../../schemas";
 import API from "../../util/API";
 import { useSelectorContext } from "../../context/SelectorContext";
 import IngredientSelector from "../derived/IngredientSelector";
@@ -9,35 +9,38 @@ import { v4 } from "uuid";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
-    const { data, setData, options, setOptions } = useSelectorContext();
+    const { data, setData } = useSelectorContext();
+
+    const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
+    const [measurements, setMeasurements] = useState<DropdownData[]>([]);
     const [ingredientFields, setIngredientFields] = useState<Array<JSX.Element>>([]);
-    const [triggerChange, setTriggerChange] = useState(false);
     const [optionCount, setOptionCount] = useState(0);
     const [toast, setToast] = useState(<></>)
-    const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
 
     // store all ingredients on page mount
     useEffect(() => {
         token && (async() => {
             const ingredients = new API.Ingredient(token);
+            const _measurements = new API.Measurements(token);
             const result = await ingredients.getAll();
+            const measurementList = await _measurements.getAll();
 
             if (result) {
                 setData((prev) => [...prev, ...result]);
-    
-                // once async data is received, derive its new states
-                setOptions(result.map((each: IIngredient) => {
-                    return { label: each.name, value: each.id }
-                }));
+            }
 
-                setIngredientFields([<IngredientSelector key={v4()} position={optionCount} ingredients={result} destroy={destroySelector} />]);
+            if (measurementList) {
+                setMeasurements((prev) => [...prev, ...measurementList]);
             }
         })();
     }, [token])
 
     useEffect(() => {
-        if (data.length) setTriggerChange(true);
-    }, [data, options])
+        if (data.length && measurements.length) {
+            setIngredientFields([<IngredientSelector key={v4()} position={optionCount} ingredients={data} units={measurements} destroy={destroySelector} />]);
+        }
+
+    }, [data, measurements])
 
     // once user information is available, store it in recipe data
     useEffect(() => {
@@ -49,10 +52,6 @@ const AddRecipe = () => {
             }
         })
     }, [user])
-
-    useEffect(() => {
-        return;
-    }, [ingredientFields])
 
     // submit handler
     const handleCreate = async () => {
@@ -95,7 +94,7 @@ const AddRecipe = () => {
     }, [ingredientFields]);
 
     function handleNewOption() {
-        setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={data} destroy={destroySelector} />])
+        setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={data} units={measurements} destroy={destroySelector} />])
         setOptionCount(prev => prev + 1);
     }
     
@@ -107,17 +106,17 @@ const AddRecipe = () => {
             <Panel id="create-recipe-panel" extraClasses="ui-form-component width-80">
                 <div className="form-row">
                     <label>Recipe Name:</label>
-                    <input />
+                    <input onChange={(e) => setInput({ ...input, name: e.target.value })} />
                 </div>
 
                 <div className="form-row">
                     <label>Prep Time:</label>
-                    <input />
+                    <input onChange={(e) => setInput({ ...input, preptime: e.target.value })} />
                 </div>
 
                 <div className="form-row">
                     <label>Course:</label>
-                    <input />
+                    <input placeholder="Replace me with dropdown!" />
                 </div>
                 
                 { data && (

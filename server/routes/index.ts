@@ -11,6 +11,7 @@ import { subscriptionRoute } from "./subscription";
 import { friendRouter } from "./friend";
 import { cuisineRouter } from "./cuisine";
 import { courseRouter } from "./course";
+import { dropdownValueRouter } from "./dropdownValues";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ export const routes = async (app: Express) => {
     subscriptionRoute(app);
     groceryListRoute(app);
     courseRouter(app);
+    dropdownValueRouter(app);
 
     // deprecate?
     cuisineRouter(app);

@@ -1,5 +1,5 @@
 import { AxiosError, AxiosHeaders, AxiosRequestHeaders, AxiosResponse } from "axios";
-import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList } from "../schemas";
+import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList, DropdownData } from "../schemas";
 import { default as _instance } from "./axiosInstance";
 
 module API {
@@ -221,6 +221,17 @@ module API {
     export class GroceryList extends RestController<IGroceryList> {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/grocery-list", token)
+        }
+    }
+
+    export class Measurements extends RestController<DropdownData> {
+        constructor(token: string) {
+            super(Settings.getAPISTRING() + "/app/dropdown", token);
+        }
+
+        override async getAll() {
+            const response = await this.instance.get(this.endpoint + "?datatype=measurement", this.headers);
+            return Promise.resolve(response.data);
         }
     }
 }

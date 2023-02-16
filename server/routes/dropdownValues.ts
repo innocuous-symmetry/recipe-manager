@@ -5,7 +5,7 @@ import { DropdownDataType } from '../schemas';
 const router = Router();
 const DDInstance = new DropdownCtl();
 
-export const dropdownValue = (app: Express) => {
+export const dropdownValueRouter = (app: Express) => {
     app.use('/app/dropdown', router);
 
     router.get('/', async (req, res, next) => {
@@ -24,4 +24,5 @@ export const dropdownValue = (app: Express) => {
         }
     })
 
+    return router;
 }
