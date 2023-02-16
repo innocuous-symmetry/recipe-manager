@@ -1,9 +1,9 @@
 import { useAuthContext } from "../../context/AuthContext";
-import { LegacyRef, MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, Divider, Form, Page, Panel } from "../ui"
+import { useCallback, useEffect, useState } from "react";
+import { Button, Card, Divider, Page, Panel } from "../ui"
 import { IIngredient, IRecipe } from "../../schemas";
 import API from "../../util/API";
-import { createOptionFromText, useSelectorContext } from "../../context/SelectorContext";
+import { useSelectorContext } from "../../context/SelectorContext";
 import IngredientSelector from "../derived/IngredientSelector";
 import { v4 } from "uuid";
 
@@ -15,15 +15,6 @@ const AddRecipe = () => {
     const [optionCount, setOptionCount] = useState(0);
     const [toast, setToast] = useState(<></>)
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
-
-    const initialIngredient = useRef(null);
-
-    // clear out selector state on page load
-    /* useEffect(() => {
-        setData(new Array<IIngredient>());
-        setSelected(new Array<string>());
-        setOptions(new Array<OptionType>());
-    }, []) */
 
     // store all ingredients on page mount
     useEffect(() => {
@@ -45,77 +36,8 @@ const AddRecipe = () => {
     }, [token])
 
     useEffect(() => {
-        if (data.length) {
-            /* const autocompleteInstance = (
-                <Autocomplete
-                    multiple
-                    freeSolo
-                    autoHighlight
-                    fullWidth
-                    filterSelectedOptions
-                    className="ui-creatable-component" 
-                    id="ingredient-autocomplete"
-                    options={options.map(each => each.label)}
-                    onChange={(e) => updateSelection(e.target['innerText' as keyof EventTarget].toString())}
-                    onKeyDown={(e) => {
-                        if (e.code == 'Enter') {
-                            const inputVal: string = e.target['value' as keyof EventTarget].toString();
-                            console.log(inputVal)
-                            if (inputVal.length) {
-                                setSelected(prev => [...prev, inputVal])
-                                const newOption = createOptionFromText(inputVal, optionCount + 1);
-                                setOptions((prev) => [...prev, newOption]);
-                                setOptionCount(prev => prev + 1);
-                            }
-                        }
-                    }}
-                    renderTags={(value, getTagProps) => value.map((option, idx) => <Chip variant="outlined" label={option} { ...getTagProps({ index: idx }) } onDelete={() => handleDelete(option)} />)}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant="filled"
-                            placeholder="Ingredient Name"
-                        />
-                    )}
-                />
-            ) */
-
-            // create dropdown from new data
-            /*
-            const selectorInstance = <Creatable 
-                className="ui-creatable-component" 
-                id="ingredient-selector" 
-                isMulti 
-                value={selected} 
-                options={options} 
-                onChange={(selection: MultiValue<OptionType>) => onChange(selection)}
-                onCreateOption={(input: string) => onCreateOption(input, () => {})}
-            /> 
-            */
-
-            // data.length && setSelector(autocompleteInstance);
-            setTriggerChange(true);
-        }
+        if (data.length) setTriggerChange(true);
     }, [data, options])
-
-    // once the dropdown data has populated, mount it within the full form
-    /* useEffect(() => {
-        triggerChange && setForm(
-            <Form<IRecipe> _config={{
-                parent: "AddRecipe",
-                keys: ["name", "preptime", "course", "cuisine", "ingredients", "description"],
-                labels: ["Recipe Name:", "Prep Time:", "Course:", "Cuisine:", "Ingredients:", "Description:"],
-                dataTypes: ['text', 'text', 'custom picker', 'custom picker', 'SELECTOR', 'TINYMCE'],
-                initialState: input,
-                getState: getFormState,
-                richTextInitialValue: "<p>Enter recipe details here!</p>",
-            }} />
-        )
-    }, [triggerChange]) */
-
-    useEffect(() => {
-        console.log(options);
-    }, [options])
 
     // once user information is available, store it in recipe data
     useEffect(() => {
@@ -128,24 +50,6 @@ const AddRecipe = () => {
         })
     }, [user])
 
-    // store input data from form
-    /*
-    const getFormState = useCallback((data: IRecipe) => {
-        setInput(data);
-    }, [input])
-
-    const updateSelection = (target: string) => {
-        setSelected((prev) => {
-            return [...prev, target];
-        })
-    }
-
-    const handleDelete = (target: string) => {
-        setSelected((prev) => {
-            return prev.filter(option => option !== target);
-        })
-    } */
-
     useEffect(() => {
         return;
     }, [ingredientFields])
@@ -156,7 +60,6 @@ const AddRecipe = () => {
 
         for (let field of Object.keys(input)) {
             if (!input[field as keyof IRecipe]) {
-                console.log(field);
                 return;
             }
         }
@@ -195,10 +98,6 @@ const AddRecipe = () => {
         setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={data} destroy={destroySelector} />])
         setOptionCount(prev => prev + 1);
     }
-
-    useEffect(() => {
-        console.log(optionCount);
-    }, [optionCount])
     
     return (
         <Page>

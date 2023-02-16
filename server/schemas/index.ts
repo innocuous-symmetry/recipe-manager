@@ -73,3 +73,10 @@ export interface FlavorProfile extends HasHistory, CanDeactivate {
     name: string
     description?: string
 }
+
+export interface DropdownData extends HasHistory {
+    name: string
+    datatype: DropdownDataType
+}
+
+export type DropdownDataType = "measurement" | "course"

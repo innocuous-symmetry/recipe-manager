@@ -16,6 +16,9 @@ function IngredientSelector({ position, ingredients, destroy }: IngredientSelect
 
     return (
         <div style={{ display: "flex", flexDirection: "row" }}>
+            <div className="ingredient-unit">
+                <label>Unit:</label>
+            </div>
             <Autocomplete
                 autoHighlight
                 options={options}

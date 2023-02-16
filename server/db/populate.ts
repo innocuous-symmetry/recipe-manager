@@ -101,10 +101,25 @@ export default async function populate() {
         ;
     `
 
+    const populateMeasurements = `
+        INSERT INTO recipin.dropdownVals
+            (name, datatype, datecreated)
+        VALUES
+            ('cup', 'MEASUREMENTS', $1),
+            ('tablespoon', 'MEASUREMENTS', $1),
+            ('teaspoon', 'MEASUREMENTS', $1),
+            ('gram', 'MEASUREMENTS', $1),
+            ('ounce', 'MEASUREMENTS', $1),
+            ('fluid ounce', 'MEASUREMENTS', $1),
+            ('pound', 'MEASUREMENTS', $1)
+        ;   
+    `
+
     const allStatements: Array<string> = [
         populateUsers, populateCuisines, populateCourses,
         populateCollection, populateIngredients, populateRecipes,
-        populateGroceryList, populateFriendships, populateComments
+        populateGroceryList, populateFriendships, populateComments,
+        populateMeasurements
     ];
 
     await pool.query(setup);

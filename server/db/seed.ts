@@ -28,11 +28,12 @@ dotenv.config();
     const recipecollection =    fs.readFileSync(appRoot + '/db/sql/create/createcmp_recipecollection.sql').toString();
     const usersubscriptions =   fs.readFileSync(appRoot + '/db/sql/create/createcmp_usersubscriptions.sql').toString();
     const userfriendships =     fs.readFileSync(appRoot + '/db/sql/create/createcmp_userfriendships.sql').toString();
+    const dropdownValues =      fs.readFileSync(appRoot + '/db/sql/create/createdropdown.sql').toString();
 
     const allStatements = [
         setRole, appusers, ingredient, collection, cuisine, course, 
         recipe, recipecomments, groceryList, recipeingredient, 
-        recipecollection, usersubscriptions, userfriendships
+        recipecollection, usersubscriptions, userfriendships, dropdownValues
     ]
 
     try {
