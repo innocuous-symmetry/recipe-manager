@@ -43,7 +43,7 @@ export default function Login() {
 
             <Panel extraStyles="form-panel">
 
-                <Form parent={input} _config={{
+                <Form<IUserAuth> _config={{
                     parent: 'login',
                     keys: Object.keys(input),
                     labels: ["Email", "Password"],

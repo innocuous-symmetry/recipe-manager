@@ -5,11 +5,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { ICollection, IIngredient } from "../schemas";
 import { Button, Page } from "./ui";
 import API from "../util/API";
-
-interface OptionType {
-    value: number
-    label: string
-}
+import { OptionType } from "../util/types";
 
 export default function Sandbox() {
     const [ingredients, setIngredients] = useState<Array<IIngredient>>([]);

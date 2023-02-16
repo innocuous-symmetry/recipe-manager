@@ -38,6 +38,14 @@ interface CheckboxProps {
     FormElement: typeof Form
 }
 
+/**
+ * Type declaration for react-select dropdown options
+ */
+export interface OptionType {
+    value: number
+    label: string
+}
+
 export type PageComponent = FC<PortalBase>
 export type PanelComponent = FC<PortalBase>
 export type ButtonComponent = FC<ButtonParams>

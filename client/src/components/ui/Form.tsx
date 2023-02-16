@@ -1,6 +1,8 @@
 import { ChangeEvent, FC, useEffect, useState } from "react"
 import { v4 } from "uuid"
 import { useAuthContext } from "../../context/AuthContext";
+import { useSelectorContext } from "../../context/SelectorContext";
+import SelectorProvider from "../../context/SelectorProvider";
 import { IIngredient, IUser } from "../../schemas";
 import API from "../../util/API";
 import RichText from "./RichText"
@@ -16,26 +18,25 @@ export interface FormConfig<T> {
     dataTypes?: string[]
     richTextInitialValue?: string
     extraStyles?: string
+    selectorInstance?: JSX.Element
 }
 
 interface FormProps {
-    parent: any
     _config: FormConfig<any>
 }
 
-const Form: FC<FormProps> = ({ parent, _config }) => {
-    type T = typeof parent;
+function Form<T>({ _config }: FormProps) {
     const { getState } = _config;
 
     const [config, setConfig] = useState<FormConfig<T>>();
-    const [state, setState] = useState<T>();
+    const [state, setState] = useState<T>(_config.initialState);
     const [contents, setContents] = useState<JSX.Element[]>();
 
     const { token } = useAuthContext();
 
     // initial setup
     useEffect(() => {
-        if (!config) setConfig({
+        setConfig({
             ..._config,
             labels: _config.labels ?? _config.keys,
             dataTypes: _config.dataTypes ?? new Array(_config.keys?.length).fill("text"),
@@ -101,14 +102,14 @@ const Form: FC<FormProps> = ({ parent, _config }) => {
                             </div>
                         )
                     } else if (config.dataTypes![i] == 'SELECTOR') {
-                        type StrongType = Partial<T> & { id: number, name: string };
-                        const storedResult = await (async() => {
-                            const result = await populateSelector(config?.labels![i] || "");
-                            if (result) return result as T[];
-                            return null;
-                        })();
-    
-                        return <Selector<StrongType> config={config} idx={i} optionList={storedResult || []} />
+                        if (!config.selectorInstance) throw new Error("Dropdown was not provided to form component.")
+
+                        return (
+                            <div className="form-row" id={`${config.parent}-row-${i}`} key={v4()}>
+                                <label htmlFor={`${config.parent}-${each}`}>{config.labels![i]}</label>
+                                { config.selectorInstance }
+                            </div>
+                        )
                     } else {
                         return (
                             <div className="form-row" id={`${config.parent}-row-${i}`} key={v4()}>

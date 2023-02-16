@@ -1,24 +1,22 @@
-import reactSelect from "react-select"
-import makeAnimated from "react-select/animated";
 import { FormConfig } from "./Form"
-import { v4 } from "uuid"
 
-interface Entity {
-    id: string | number
-    name?: string
+interface OptionType {
+    value: number
+    label: string
 }
 
-function Selector<T extends Entity>({ config, idx, optionList }: { config: FormConfig<T>, idx: number, optionList: Array<T> }) {
-// const Selector: FC<{ optionList: Array<T extends HasID> }> = ({ optionList }) => {
+interface SelectorProps<T> {
+    config: FormConfig<T>
+    idx: number
+    update: (e: any, idx: number) => void
+    optionList: Array<OptionType>
+    loader?: Array<T>
+}
+
+function Selector<T>({ config, idx, update, optionList }: SelectorProps<T>) {
     return (
-        <div className="form-row form-row-selector" id={`${config.parent}-row-${idx}`} key={v4()}>
-            <label htmlFor={`${config.parent}-${config.keys[idx]}`}>{config.labels![idx]}</label>
-            <select className="ui-select-component">
-            { optionList.map(item => 
-                <option id={`select-item-${item.name}-${item.id}`}>{item.name}</option>
-            )}
-            </select>
-        </div>
+        <>
+        </>
     )
 }
 

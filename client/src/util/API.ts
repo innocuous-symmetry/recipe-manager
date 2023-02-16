@@ -188,6 +188,11 @@ module API {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/ingredient", token);
         }
+
+        async associateIngredientWithRecipe(recipeID: string | number, ingredientID: string | number) {
+            const response = await this.instance.post(this.endpoint + `/${ingredientID}?recipeID=${recipeID}`, this.headers);
+            return Promise.resolve(response.data);
+        }
     }
 
     export class Collection extends RestController<ICollection> {

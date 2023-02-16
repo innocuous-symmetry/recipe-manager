@@ -54,7 +54,7 @@ const AboutYou: RegisterVariantType = ({ transitionDisplay }) => {
 
             <Panel extraStyles="form-panel two-columns">
 
-                <Form parent={input} _config={{
+                <Form<IUser> _config={{
                     parent: "register",
                     keys: ['firstname', 'lastname', 'handle', 'email', 'password'],
                     initialState: input,
