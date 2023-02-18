@@ -14,8 +14,12 @@ export const dropdownValueRouter = (app: Express) => {
         try {
             switch (datatype) {
                 case "measurement":
-                    const { code, data } = await DDInstance.getMeasurements();
-                    res.status(code).send(data);
+                    const measurements = await DDInstance.getMeasurements();
+                    res.status(measurements.code).send(measurements.data);
+                    break;
+                case "course":
+                    const courses = await DDInstance.getCourses();
+                    res.status(courses.code).send(courses.data);
                     break;
                 default: break;
             }

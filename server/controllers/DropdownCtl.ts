@@ -8,9 +8,22 @@ export default class DropdownCtl {
     async getMeasurements() {
         try {
             const result = await DDInstance.getMeasurements();
-            return new ControllerResponse<any[] | string>(
+            return new ControllerResponse(
                 ((result !== null) ? StatusCode.OK : StatusCode.NotFound),
                 result || "Measurement unit data not found",
+                (result !== null)
+            );
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    async getCourses() {
+        try {
+            const result = await DDInstance.getCourses();
+            return new ControllerResponse(
+                ((result !== null) ? StatusCode.OK : StatusCode.NotFound),
+                result || "Course data not found",
                 (result !== null)
             );
         } catch (error: any) {

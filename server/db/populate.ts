@@ -111,7 +111,13 @@ export default async function populate() {
             ('gram', 'MEASUREMENTS', $1),
             ('ounce', 'MEASUREMENTS', $1),
             ('fluid ounce', 'MEASUREMENTS', $1),
-            ('pound', 'MEASUREMENTS', $1)
+            ('pound', 'MEASUREMENTS', $1),
+            ('breakfast', 'COURSE', $1),
+            ('lunch', 'COURSE', $1),
+            ('dinner', 'COURSE', $1),
+            ('dessert', 'COURSE', $1),
+            ('appetizer', 'COURSE', $1),
+            ('side', 'COURSE', $1)
         ;   
     `
 

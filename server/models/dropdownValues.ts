@@ -11,4 +11,15 @@ export default class Dropdown {
             throw new Error(error);
         }
     }
+
+    async getCourses() {
+        try {
+            const statement = `SELECT * FROM recipin.dropdownVals WHERE datatype = 'COURSE'`;
+            const result = await pool.query(statement);
+            if (result.rows.length) return result.rows;
+            return null;
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
 }
