@@ -23,7 +23,7 @@ export interface AccessRules {
 
 export interface ProtectParams extends PortalBase {
     redirect?: string
-    accessRules?: AccessRules | null
+    accessRules?: Partial<AccessRules> | null
 }
 
 interface UserCardProps extends PortalBase {

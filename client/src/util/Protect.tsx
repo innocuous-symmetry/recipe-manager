@@ -7,41 +7,39 @@ import API from "./API";
 import { ProtectPortal } from "./types";
 
 const Protect: ProtectPortal = ({ children, redirect = '', accessRules = null }) => {
-    const [view, setView] = useState(<Page><h1>Loading...</h1></Page>);
     const { user, token } = useAuthContext();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!user || !token) {
-            setView(
+    if (!user || !token) {
+        return (
+            <AccessForbidden>
+                <>
+                <h2>Hi there! You don't look too familiar.</h2>
+                <p>To view the content on this page, please log in below:</p>
+                <Button onClick={() => navigate(redirect ? `/login?redirect=${redirect}` : '/login')}>Log In</Button>
+                </>
+            </AccessForbidden>
+        )
+    }
+
+    if (accessRules !== null) {
+        if (accessRules.mustBeRecipinAdmin && !(user?.isadmin)) {
+            return (
                 <AccessForbidden>
                     <>
-                    <h2>Hi there! You don't look too familiar.</h2>
-                    <p>To view the content on this page, please log in below:</p>
-                    <Button onClick={() => navigate(redirect ? `/login?redirect=${redirect}` : '/login')}>Log In</Button>
+                    <h2>This page requires administrator access.</h2>
+                    <p>If you believe you are receiving this message in error, please contact Recipin support.</p>
                     </>
                 </AccessForbidden>
             )
-
-            return;
         }
-    
-        if (accessRules !== null) {
-            if (accessRules.mustBeRecipinAdmin && !(user.isadmin)) {
-                setView(
-                    <AccessForbidden>
-                        <>
-                        <h2>This page requires administrator access.</h2>
-                        <p>If you believe you are receiving this message in error, please contact Recipin support.</p>
-                        </>
-                    </AccessForbidden>
-                )
-            }
-        }
-    }, [user, token])
+    }
 
-
-    return view;
+    return (
+        <Page>
+            { children }
+        </Page>
+    )
 }
 
 export default Protect;
