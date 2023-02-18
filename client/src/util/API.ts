@@ -229,13 +229,18 @@ module API {
         }
     }
 
-    export class Measurements extends RestController<DropdownData> {
+    export class Dropdowns extends RestController<DropdownData> {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/dropdown", token);
         }
 
-        override async getAll() {
+        async getAllMeasurements() {
             const response = await this.instance.get(this.endpoint + "?datatype=measurement", this.headers);
+            return Promise.resolve(response.data);
+        }
+
+        async getAllCourses() {
+            const response = await this.instance.get(this.endpoint + "?datatype=course", this.headers);
             return Promise.resolve(response.data);
         }
     }

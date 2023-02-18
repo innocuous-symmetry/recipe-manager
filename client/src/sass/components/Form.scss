@@ -28,6 +28,10 @@
             width: 85%;
         }
 
+        .MuiAutocomplete-root {
+            width: 100%;
+        }
+
         #ingredients-label, #description-label {
             align-self: flex-start;
             padding-top: 1rem;

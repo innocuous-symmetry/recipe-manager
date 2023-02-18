@@ -8,26 +8,32 @@ import Protect from "../../util/Protect";
 import API from "../../util/API";
 import { v4 } from "uuid";
 import RichText from "../ui/RichText";
-import { TextareaAutosize, TextField } from "@mui/material";
-// import "/src/sass/pages/AddRecipe.scss";
+import { Autocomplete, TextField } from "@mui/material";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
     const { data, setData } = useSelectorContext();
 
+    // received recipe data
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
+
+    // UI state handling
     const [measurements, setMeasurements] = useState<DropdownData[]>([]);
     const [ingredientFields, setIngredientFields] = useState<Array<JSX.Element>>([]);
+    const [courseData, setCourseData] = useState<DropdownData[]>([]);
     const [optionCount, setOptionCount] = useState(0);
+
+    // status reporting
     const [toast, setToast] = useState(<></>)
 
     // store all ingredients on page mount
     useEffect(() => {
         token && (async() => {
             const ingredients = new API.Ingredient(token);
-            const _measurements = new API.Measurements(token);
+            const _dropdowns = new API.Dropdowns(token);
             const result = await ingredients.getAll();
-            const measurementList = await _measurements.getAll();
+            const measurementList = await _dropdowns.getAllMeasurements();
+            const courseList = await _dropdowns.getAllCourses();
 
             if (result) {
                 setData((prev) => [...prev, ...result]);
@@ -35,6 +41,10 @@ const AddRecipe = () => {
 
             if (measurementList) {
                 setMeasurements((prev) => [...prev, ...measurementList]);
+            }
+
+            if (courseList) {
+                setCourseData((prev) => [...prev, ...courseList]);
             }
         })();
     }, [token])
@@ -102,8 +112,8 @@ const AddRecipe = () => {
     }
 
     useEffect(() => {
-        console.log(input);
-    }, [input])
+        console.log(courseData);
+    }, [courseData])
     
     return (
         <Protect redirect="/add-recipe">
@@ -123,7 +133,15 @@ const AddRecipe = () => {
 
                 <div className="form-row">
                     <label>Course:</label>
-                    <input placeholder="Replace me with dropdown!" />
+                    { courseData.length && 
+                        <Autocomplete
+                            autoHighlight
+                            options={courseData}
+                            renderInput={(params) => (
+                                <TextField {...params} variant="outlined" label="Course" />
+                            )}
+                            getOptionLabel={(option) => option.name}
+                    />}
                 </div>
                 
                 { data && (
