@@ -172,6 +172,11 @@ module API {
             return Promise.resolve(response.data);
         }
 
+        async getActiveFriends() {
+            const response = await this.instance.get(this.endpoint + "?accepted=true", this.headers);
+            return Promise.resolve(response.data);
+        }
+
         async addFriend(id: string | number) {
             const response = await this.instance.post(this.endpoint + `/${id}`, this.headers);
             return Promise.resolve(response.data);

@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { useAuthContext } from "../../context/AuthContext";
 import { ICollection } from "../../schemas";
 import API from "../../util/API";
+import Protect from "../../util/Protect";
 import { Page, Panel } from "../ui";
 
 const CollectionBrowser = () => {
@@ -47,7 +48,7 @@ const CollectionBrowser = () => {
     }, [list])
 
     return (
-        <Page>
+        <Protect redirect="/collections">
             { list && (
                 <>
                 <h1>Browsing your {list.length} collection{ (list.length !== 1) && "s" }:</h1>
@@ -62,7 +63,7 @@ const CollectionBrowser = () => {
                 })}
                 </>
             )}
-        </Page>
+        </Protect>
     )
 }
 

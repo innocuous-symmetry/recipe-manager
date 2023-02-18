@@ -15,8 +15,15 @@ interface ButtonParams extends PortalBase {
     disabledText?: string
 }
 
+export interface AccessRules {
+    mustBeRecipinAdmin: boolean
+    mustBeFriend: boolean
+    mustBeSubscribed: boolean
+}
+
 export interface ProtectParams extends PortalBase {
     redirect?: string
+    accessRules?: AccessRules | null
 }
 
 interface UserCardProps extends PortalBase {

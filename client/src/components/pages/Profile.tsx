@@ -160,7 +160,7 @@ export default function Profile() {
 
                 // if this is the current user's profile
                 setContents(
-                    <Protect redirect="profile">
+                    <Protect redirect="/profile">
                         <div className="profile-authenticated">
                             <h1>{user!.firstname}'s Profile</h1>
     

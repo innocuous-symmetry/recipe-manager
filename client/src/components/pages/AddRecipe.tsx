@@ -6,6 +6,7 @@ import API from "../../util/API";
 import { useSelectorContext } from "../../context/SelectorContext";
 import IngredientSelector from "../derived/IngredientSelector";
 import { v4 } from "uuid";
+import Protect from "../../util/Protect";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
@@ -99,7 +100,7 @@ const AddRecipe = () => {
     }
     
     return (
-        <Page>
+        <Protect redirect="/add-recipe">
             <h1>Add a New Recipe</h1>
             <Divider />
 
@@ -140,7 +141,7 @@ const AddRecipe = () => {
 
                 <div id="toast">{ toast }</div>
             </Panel>
-        </Page>
+        </Protect>
     )
 }
 

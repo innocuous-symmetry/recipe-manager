@@ -16,7 +16,7 @@ const Browser: FC<BrowserProps> = ({ children, header, searchFunction }) => {
     })
 
     return (
-        <Protect>
+        <Protect redirect="/explore">
             <h1>{header}</h1>
         </Protect>
     )

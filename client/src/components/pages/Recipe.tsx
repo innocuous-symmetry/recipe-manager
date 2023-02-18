@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Page, Panel } from "../ui";
 import { IRecipe } from "../../schemas";
 import { getRecipeByID } from "../../util/apiUtils";
+import Protect from "../../util/Protect";
 
 export default function Recipe() {
     const [recipe, setRecipe] = useState<IRecipe>();
@@ -23,7 +24,7 @@ export default function Recipe() {
     }, [])
 
     return (
-        <Page>
+        <Protect redirect={`/recipe/${id}`}>
             { recipe && (
                 <Panel>
                     <h1>{recipe.name}</h1>
@@ -31,6 +32,6 @@ export default function Recipe() {
                     <p>{recipe.preptime}</p>
                 </Panel>
             )}
-        </Page>
+        </Protect>
     )
 }

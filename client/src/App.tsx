@@ -50,9 +50,12 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
+          {/* Base access privileges */}
           <Route path="/"                       element={<Welcome />} />
           <Route path="/register"               element={<Register />} />
           <Route path="/login"                  element={<Login />} />
+
+          {/* Protected routes */}
           <Route path="/profile"                element={<Profile />} />
           <Route path="/collections"            element={<CollectionBrowser />} />
           <Route path="/collections/:id"        element={<Collection />} />
@@ -61,10 +64,11 @@ function App() {
           <Route path="/recipe/:id"             element={<Recipe />} />
           <Route path="/subscriptions"          element={<Subscriptions />} />
           <Route path="/subscriptions/:id"      element={<Collection />} />
-
           <Route path="/add-recipe"             element={<AddRecipe />} />
           <Route path="/grocery-list"           element={<GroceryListCollection />} />
           <Route path="/grocery-list/:id"       element={<GroceryList />} />
+
+          {/* For dev use */}
           <Route path="/sandbox"                element={<Sandbox />} />
         </Routes>
       </div>

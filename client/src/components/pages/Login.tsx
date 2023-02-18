@@ -29,7 +29,7 @@ export default function Login() {
         setToken(result.token);
 
         // if there is a redirect, go there, else go home
-        navigate(`/${redirect ?? ''}`);
+        navigate(redirect ?? '/');
     }
 
     // check for logged in user and mount form

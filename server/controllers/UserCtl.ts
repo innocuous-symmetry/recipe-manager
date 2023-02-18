@@ -5,6 +5,18 @@ import { StatusCode } from '../util/types';
 const UserInstance = new User();
 
 export default class UserCtl {
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * FIRST SECTION:
+     * METHODS SPECIFIC TO USERS AND USER DATA
+    * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    /**
+     * ### @method getAll
+     * returns all available user entries
+     * 
+     * @params (none)
+     * @returns list of users, or an explanatory string if no response is received
+     */
     async getAll() {
         try {
             // attempt to get users from database
@@ -22,6 +34,11 @@ export default class UserCtl {
         }
     }
 
+    /**
+     * ### @method post
+     * @param body - serialized user data as { IUser }
+     * @returns the newly inserted user entry, or an explanatory string
+     */
     async post(body: IUser) {
         try {
             const response = await UserInstance.post(body);
@@ -34,6 +51,11 @@ export default class UserCtl {
         }
     }
 
+    /**
+     * ### @method getOne
+     * @param id - user id to query
+     * @returns the user entry, if found, or an explanatory string if none was found
+     */
     async getOne(id: number | string) {
         try {
             const user = await UserInstance.getOneByID(id);
@@ -46,6 +68,12 @@ export default class UserCtl {
         }
     }
 
+    /**
+     * ### @method updateOne
+     * @param id - user id to update
+     * @param body - the new user body to update with
+     * @returns the updated user body, or an explanatory string
+     */
     async updateOne(id: number | string, body: IUser) {
         try {
             const result = await UserInstance.updateOneByID(id, body);
@@ -58,6 +86,16 @@ export default class UserCtl {
         }
     }
 
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * SECOND SECTION:
+     * METHODS SPECIFIC TO FRIENDSHIPS BETWEEN USERS
+    * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    /**
+     * ### @method getFriends
+     * @param id - get all friendship entries for a user, regardless of status
+     * @returns a list of friendship entries, or an explanatory string if none are found
+     */
     async getFriends(id: number | string) {
         try {
             const result = await UserInstance.getFriends(id);
@@ -70,6 +108,12 @@ export default class UserCtl {
         }
     }
 
+    /**
+     * ### @method getFriendshipByID
+     * @param id - the ID of the friendship in question
+     * @param userid - the user ID of the logged in user, to verify permissions 
+     * @returns a friendship entry, or an explanatory string
+     */
     async getFriendshipByID(id: number | string, userid: number | string) {
         try {
             const { ok, code, result } = await UserInstance.getFriendshipByID(id, userid);
@@ -79,9 +123,23 @@ export default class UserCtl {
         }
     }
 
+    /**
+     * ### @method getPendingFriendRequests
+     * 
+     * *IMPORTANT*: I don't think this one works the way I think it does
+     */
     async getPendingFriendRequests(recipient: string | number) {
         try {
             const { ok, code, result } = await UserInstance.getPendingFriendRequests(recipient);
+            return new ControllerResponse(code, result);
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
+    async getAcceptedFriends(userid: number | string) {
+        try {
+            const { code, result } = await UserInstance.getAcceptedFriends(userid);
             return new ControllerResponse(code, result);
         } catch (e: any) {
             throw new Error(e);

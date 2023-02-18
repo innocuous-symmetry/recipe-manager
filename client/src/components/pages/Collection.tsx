@@ -62,7 +62,7 @@ const Collection = () => {
     }, [data, recipes])
 
     return (
-        <Protect>
+        <Protect redirect={`/collections/${id}`}>
             { content }
         </Protect>
     )

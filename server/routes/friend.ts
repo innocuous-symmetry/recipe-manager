@@ -2,6 +2,7 @@ import { Express, Router } from 'express';
 import { restrictAccess } from '../auth/middlewares';
 import { UserCtl } from '../controllers';
 import { IUser } from '../schemas';
+import { StatusCode } from '../util/types';
 
 const UserInstance = new UserCtl();
 const router = Router();
@@ -24,11 +25,14 @@ export const friendRouter = (app: Express) => {
     // get all friendships for a user
     router.get('/', async (req, res, next) => {
         const user = req.user as IUser;
-        const { pending, targetUser } = req.query;
+        const { pending, accepted, targetUser } = req.query;
 
         try {
             if (pending) {
                 const { code, data } = await UserInstance.getPendingFriendRequests(user.id as number);
+                res.status(code).send(data);
+            } else if (accepted) {
+                const { code, data } = await UserInstance.getAcceptedFriends(user.id as number);
                 res.status(code).send(data);
             } else {
                 if (targetUser) {
@@ -39,6 +43,9 @@ export const friendRouter = (app: Express) => {
                     res.status(code).send(data);
                 }
             }
+
+            // send server error in case any of these conditions not landing
+            res.status(StatusCode.ServerError).json({ message: "An unexpected error occurred." });
         } catch(e) {
             next(e);
         }

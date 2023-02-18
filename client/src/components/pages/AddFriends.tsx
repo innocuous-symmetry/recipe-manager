@@ -4,7 +4,7 @@ import FriendSearchWidget from "../ui/Widgets/NewFriendWidget"
 
 const AddFriends = () => {
     return (
-        <Protect>
+        <Protect redirect="/add-friends">
             <h1>Search for New Friends</h1>
 
             <Divider />
