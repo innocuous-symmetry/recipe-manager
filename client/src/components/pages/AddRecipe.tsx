@@ -12,15 +12,15 @@ import { Autocomplete, TextField } from "@mui/material";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
-    const { data, setData } = useSelectorContext();
 
     // received recipe data
     const [input, setInput] = useState<IRecipe>({ name: '', preptime: '', description: '', authoruserid: '' })
 
     // UI state handling
+    const [ingredients, setIngredients] = useState<IIngredient[]>([]);
     const [measurements, setMeasurements] = useState<DropdownData[]>([]);
-    const [ingredientFields, setIngredientFields] = useState<Array<JSX.Element>>([]);
     const [courseData, setCourseData] = useState<DropdownData[]>([]);
+    const [ingredientFields, setIngredientFields] = useState<Array<JSX.Element>>([]);
     const [optionCount, setOptionCount] = useState(0);
 
     // status reporting
@@ -31,12 +31,12 @@ const AddRecipe = () => {
         token && (async() => {
             const ingredients = new API.Ingredient(token);
             const _dropdowns = new API.Dropdowns(token);
-            const result = await ingredients.getAll();
+            const ingredientList = await ingredients.getAll();
             const measurementList = await _dropdowns.getAllMeasurements();
             const courseList = await _dropdowns.getAllCourses();
 
-            if (result) {
-                setData((prev) => [...prev, ...result]);
+            if (ingredientList) {
+                setIngredients((prev) => [...prev, ...ingredientList]);
             }
 
             if (measurementList) {
@@ -50,11 +50,11 @@ const AddRecipe = () => {
     }, [token])
 
     useEffect(() => {
-        if (data.length && measurements.length) {
-            setIngredientFields([<IngredientSelector key={v4()} position={optionCount} ingredients={data} units={measurements} destroy={destroySelector} />]);
+        if (ingredients.length && measurements.length) {
+            setIngredientFields([<IngredientSelector key={v4()} position={optionCount} ingredients={ingredients} units={measurements} destroy={destroySelector} />]);
         }
 
-    }, [data, measurements])
+    }, [ingredients, measurements])
 
     // once user information is available, store it in recipe data
     useEffect(() => {
@@ -69,7 +69,7 @@ const AddRecipe = () => {
     // submit handler
     const handleCreate = async () => {
         if (!token) return;
-
+        
         for (let field of Object.keys(input)) {
             if (!input[field as keyof IRecipe]) {
                 return;
@@ -107,7 +107,7 @@ const AddRecipe = () => {
     }, [ingredientFields]);
 
     function handleNewOption() {
-        setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={data} units={measurements} destroy={destroySelector} />])
+        setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={ingredients} units={measurements} destroy={destroySelector} />])
         setOptionCount(prev => prev + 1);
     }
 
@@ -144,7 +144,7 @@ const AddRecipe = () => {
                     />}
                 </div>
                 
-                { data && (
+                { ingredients && (
                     <>
                     <Card extraClasses="form-row flex-row ingredient-card">
                         <label id="ingredients-label">Ingredients:</label>

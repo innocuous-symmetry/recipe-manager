@@ -198,6 +198,11 @@ module API {
             const response = await this.instance.post(this.endpoint + `/${ingredientID}?recipeID=${recipeID}`, this.headers);
             return Promise.resolve(response.data);
         }
+
+        async getAllForRecipe(recipeID: string | number) {
+            const response = await this.instance.get(this.endpoint + `?recipeID=${recipeID}`, this.headers);
+            return Promise.resolve(response.data);
+        }
     }
 
     export class Collection extends RestController<ICollection> {
