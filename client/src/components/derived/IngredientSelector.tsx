@@ -16,19 +16,13 @@ function IngredientSelector({ position, ingredients, units, destroy }: Ingredien
     const [newOptions, setNewOptions] = useState(new Array<string>());
     const [selected, setSelected] = useState(new Array<string>());
 
-    useEffect(() => {
-        console.log(units);
-    }, [])
-
     return (
-        <table style={{ display: "flex", flexDirection: "row", alignItems: "center" }}><tbody>
+        <table className="ingredient-widget"><tbody>
             <tr>
                 <td className="quantity-of-unit">
-                    <label>Quantity:</label>
-                    <TextField />
+                    <TextField variant="outlined" label="Quantity" />
                 </td>
                 <td className="ingredient-unit">
-                    <label>Unit:</label>
                     <Autocomplete 
                         autoHighlight
                         options={measurementUnits}
@@ -36,8 +30,8 @@ function IngredientSelector({ position, ingredients, units, destroy }: Ingredien
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                variant="filled"
-                                placeholder="Unit of Measurement"
+                                variant="outlined"
+                                label="Unit"
                             />
                         )}
                         onKeyDown={(e) => {
@@ -53,7 +47,6 @@ function IngredientSelector({ position, ingredients, units, destroy }: Ingredien
                     />
                 </td>
                 <td className="ingredient-name">
-                    <label>Ingredient:</label>
                     <Autocomplete
                         autoHighlight
                         options={options}
@@ -61,8 +54,8 @@ function IngredientSelector({ position, ingredients, units, destroy }: Ingredien
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                variant="filled"
-                                placeholder="Ingredient Name"
+                                variant="outlined"
+                                label="Ingredient Name"
                             />
                         )}
                         onKeyDown={(e) => {

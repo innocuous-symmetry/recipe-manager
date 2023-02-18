@@ -7,20 +7,63 @@
     .form-row {
         display: inline-flex;
         justify-content: flex-start;
+        align-items: center;
+        padding: 4px;
         margin-bottom: 6px;
 
         label {
             text-align: left;
-            width: 25%;
+            width: 15%;
         }
+
         input {
-            border-radius: 4px;
-            width: 65%;
+            width: 85%;
         }
 
         select {
-            width: 65%;
-            margin: 0;
+            width: 85%;
+        }
+
+        .MuiFormControl-root {
+            width: 85%;
+        }
+
+        #ingredients-label, #description-label {
+            align-self: flex-start;
+            padding-top: 1rem;
+        }
+
+        // special properties for form containers on AddRecipe page
+        .ingredient-container {
+            width: 85%;
+
+            .ingredient-widget {
+                width: 100%;
+
+                tr {
+                    width: 100%;
+                    td {
+                        width: 30%;
+
+                        .MuiFormControl-root {
+                            width: 100%;
+                        }
+
+                        label {
+                            width: unset;
+                        }
+                    }
+
+                    td:last-child {
+                        width: 10%;
+                    }
+                }
+            }
+
+            #add-ingredient-button {
+                margin-top: 1rem;
+                float: right;
+            }
         }
     }
 

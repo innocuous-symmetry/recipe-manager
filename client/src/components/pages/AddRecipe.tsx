@@ -2,11 +2,14 @@ import { useAuthContext } from "../../context/AuthContext";
 import { useCallback, useEffect, useState } from "react";
 import { Button, Card, Divider, Page, Panel } from "../ui"
 import { DropdownData, IIngredient, IRecipe } from "../../schemas";
-import API from "../../util/API";
 import { useSelectorContext } from "../../context/SelectorContext";
 import IngredientSelector from "../derived/IngredientSelector";
-import { v4 } from "uuid";
 import Protect from "../../util/Protect";
+import API from "../../util/API";
+import { v4 } from "uuid";
+import RichText from "../ui/RichText";
+import { TextareaAutosize, TextField } from "@mui/material";
+// import "/src/sass/pages/AddRecipe.scss";
 
 const AddRecipe = () => {
     const { user, token } = useAuthContext();
@@ -45,7 +48,6 @@ const AddRecipe = () => {
 
     // once user information is available, store it in recipe data
     useEffect(() => {
-        if (!user) return;
         user && setInput((prev: IRecipe) => {
             return {
                 ...prev,
@@ -98,6 +100,10 @@ const AddRecipe = () => {
         setIngredientFields((prev) => [...prev, <IngredientSelector position={optionCount + 1} key={v4()} ingredients={data} units={measurements} destroy={destroySelector} />])
         setOptionCount(prev => prev + 1);
     }
+
+    useEffect(() => {
+        console.log(input);
+    }, [input])
     
     return (
         <Protect redirect="/add-recipe">
@@ -107,12 +113,12 @@ const AddRecipe = () => {
             <Panel id="create-recipe-panel" extraClasses="ui-form-component width-80">
                 <div className="form-row">
                     <label>Recipe Name:</label>
-                    <input onChange={(e) => setInput({ ...input, name: e.target.value })} />
+                    <TextField variant="outlined" label="Recipe Name" onChange={(e) => setInput({ ...input, name: e.target.value })}/>
                 </div>
 
                 <div className="form-row">
                     <label>Prep Time:</label>
-                    <input onChange={(e) => setInput({ ...input, preptime: e.target.value })} />
+                    <TextField variant="outlined" label="Prep Time" onChange={(e) => setInput({ ...input, preptime: e.target.value })}/>
                 </div>
 
                 <div className="form-row">
@@ -121,20 +127,22 @@ const AddRecipe = () => {
                 </div>
                 
                 { data && (
+                    <>
                     <Card extraClasses="form-row flex-row ingredient-card">
-                        <label>Ingredients:</label>
-                        <div id="ingredient-container">
+                        <label id="ingredients-label">Ingredients:</label>
+                        <div className="ingredient-container">
                             { ingredientFields }
-                            <Button onClick={handleNewOption}>Add Ingredient</Button>
+                            <Button id="add-ingredient-button" onClick={handleNewOption}>Add Ingredient</Button>
                         </div>
                     </Card>
+                    </>
                 )}
 
                 <Divider />
 
                 <div className="form-row">
-                    <label>Description:</label>
-                    { "description here" }
+                    <label id="description-label">Description:</label>
+                    <RichText id="add-ingredient-description" getState={(text) => setInput({ ...input, description: text })} />
                 </div>
 
                 <Button onClick={handleCreate}>Create Recipe!</Button>
