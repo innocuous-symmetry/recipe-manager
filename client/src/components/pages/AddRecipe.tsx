@@ -130,9 +130,17 @@ export default function AddRecipe() {
     const handleCreate = async () => {
         if (!user || !token) return;
 
+        // initialize API handlers
+        const recipeAPI = new API.Recipe(token);
+        const ingredientAPI = new API.Ingredient(token);
+
+        // array to aggregate error/success messages
+        let messages = new Array<string>();
+
         // inject current user id into recipe entry
         setInput({ ...input, authoruserid: user.id! });
         
+        // verify all required fields are set
         for (let field of Object.keys(input)) {
             // account for an edge case where this state may not have been set yet
             if (field == 'authoruserid' as keyof IRecipe) {
@@ -140,16 +148,57 @@ export default function AddRecipe() {
             }
 
             if (!input[field as keyof IRecipe]) {
+                messages.push("Missing required field " + field);
                 return;
             }
         }
 
-        const recipe = new API.Recipe(token);
-        const result = await recipe.post(input);
+        let ingredientSelections = new Array<any>();
+        let newIngredientCount = 0;
 
+        // handle ingredient row data
+        for (let row of ingredientFieldData) {
+            if (row.ingredientSelection === undefined) {
+                messages.push("Please ensure you have included ingredient selections for all rows.");
+            }
+
+            ingredientSelections.push(row.ingredientSelection);
+
+            for (let ing of row.ingredients) {
+                // filter out recipes that already exist
+                if (ingredients.filter(x => x.name == ing.name).includes(ing)) {
+                    continue;
+                }
+
+                // update the ingredient list
+                setIngredients((prev) => [...prev, ing]);
+
+                // post the new ingredient to the database
+                const newEntry = await ingredientAPI.post(ing);
+                messages.push(`Successfully created new ingredient: ${ing.name}!`);
+                console.log(newEntry);
+                newIngredientCount++;
+            }
+        }
+
+        // post recipe entry
+        const result = await recipeAPI.post(input);
+
+        // handle recipe post resolve/reject
         if (result) {
             const recipeID = result.recipe.id;
             const recipeName = result.recipe.name;
+            let recipeIngredientCount = 0;
+
+            for (let ing of ingredientSelections) {
+                const ok = await recipeAPI.addIngredientToRecipe(ing, recipeID);
+                if (ok) recipeIngredientCount++;
+            }
+
+            messages.push(`Created recipe ${recipeName} with ${recipeIngredientCount} total ingredients!`)
+            if (newIngredientCount > 0) {
+                messages.push(`Successfully created ${newIngredientCount} new ingredients! Thanks for helping us grow.`);
+            }
             
             setToast(
                 <Toast>

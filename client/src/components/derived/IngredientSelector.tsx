@@ -1,7 +1,7 @@
 import { Autocomplete, TextField } from "@mui/material"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
-import { DropdownData, IIngredient } from "../../schemas";
+import { DropdownData, IIngredient, RecipeIngredient } from "../../schemas";
 import { IngredientFieldData } from "../../util/types";
 import { Button } from "../ui";
 
@@ -17,7 +17,7 @@ const createIngredient = (name: string, userid: string | number) => {
     return {
         name: name,
         createdbyid: userid
-    } as IIngredient
+    }
 }
 
 const quantityOptions: readonly any[] = [
@@ -149,7 +149,15 @@ function IngredientSelector({ position, ingredients, units, getRowState, destroy
 
                             if (typeof newValue == 'string') {
                                 const newIngredient = createIngredient(newValue, user.id!);
-                                setIngredientOptions((prev) => [...prev, newValue]);
+
+                                setIngredientOptions((prev) => {
+                                    let shouldInsert = true;
+                                    for (let each of prev) {
+                                        if (each == newValue) shouldInsert = false;
+                                    }
+                                    
+                                    return (shouldInsert ? [...prev, newValue] : prev);
+                                });
 
                                 setRowState((prev) => {
                                     let shouldInsert = true;

@@ -51,4 +51,6 @@ export const ingredientRoute = (app: Express) => {
             next(e);
         }
     })
+
+    return router;
 }

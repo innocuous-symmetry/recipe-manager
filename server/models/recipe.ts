@@ -1,4 +1,4 @@
-import { IRecipe } from "../schemas";
+import { IIngredient, IRecipe, RecipeIngredient } from "../schemas";
 import fs from 'fs';
 import pool from "../db";
 import { CollectionCtl } from "../controllers";
@@ -113,5 +113,25 @@ export class Recipe {
         } catch (error: any) {
             throw new Error(error);
         }
+    }
+
+    async addIngredientToRecipe(ingredient: RecipeIngredient, recipeid: string | number) {
+        const { quantity, unit, id } = ingredient;
+
+        try {
+            const statement = `
+                INSERT INTO recipin.cmp_recipeingredient
+                (quantity, unit, ingredientid, recipeid)
+                VALUES ($1, $2, $3, $4) RETURNING *
+            `
+
+            const result = await pool.query(statement, [quantity, unit, id, recipeid]);
+
+            if (result.rows) return result.rows[0];
+            return [];
+        } catch (e: any) {
+            throw new Error(e);
+        }
+
     }
 }

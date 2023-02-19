@@ -1,4 +1,4 @@
-import { IRecipe } from "../schemas";
+import { IRecipe, RecipeIngredient } from "../schemas";
 import { Recipe } from "../models/recipe";
 import ControllerResponse from "../util/ControllerResponse";
 import { StatusCode } from "../util/types";
@@ -51,6 +51,17 @@ export default class RecipeCtl {
     async post(userid: number, data: IRecipe) {
         try {
             const result = await RecipeInstance.post(userid, data);
+            const ok = result !== null;
+            const code = ok ? StatusCode.NewContent : StatusCode.BadRequest;
+            return new ControllerResponse(code, (result || "Something went wrong"));
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    async addIngredientToRecipe(ingredient: RecipeIngredient, recipeid: string | number) {
+        try {
+            const result = await RecipeInstance.addIngredientToRecipe(ingredient, recipeid);
             const ok = result !== null;
             const code = ok ? StatusCode.NewContent : StatusCode.BadRequest;
             return new ControllerResponse(code, (result || "Something went wrong"));

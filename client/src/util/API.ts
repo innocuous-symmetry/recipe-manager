@@ -1,5 +1,5 @@
 import { AxiosError, AxiosHeaders, AxiosRequestHeaders, AxiosResponse } from "axios";
-import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList, DropdownData } from "../schemas";
+import { IUser, IUserAuth, IFriendship, IRecipe, IIngredient, ICollection, IGroceryList, DropdownData, RecipeIngredient } from "../schemas";
 import { default as _instance } from "./axiosInstance";
 
 module API {
@@ -187,16 +187,16 @@ module API {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/recipe", token);
         }
+
+        async addIngredientToRecipe(ingredient: RecipeIngredient, recipeid: string | number) {
+            const response = await this.instance.post(this.endpoint + `?addIngredients=true&recipeID=${recipeid}`, JSON.stringify(ingredient), this.headers);
+            return Promise.resolve(response.data);
+        }
     }
 
     export class Ingredient extends RestController<IIngredient> {
         constructor(token: string) {
             super(Settings.getAPISTRING() + "/app/ingredient", token);
-        }
-
-        async associateIngredientWithRecipe(recipeID: string | number, ingredientID: string | number) {
-            const response = await this.instance.post(this.endpoint + `/${ingredientID}?recipeID=${recipeID}`, this.headers);
-            return Promise.resolve(response.data);
         }
 
         async getAllForRecipe(recipeID: string | number) {

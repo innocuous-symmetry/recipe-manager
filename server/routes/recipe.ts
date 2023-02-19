@@ -57,10 +57,16 @@ export const recipeRoute = (app: Express) => {
     router.post('/', restrictAccess, async (req, res, next) => {
         const user = req.user as IUser;
         const data = req.body;
+        const { addIngredients, recipeID } = req.query;
 
         try {
-            const result = await recipectl.post(user.id as number, data);
-            res.status(result.code).send(result.data);
+            if (addIngredients) {
+                const result = await recipectl.addIngredientToRecipe(data, recipeID as string);
+                res.status(result.code).send(result.data);
+            } else {
+                const result = await recipectl.post(user.id as number, data);
+                res.status(result.code).send(result.data);
+            }
         } catch(e) {
             next(e);
         }
