@@ -1,0 +1,18 @@
+.ui-component-toast {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 1rem;
+
+    .success {
+        background-color: green;
+    }
+
+    .fail {
+        background-color: red;
+    }
+
+    .warning {
+        background-color: yellow;
+    }
+}

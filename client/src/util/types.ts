@@ -1,7 +1,7 @@
 import { ChangeEvent, ChangeEventHandler, Dispatch, FC, ReactNode, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "../components/ui";
-import { IUser } from "../schemas";
+import { DropdownData, IIngredient, IUser } from "../schemas";
 
 export interface PortalBase {
     children?: ReactNode | ReactNode[]
@@ -44,6 +44,14 @@ interface CheckboxProps {
     value: string
     onChange: (e: ChangeEvent<HTMLElement>, idx: number) => void
     FormElement: typeof Form
+}
+
+export interface IngredientFieldData {
+    rowPosition: number
+    quantity: number | undefined
+    measurement: DropdownData['name'] | undefined
+    ingredientSelection: IIngredient['name'] | IIngredient | undefined
+    ingredients: Array<IIngredient>
 }
 
 /**

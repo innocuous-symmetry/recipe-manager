@@ -12,13 +12,21 @@ import { friendRouter } from "./friend";
 import { cuisineRouter } from "./cuisine";
 import { courseRouter } from "./course";
 import { dropdownValueRouter } from "./dropdownValues";
+import { IUser } from "../schemas";
+import { User } from "../models/user";
 
 dotenv.config();
 
-export const routes = async (app: Express) => {
-    // unprotected routes
-    authRoute(app);
+let REQUESTCOUNT = 0;
 
+export const routes = async (app: Express) => {
+    // simple request counting middleware
+    app.use('/', (req, res, next) => {
+        REQUESTCOUNT++;
+        console.log("count: ", REQUESTCOUNT);
+        next();
+    })
+    
     // middleware to check for auth on cookies on each request in protected routes
     app.use('/app', async (req, res, next) => {
         // pull jwt from request headers
@@ -27,17 +35,27 @@ export const routes = async (app: Express) => {
         if (!token) {
             res.status(403).send("Unauthorized, did not receive token");
         } else {
-            jwt.verify(token, process.env.SESSIONSECRET as string, (err, data) => {
+            jwt.verify(token, process.env.SESSIONSECRET as string, async (err, data: any) => {
                 if (err) {
                     res.status(403).send(err);
                 } else {
-                    // @ts-ignore
-                    req.user = data.user;
+                    const userInstance = new User();
+                    const foundUser = await userInstance.getOneByID(data.user.id);
+
+                    if (foundUser) {
+                        req.user = data.user as IUser;
+                    } else {
+                        res.status(403).send("Unauthorized, user not registered");
+                    }
+
                     next();
                 }
             })
         }
     })
+
+    // unprotected routes
+    authRoute(app);
 
     // protected routes
     userRoute(app);
