@@ -47,6 +47,8 @@ export interface IIngredient extends HasHistory {
 export interface RecipeIngredient extends Partial<IIngredient> {
     unit: string
     quantity: string | number
+    ingredientid: string | number
+    recipeid: string | number
 }
 
 export interface ICollection extends HasHistory, CanDeactivate {

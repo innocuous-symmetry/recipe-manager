@@ -44,7 +44,7 @@ export default function Recipe() {
                 (!ingredientData.length) && (async() => {
                     const ingredientAPI = new API.Ingredient(token);
                     const result = await ingredientAPI.getAllForRecipe(id);
-                    if (result.length) setIngredientData(result);
+                    setIngredientData(result);
                 })();
 
                 const selfAuthored = (recipe.authoruserid == user.id!);
@@ -59,7 +59,7 @@ export default function Recipe() {
                 }
             }
         }
-    }, [recipe])
+    }, [recipe, id])
 
     useEffect(() => {
         if (!userData) return;
@@ -92,7 +92,18 @@ export default function Recipe() {
                 </Protect>
             );
         }
-    }, [userData, recipe, ingredientData]);
+    }, [userData, recipe, ingredientData, id]);
+
+    useEffect(() => {
+        if (!ingredientData.length || !token) return;
+        for (let each of ingredientData) {
+            (async() => {
+                const ingredientAPI = new API.Ingredient(token);
+                const result = await ingredientAPI.getByID(each.ingredientid!.toString());
+                console.log(result);
+            })();
+        }
+    }, [ingredientData, token])
 
     return view
 }

@@ -116,7 +116,7 @@ export class Recipe {
     }
 
     async addIngredientToRecipe(ingredient: RecipeIngredient, recipeid: string | number) {
-        const { quantity, unit, id } = ingredient;
+        const { quantity, unit, ingredientid } = ingredient;
 
         try {
             const statement = `
@@ -125,7 +125,7 @@ export class Recipe {
                 VALUES ($1, $2, $3, $4) RETURNING *
             `
 
-            const result = await pool.query(statement, [quantity, unit, id, recipeid]);
+            const result = await pool.query(statement, [quantity, unit, ingredientid, recipeid]);
 
             if (result.rows) return result.rows[0];
             return [];

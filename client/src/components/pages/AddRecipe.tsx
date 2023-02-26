@@ -134,6 +134,9 @@ export default function AddRecipe() {
     async function handleCreate() {
         if (!user || !token) return;
 
+        let recipeID;
+        let recipeName;
+
         // initialize API handlers
         const recipeAPI = new API.Recipe(token);
         const ingredientAPI = new API.Ingredient(token);
@@ -157,10 +160,18 @@ export default function AddRecipe() {
             }
         }
 
+        // post recipe entry
+        const result = await recipeAPI.post(input);
+
+        if (result) {
+            recipeID = result.recipe.id;
+            recipeName = result.recipe.name;
+        }
+
         let preparedIngredientData = new Array<RecipeIngredient>();
         let newIngredientCount = 0;
 
-        // handle ingredient row data
+        // check ingredient row for null values; normalize each row's data and insert into array above
         for (let row of ingredientFieldData) {
             if (!row) continue;
             console.log(row);
@@ -180,25 +191,48 @@ export default function AddRecipe() {
                 continue;
             }
 
-            const newID = row.ingredients.filter(ingr => ingr.name == row.ingredientSelection)[0].id;
-
-            const newIngredientData: RecipeIngredient = {
-                id: newID ?? row.ingredients.length + 1,
-                name: row.ingredientSelection as string,
-                quantity: row.quantity,
-                unit: row.measurement
-            }
-
-            preparedIngredientData.push(newIngredientData);
-
+            /**
+             * TO DO:
+             * 
+             * this inner row isn't working correctly just yet
+             * once the inputs for each row have been validated:
+             * 
+             * 1. create new ingredient entries for new ingredients
+             * 2. create ingredient recipe links for all recipes
+             */
+            
             for (let ing of row.ingredients) {
                 // filter out recipes that already exist
                 if (!ingredients.filter(x => x.name == ing.name).includes(ing)) {
+                    console.log(ing.name);
+
                     // post the new ingredient to the database
                     const newEntry = await ingredientAPI.post(ing);
+                    const newID = newEntry.id;
+
+                    const newIngredientData: RecipeIngredient = {
+                        ingredientid: newID,
+                        recipeid: recipeID ?? null,
+                        name: row.ingredientSelection as string,
+                        quantity: row.quantity,
+                        unit: row.measurement
+                    }
+
+                    preparedIngredientData.push(newIngredientData);
+
                     messages.push(`Successfully created new ingredient: ${ing.name}!`);
                     console.log(newEntry);
                     newIngredientCount++;
+                } else {
+                    const newIngredientData: RecipeIngredient = {
+                        ingredientid: (ingredients.filter(x => x.name == ing.name)[0].id as number),
+                        recipeid: recipeID ?? null,
+                        name: row.ingredientSelection as string,
+                        quantity: row.quantity,
+                        unit: row.measurement
+                    }
+
+                    preparedIngredientData.push(newIngredientData);
                 }
 
                 // update the ingredient list
@@ -206,13 +240,8 @@ export default function AddRecipe() {
             }
         }
 
-        // post recipe entry
-        const result = await recipeAPI.post(input);
-
         // handle recipe post resolve/reject
         if (result) {
-            const recipeID = result.recipe.id;
-            const recipeName = result.recipe.name;
             let recipeIngredientCount = 0;
 
             for (let ing of preparedIngredientData) {
