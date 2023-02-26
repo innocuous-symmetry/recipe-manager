@@ -1,7 +1,6 @@
+import { useAuthContext } from "../../context/AuthContext";
 import { FC, useEffect, useState } from "react";
 import { v4 } from "uuid";
-import { useAuthContext } from "../../context/AuthContext";
-import { getAllUsers, getFriendships, getPendingFriendRequests, getUserByID } from "../../util/apiUtils";
 import API from "../../util/API";
 import UserCard from "../ui/UserCard";
 import { IUser, IFriendship } from "../../schemas";
@@ -18,9 +17,9 @@ const Friends: FC<{ targetUser?: IUser }> = ({ targetUser }) => {
         (async function() {
             try {
                 const Friends = new API.Friendship(token);
-                const result = await Friends.getAll();
+                const result: IFriendship[] | null = await Friends.getAll();
     
-                if (result.length) {
+                if (result?.length) {
                     setFriends(result);
                 }
 

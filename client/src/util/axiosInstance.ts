@@ -14,7 +14,9 @@ instance.interceptors.response.use((res: AxiosResponse<any,any>) => {
     
     return res;
 }, (err) => {
-    return Promise.reject(err);
+    console.log(err);
+    // return err;
+    // return Promise.reject(err);
 })
 
 export default instance;

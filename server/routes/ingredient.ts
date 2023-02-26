@@ -10,9 +10,16 @@ export const ingredientRoute = (app: Express) => {
     app.use('/app/ingredient', router);
 
     router.get('/', async (req, res, next) => {
+        const { recipeID } = req.query;
+
         try {
-            const result: CtlResponse<IIngredient[] | string> = await IngredientInstance.getAll();
-            res.status(result.code).send(result.data);
+            if (recipeID) {
+                const result = await IngredientInstance.getAllForRecipe(recipeID as string);
+                res.status(result.code).send(result.data);
+            } else {
+                const result: CtlResponse<IIngredient[] | string> = await IngredientInstance.getAll();
+                res.status(result.code).send(result.data);
+            }
         } catch(e) {
             next(e);
         }

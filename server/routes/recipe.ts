@@ -59,6 +59,8 @@ export const recipeRoute = (app: Express) => {
         const data = req.body;
         const { addIngredients, recipeID } = req.query;
 
+        console.log(data);
+
         try {
             if (addIngredients) {
                 const result = await recipectl.addIngredientToRecipe(data, recipeID as string);

@@ -1,15 +1,18 @@
-import { useAuthContext } from "../../context/AuthContext";
+// library/framework
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, Divider, Page, Panel } from "../ui"
-import { DropdownData, IIngredient, IRecipe } from "../../schemas";
-import IngredientSelector from "../derived/IngredientSelector";
+import { Autocomplete, TextField } from "@mui/material";
+import { v4 } from "uuid";
+
+// util/api
+import { useAuthContext } from "../../context/AuthContext";
+import { DropdownData, IIngredient, IRecipe, RecipeIngredient } from "../../schemas";
+import { IngredientFieldData } from "../../util/types";
 import Protect from "../../util/Protect";
 import API from "../../util/API";
-import { v4 } from "uuid";
-import RichText from "../ui/RichText";
-import { Autocomplete, TextField } from "@mui/material";
-import { IngredientFieldData } from "../../util/types";
-import Toast from "../ui/Toast";
+
+// ui/components
+import { Button, Card, Divider, Panel, RichText, Toast } from "../ui"
+import IngredientSelector from "../derived/IngredientSelector";
 
 export default function AddRecipe() {
     /**********************************
@@ -103,7 +106,7 @@ export default function AddRecipe() {
                 });
             }
 
-            if (courseList) {
+            if (courseList && !courseData.length) {
                 setCourseData((prev) => {
                     let newEntries = filterDuplicateEntries(courseList, prev);
                     return [...prev, ...newEntries];
@@ -112,22 +115,23 @@ export default function AddRecipe() {
         })();
     }, [token])
 
-    // mount the ingredient selection section once dependencies have loaded
+    // mount the ingredient selection section once conditions met:
+    // 1. ingredients have been fetched
+    // 2. measurements have been fetched
+    // 3. ingredient fields have not already been initialized
     useEffect(() => {
-        if (ingredients.length && measurements.length) {
+        const conditionsMet = (ingredients.length && measurements.length) && (!ingredientFields.length);
+
+        if (conditionsMet) {
             setIngredientFields([<IngredientSelector key={v4()} position={optionCount} ingredients={ingredients} units={measurements} getRowState={getRowState} destroy={destroySelector} />]);
         }
     }, [ingredients, measurements])
-
-    useEffect(() => {
-        console.log(ingredientFieldData);
-    }, [getRowState]);
 
     /**********************************
      * PAGE SPECIFIC FUNCTIONS
      *********************************/
     // submit handler
-    const handleCreate = async () => {
+    async function handleCreate() {
         if (!user || !token) return;
 
         // initialize API handlers
@@ -153,31 +157,52 @@ export default function AddRecipe() {
             }
         }
 
-        let ingredientSelections = new Array<any>();
+        let preparedIngredientData = new Array<RecipeIngredient>();
         let newIngredientCount = 0;
 
         // handle ingredient row data
         for (let row of ingredientFieldData) {
+            if (!row) continue;
+            console.log(row);
+
             if (row.ingredientSelection === undefined) {
                 messages.push("Please ensure you have included ingredient selections for all rows.");
+                continue;
             }
 
-            ingredientSelections.push(row.ingredientSelection);
+            if (!row.quantity) {
+                messages.push("Please provide a quantity for ingredient " + row.ingredientSelection);
+                continue;
+            }
+
+            if (!row.measurement) {
+                messages.push(row.ingredientSelection + " missing required unit of measurement");
+                continue;
+            }
+
+            const newID = row.ingredients.filter(ingr => ingr.name == row.ingredientSelection)[0].id;
+
+            const newIngredientData: RecipeIngredient = {
+                id: newID ?? row.ingredients.length + 1,
+                name: row.ingredientSelection as string,
+                quantity: row.quantity,
+                unit: row.measurement
+            }
+
+            preparedIngredientData.push(newIngredientData);
 
             for (let ing of row.ingredients) {
                 // filter out recipes that already exist
-                if (ingredients.filter(x => x.name == ing.name).includes(ing)) {
-                    continue;
+                if (!ingredients.filter(x => x.name == ing.name).includes(ing)) {
+                    // post the new ingredient to the database
+                    const newEntry = await ingredientAPI.post(ing);
+                    messages.push(`Successfully created new ingredient: ${ing.name}!`);
+                    console.log(newEntry);
+                    newIngredientCount++;
                 }
 
                 // update the ingredient list
                 setIngredients((prev) => [...prev, ing]);
-
-                // post the new ingredient to the database
-                const newEntry = await ingredientAPI.post(ing);
-                messages.push(`Successfully created new ingredient: ${ing.name}!`);
-                console.log(newEntry);
-                newIngredientCount++;
             }
         }
 
@@ -190,7 +215,7 @@ export default function AddRecipe() {
             const recipeName = result.recipe.name;
             let recipeIngredientCount = 0;
 
-            for (let ing of ingredientSelections) {
+            for (let ing of preparedIngredientData) {
                 const ok = await recipeAPI.addIngredientToRecipe(ing, recipeID);
                 if (ok) recipeIngredientCount++;
             }

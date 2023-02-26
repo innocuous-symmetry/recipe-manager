@@ -56,29 +56,66 @@ module API {
         }
 
         async getAll() {
-            const response = await this.instance.get(this.endpoint, this.headers);
-            return Promise.resolve(response.data);
+            const response = await this.instance.get(this.endpoint, this.headers)
+                .catch((err: AxiosError) => {
+                    console.log(err.message);
+                    return null;
+                });
+            return Promise.resolve(response?.data);
         }
 
         async getByID(id: string) {
-            const response = await this.instance.get(this.endpoint + "/" + id, this.headers);
-            return Promise.resolve(response.data);
+            const response = await this.instance.get(this.endpoint + "/" + id, this.headers)
+                .catch((err: AxiosError) => {
+                    console.log(err.message);
+                    return null;
+                });
+            return Promise.resolve(response?.data);
         }
 
         async post(data: T) {
-            console.log(data);
-            const response = await this.instance.post(this.endpoint, data, this.headers);
-            return Promise.resolve(response.data);
+            try {
+                const response = await this.instance.post(this.endpoint, JSON.stringify(data), this.headers);
+                return Promise.resolve(response.data);
+            } catch(e: any) {
+                if (e instanceof AxiosError) {
+                    const error = e as AxiosError;
+                    if (error.message) {
+                        console.log(error.message);
+                        return null;
+                    }
+                }
+            }
         }
 
         async put(id: string, data: T | Partial<T>) {
-            const response = await this.instance.put(this.endpoint + "/" + id, JSON.stringify(data), this.headers);
-            return Promise.resolve(response.data);
+            try {
+                const response = await this.instance.put(this.endpoint + "/" + id, JSON.stringify(data), this.headers);
+                return Promise.resolve(response.data);
+            } catch(e: any) {
+                if (e instanceof AxiosError) {
+                    const error = e as AxiosError;
+                    if (error.message) {
+                        console.log(error.message);
+                        return null;
+                    }
+                }
+            }
         }
 
         async delete(id: string) {
-            const response = await this.instance.delete(this.endpoint + '/' + id, this.headers);
-            return Promise.resolve(response.data);
+            try {
+                const response = await this.instance.delete(this.endpoint + '/' + id, this.headers);
+                return Promise.resolve(response.data);
+            } catch(e: any) {
+                if (e instanceof AxiosError) {
+                    const error = e as AxiosError;
+                    if (error.message) {
+                        console.log(error.message);
+                        return null;
+                    }
+                }
+            }
         }
     }
 
@@ -141,19 +178,6 @@ module API {
             super(Settings.getAPISTRING() + "/app/friend", token);
         }
 
-        override async getAll() {
-            try {
-                const response = await this.instance.get(this.endpoint, this.headers);
-                return Promise.resolve(response.data);
-            } catch(e) {
-                const error = e as AxiosError;
-                if (error.response?.status == 404) {
-                    console.log('no friends found');
-                    return [];
-                }
-            }
-        }
-
         async getTargetUserFriendships(id: string | number) {
             try {
                 const response = await this.instance.get(this.endpoint + `?targetUser=${id}`, this.headers);
@@ -189,8 +213,12 @@ module API {
         }
 
         async addIngredientToRecipe(ingredient: RecipeIngredient, recipeid: string | number) {
-            const response = await this.instance.post(this.endpoint + `?addIngredients=true&recipeID=${recipeid}`, JSON.stringify(ingredient), this.headers);
-            return Promise.resolve(response.data);
+            const response = await this.instance.post(this.endpoint + `?addIngredients=true&recipeID=${recipeid}`, JSON.stringify(ingredient), this.headers)
+                .catch((err) => {
+                    console.log(err);
+                    return null;
+                });
+            return Promise.resolve(response?.data);
         }
     }
 

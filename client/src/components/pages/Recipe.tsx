@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Divider, Page, Panel } from "../ui";
-import { IRecipe, IUser, IIngredient } from "../../schemas";
+import { IRecipe, IUser, IIngredient, RecipeIngredient } from "../../schemas";
 import { getRecipeByID } from "../../util/apiUtils";
 import Protect from "../../util/Protect";
 import API from "../../util/API";
 import { useAuthContext } from "../../context/AuthContext";
 import ResourceNotFound from "./StatusPages/404";
+import { v4 } from "uuid";
 
 export default function Recipe() {
     const { user, token } = useAuthContext();
@@ -14,7 +15,7 @@ export default function Recipe() {
 
     const [recipe, setRecipe] = useState<IRecipe | "no recipe">();
     const [userData, setUserData] = useState<IUser>();
-    const [ingredientData, setIngredientData] = useState<IIngredient[]>([]);
+    const [ingredientData, setIngredientData] = useState<RecipeIngredient[]>([]);
     const [view, setView] = useState<JSX.Element>(<h1>Loading...</h1>);
 
     useEffect(() => {
@@ -32,17 +33,19 @@ export default function Recipe() {
     }, [token])
 
     useEffect(() => {
-        if (recipe) {
+        if (recipe && id) {
             if (recipe === "no recipe") {
                 setView(<ResourceNotFound><h2>We couldn't find a recipe with the ID {id}.</h2></ResourceNotFound>);
             } else {
                 if (!user || !token) return;
 
-                (async() => {
+                // while ingredient data has not yet been mapped,
+                // get ingredients and map them
+                (!ingredientData.length) && (async() => {
                     const ingredientAPI = new API.Ingredient(token);
-                    const result = await ingredientAPI.getAllForRecipe(id!);
+                    const result = await ingredientAPI.getAllForRecipe(id);
                     if (result.length) setIngredientData(result);
-                })
+                })();
 
                 const selfAuthored = (recipe.authoruserid == user.id!);
                 if (selfAuthored) {
@@ -61,7 +64,7 @@ export default function Recipe() {
     useEffect(() => {
         if (!userData) return;
 
-        if (recipe && recipe !== "no recipe") {
+        if (recipe && ingredientData && recipe !== "no recipe") {
             setView(
                 <Protect redirect={`/recipe/${id}`}>
                     <h1>{recipe.name}</h1>
@@ -75,8 +78,11 @@ export default function Recipe() {
     
                     <h2>Ingredients:</h2>
                     { ingredientData.length
-                        ? ingredientData.map((each: IIngredient) => <p>{each.name}</p>)
-                        : "No ingredients for this recipe"
+                        ? ingredientData.map((each: RecipeIngredient) => (
+                            <div key={v4()}>
+                                <p>{each.quantity} {each.quantity == 1 ? each.unit : (each.unit + "s")} {each.name}</p>
+                            </div>
+                        )) : <p>No ingredients for this recipe</p>
                     }
 
                     <Divider />
@@ -86,7 +92,7 @@ export default function Recipe() {
                 </Protect>
             );
         }
-    }, [userData, ingredientData]);
+    }, [userData, recipe, ingredientData]);
 
     return view
 }

@@ -25,6 +25,17 @@ export class Ingredient {
         }
     }
 
+    async getAllForRecipe(recipeid: string) {
+        try {
+            const statement = `SELECT * FROM recipin.cmp_recipeingredient WHERE recipeid = $1`;
+            const result = await pool.query(statement, [recipeid]);
+            if (result.rows.length) return result.rows[0];
+            return null;
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async post(data: IIngredient) {
         try {
             const statement = `

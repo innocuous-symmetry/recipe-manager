@@ -16,6 +16,17 @@ export default class IngredientCtl {
         }
     }
 
+    async getAllForRecipe(recipeid: string) {
+        try {
+            const result = await IngredientInstance.getAllForRecipe(recipeid);
+            const ok = result !== null;
+            const code = ok ? StatusCode.OK : StatusCode.NotFound;
+            return new ControllerResponse(code, (result || "No ingredient found with this recipe ID"));
+        } catch (e: any) {
+            throw new Error(e);
+        }
+    }
+
     async getOne(id: string) {
         try {
             const result = await IngredientInstance.getOne(id);

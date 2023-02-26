@@ -2,8 +2,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthContext } from './context/AuthContext';
-import jwtDecode from 'jwt-decode';
-import API from './util/API';
 
 // pages, ui, components, styles
 import Subscriptions from './components/pages/Subscriptions/Subscriptions';
@@ -19,11 +17,10 @@ import CollectionBrowser from './components/pages/CollectionBrowser';
 import { Navbar } from './components/ui';
 import GroceryList from './components/pages/GroceryList';
 import GroceryListCollection from './components/pages/GroceryListCollection';
-import { TokenType } from './util/types';
-import './sass/App.scss';
 import handleToken from './util/handleToken';
 import AddFriends from './components/pages/AddFriends';
 import Sandbox from './components/Sandbox';
+import './sass/App.scss';
 
 function App() {
   const { setUser, token, setToken } = useAuthContext();
